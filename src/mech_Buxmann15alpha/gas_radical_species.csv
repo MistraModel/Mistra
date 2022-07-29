@@ -1,0 +1,51 @@
+!  List here the radical gas phase species used in MISTRA				
+!  Blank lines or lines starting with an exclamation mark are ignored				
+				
+! The first column contains the index of the radical gas used in MISTRA.				
+!    The indexes need to be sorted with increasing numbers				
+!    It is possible to comment out some lines and keep the following indexes unchanged				
+!    The max index actually used should be identical to 'j5_max' specified in 'gas_species.dat'				
+!    The total number of gases actually used (i.e. not commented in the list) will be automatically exported as 'j1_used'				
+				
+! The second column displays the name of the gas as written in the KPP mechanism.				
+!    A maximum of 12 characters is currently allowed, as is in KPP-2.2.3 (Fortran77 output)				
+				
+! The third column holds the molecular mass of the gas ( in kg.mol-1 )				
+! The fourth and fifth columns holds the initial mixing ratios at ground and top levels in nmol mol-1 (ppb)				
+				
+! Nb	Name     	Mass  	Long name        	Comment
+! #	(12 char)	kg/mol	Use _ as space delimiter	
+				
+! 1	---		---_(gas_phase)	
+! 2	---		---_(gas_phase)	
+! 3	---		---_(gas_phase)	
+4	OH	17E-03	hydroxyl_radical_(gas_phase)	
+5	HO2	33E-03	hydroperoxyl_radical_(gas_phase)	
+! 6	AHO2	63E-03	HOCH2O2_radical_(gas_phase)	
+7	MCO3	75E-03	CH3CO3_radical_(gas_phase)	
+8	MO2	47E-03	CH3O2_radical_(gas_phase)	
+9	ETO2	61E-03	C2H5O2_radical_(gas_phase)	
+! 10	KO2		ketone_radical_(gas_phase)	
+! 11	R3O2		propane_radical_(gas_phase)	
+! 12	RAO2		alkane_>_C3_RO2_radical_(gas_phase)	
+! 13	TO2		aromatic_RO2_radical_(gas_phase)	
+! 14	TCO3	115E-03	CHOCH=CHCO3_radical_(gas_phase)	
+! 15	ZO2		aromatic_RO2_radical_(gas_phase)	
+16	EO2	77E-03	ethanolperoxy_radical_H2C(OH)CH2OO_(gas_phase)	
+! 17	PO2		higher_alkenes_RO2_radicals_(gas_phase)	
+18	CHO2	46E-03	CH2O2_Criegee_biradical_(gas_phase)	
+! 19	CRO2	60E-03	CH3CHO2_radical_(gas_phase)	
+! 20	PRN1		Alkene_+_NO3_radical_(gas_phase)	
+21	O1D	16E-03	O(1D)_oxygen_atomic_first_singlet_state_(gas_phase)	
+22	Cl	35E-03	"chlorine_atomic_ground_state_(2P3/2)_(gas_phase)"	
+23	ClO	51E-03	chlorine_monoxide_radical_(gas_phase)	
+24	OClO	67E-03	symmetrical_chlorine_dioxide_(gas_phase)	
+25	Br	80E-03	"bromine_atomic_ground_state_(2P3/2)_(gas_phase)"	
+26	BrO	96E-03	bromine_monoxide_radical_(gas_phase)	
+27	I	127E-03	iodine_atomic_ground_state_(gas_phase)	
+28	IO	143E-03	iodine_monoxide_radical_(gas_phase)	
+29	OIO	159E-03	iodine_dioxide_radical_(gas_phase)	
+30	O3P	16E-03	O(3P)_oxygen_atomic_ground_state_(gas_phase)	
+31	ClRO2	96.4E-03	generic_chlorinated_peroxy_radical_(gas_phase)	! calculated using C2H5ClOO
+32	BrRO2	158E-03	generic_brominated_peroxy_radical_(gas_phase)	! calculated using CH2SBrOO
+33	IRO2	173E-03	generic_iodinated_peroxy_radical_(gas_phase)	! calculated using CH2IOO

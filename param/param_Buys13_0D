@@ -1,0 +1,72 @@
+#!/bin/bash
+# MISTRA v9.0
+
+TITLE="Simulation similar to the basecase of Joyce et al, ACP 2014"
+
+#      MODEL BINARY USED
+MISTRAEXE=~/Mistra_2019/src/mistra
+
+#      NAMELIST USED
+NAMELIST=~/Mistra_2019/namelists/namelist.Buys13_0D
+
+#      MECHANISM DIRECTORY
+MECHDIR=~/Mistra_2019/src/mech/
+
+#      INPUT DIRECTORY
+INPDIR=~/Mistra_2019/input/
+
+#      PARENT OUTPUT DIR
+POUTDIR=~/Mistra_2019/out/
+
+
+
+#################################################################
+# Below are automated instructions to launch the run
+#################################################################
+
+# EXPID = second part of param_... name
+[[ $0 != *param_* ]] && echo -e "$0\nWarn : The installer should be sourced from a 'param_' file">&2 && exit 1
+[ -z $EXPID ] && EXPID=$(basename $0 | sed -e 's/param_//g')
+[ -z $EXPID ] && echo "You must set EXPID ">&2 && exit 1
+
+# Create one output subdirectory for each run
+# -- first define OUTDIR
+OUTDIR=$POUTDIR$EXPID/
+# -- then check if it already exists
+if [ -e $OUTDIR ]
+then
+    answer=''
+    until [[ $answer == 'y' ]] || [[ $answer == 'n' ]] || [[ $answer == 'e' ]] ; do
+	echo "The simulations already exists, overwrite?"
+	echo "  (fresh run, choose y; restart same run, choose n; exit to change name, choose e)"
+	read -p "(y=yes / n=no / e=exit)" answer
+    done
+    [[ $answer == 'y' ]] && rm -f $OUTDIR/* && echo "Output sub-directory cleaned, continue installation"
+    [[ $answer == 'n' ]] && echo "Continue installation"
+    [[ $answer == 'e' ]] && echo "Installation aborted, change the param name" && exit 1
+else
+    mkdir -p $OUTDIR
+    echo "Output sub-directory created, continue installation"
+fi
+
+# Define file names to redirect standard output and error messages
+STDOUT=${OUTDIR}/last_run.out
+STDERR=${OUTDIR}/last_run.err
+
+# Launch the executable
+# -- The "env VAR=$VAR" instruction allows to pass an environment variable to the model,
+#    without having to define a global (= system wide) environment variable
+if [ -e $MISTRAEXE ]
+then
+    echo "Installation ended, the run will start"
+    echo $TITLE >> $STDOUT
+    echo "--------------------------------------------------------------------------------" >> $STDOUT
+    env INPDIR=$INPDIR NAMELIST=$NAMELIST OUTDIR=$OUTDIR MECHDIR=$MECHDIR $MISTRAEXE >> $STDOUT 2>>$STDERR
+else
+    echo "The executable does not exist, installation aborted" && exit 1
+fi
+
+# Move output files in OUTDIR
+mv fort.* *.out *.nc rst*.dat *.asc $OUTDIR
+
+echo " -- End of param script (end of the run) -- "

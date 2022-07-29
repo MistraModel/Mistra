@@ -1,0 +1,495 @@
+#EQUATIONS
+
+{--- base mechanism: von Glasow and Crutzen, ACP, 2004}
+{--- iodine based on von Glasow et al, 2002a, update according to IUPAC 04-2004, Susanne}
+{--- Ox, HOx, NOx, SO2, and halogen updated, March 2005, JPL 2003, IUPAC 04-2004, Roland}
+{--- mechanism upgraded, September 2008, Roberto}
+{--- iodine mechanism updated to Sommariva et al., Atmos. Env., 2012}
+
+{--- order for reactions in this list: Ox, HOx, NOx/y, org, S, Cl (X, XnOm, HX, XNOy, Xorg, X2, hv), Br, I, XY}
+{--- no conversion factor for 1st order reactions}
+
+{--- reactions in gas phase}
+
+{--- Ox and HOx reactions}
+
+{O1} O1D + O2 = O3P :                             farr(3.2d-11,67)*CONV1 ; {IUPAC 10/06}
+{O2} O1D + O3 = O3P {+1.5 O2} :                   2.4d-10*CONV1 ; {IUPAC 10/06}
+{O3} O1D + N2 = O3P :                             farr(2.1d-11,115)*CONV1 ; {Ravishankara et al., 2002}
+{O4} O1D + H2O = 2 OH :                           2.2d-10*CONV1 ; {IUPAC 10/06}
+{05} O1D + H2 {+O2} = OH + HO2 :                  1.2d-10*CONV1 ; {IUPAC 10/06}
+{O6} O3P + H2O2 = OH + HO2 :                      farr(1.4d-12,-2000)*CONV1 ; {IUPAC 10/06}
+{O7} O3P + O2 + O2 = O3 {+O2} :                   farr_sp(6.0d-34,300,-2.6d0,0)*CONV1*CONV1 ; {IUPAC 10/06}
+{O8} O3P + O3 = 2 O2 :                            farr(8.0d-12,-2060)*CONV1 ; {IUPAC 10/06}
+{O9} O3P + N2 + O2 = O3 {+N2} :                   farr_sp(5.6d-34,300,-2.6d0,0)*CONV1*CONV1 ; {IUPAC 10/06}
+{10} OH + O3 = HO2 + O2 :                         farr(1.7d-12,-940)*CONV1 ; {IUPAC 10/06}
+{11} OH + HO2 = H2O + O2 :                        farr(4.8d-11,250)*CONV1 ; {IUPAC 10/06}
+{12} OH + H2 {+O2} = HO2 + H2O :                  farr(7.7d-12,-2100)*CONV1 ; {IUPAC 10/06}
+{13} OH + H2O2 = HO2 + H2O :                      farr(2.9d-12,-160)*CONV1 ; {IUPAC 10/06}
+{14} OH + OH = O3P + H2O :                        farr_sp(6.2d-14,298,2.6d0,945)*CONV1 ; {IUPAC 10/06}
+{15} OH + OH {+M} = H2O2 :                        atk_3(6.9d-31,-0.8d0,2.6d-11,0.0d0,0.5d0)*CONV1 ; {IUPAC 10/06}
+{16} HO2 + O3 = OH + 2 O2 :                       farr_sp(2.03d-16,300,4.57d0,693)*CONV1 ; {IUPAC 10/06}
+{17} HO2 + HO2 = H2O2 + O2 :                      sp_23(2.2d-13,600,1.9d-33,980,1.4d-21,2200)*CONV1 ; {IUPAC 10/06}
+{18} O3 + hv = O2 + O1D:                          ph_rat( 3) ; {band-model}
+{19} O3 + hv = O2 + O3P:                          ph_rat(47) ; {band-model}
+{20} H2O2 + hv = 2 OH :                           ph_rat( 6) ; {band-model}
+
+
+{--- NOy reactions}
+
+{N01} NO + O3P {+M} = NO2 :                       atk_3(1.0d-31,-1.6d0,3.0d-11,0.3d0,0.85d0)*CONV1 ; {IUPAC 10/06}
+{N02} NO + OH {+M} = HONO :                       atk_3(7.4d-31,-2.4d0,3.3d-11,-0.3d0,0.81d0)*CONV1 ; {IUPAC 10/06}
+{N03} NO + HO2 = NO2 + OH :                       farr(3.6d-12,270)*CONV1 ; {IUPAC 10/06}
+{N04} NO + O3 = NO2 + O2 :                        farr(1.4d-12,-1310)*CONV1 ; {IUPAC 10/06}
+{N05} NO + NO3 = 2 NO2 :                          farr(1.8d-11,110)*CONV1 ; {IUPAC 10/06}
+{N06} NO2 + O3P = NO + O2 :                       farr(5.5d-12,188)*CONV1 ; {IUPAC 10/06}
+{N07} NO2 + O3P {+M} = NO3 :                      atk_3(1.3d-31,-1.5d0,2.3d-11,0.24d0,0.6d0)*CONV1 ; {IUPAC 10/06}
+{N08} NO2 + OH {+M} = HNO3 :                      atk_3(3.3d-30,-3.0d0,4.1d-11,0.0d0,0.4d0)*CONV1 ;  {IUPAC 10/06}
+{N09} NO2 + HO2 {+M} = HNO4 :                     atk_3(2.0d-31,-3.4d0,2.9d-12,-1.1d0,0.6d0)*CONV1 ; {JPL 07/06}
+{N10} NO2 + O3 = NO3 + O2 :                       farr(1.4d-13,-2470)*CONV1 ; {IUPAC 10/06}
+{N11} NO2 + NO3 {+M} = N2O5 :                     atk_3(2.0d-30,-4.4d0,1.4d-12,-0.7d0,0.6d0)*CONV1 ; {JPL 07/06}
+{--- N12 NO2 + NO3 = NO + NO2 + O2 :                 farr(4.5d-14,-1260)*CONV1 ; JPL 07/06 - dubious reaction}
+{N13} NO2 + hv = NO + O3P :                       ph_rat( 1) ; {band-model}
+{N14} NO3 + O3P = NO2 + O2 :                      1.7d-11*CONV1 ; {IUPAC 10/06}
+{N15} NO3 + OH = HO2 + NO2 :                      2.0d-11*CONV1 ; {IUPAC 10/06}
+{N16} NO3 + HO2 =  OH + NO2 {+O2} :               4.0d-12*CONV1 ; {IUPAC 10/06 - products VERY uncertain: HNO3 channel ???}
+{N17} NO3 + NO3 = NO2 + NO2 + O2:                 farr(8.5d-13,-2450)*CONV1 ; {JPL 07/06}
+{N18} NO3 + hv = NO + O2 :                        ph_rat( 2) ; {band-model}
+{N19} NO3 + hv = NO2 + O3P :                      ph_rat(10) ; {band-model}
+{N20} N2O5 {+M} = NO2 + NO3 :                     fbck(2.0d-30,-4.4d0,1.4d-12,-0.7d0,0.6d0,5.1d-27,10871.d0) ; {1st order; JPL 07/06 & Osthoff et al., 2007}
+{N21} N2O5 + hv = NO2 + NO3:                      ph_rat(12) ; {band-model}
+{--- N22 N2O5 + H2O = 2 HNO3 :                       2.5d-22*CONV1 ; IUPAC 10/06 - dubious reaction}
+{--- N23 N2O5 + 2 H2O = 2 HNO3 + H2O :               1.8d-39*CONV1*CONV1 ; IUPAC 10/06 - dubious reaction}
+{N24} HONO + OH = NO2 :                           farr(2.5d-12,260)*CONV1 ; {IUPAC 10/06}
+{N25} HONO + hv = NO + OH :                       ph_rat( 4) ; {band-model}
+{N26} HNO3 + OH = NO3 + H2O :                     sHNO3(2.4d-14,460,2.7d-17,2199,6.5d-34,1335)*CONV1 ; {IUPAC 10/06}
+{N27} HNO3 + hv = NO2 + OH :                      ph_rat( 5) ; {band-model}
+{N28} HNO4 {+M} = NO2 + HO2 :                     fbck(2.0d-31,-3.4d0,2.9d-12,-1.1d0,0.6d0,2.1d-27,10900.d0) ; {1st order; JPL 07/06}
+{N29} HNO4 + OH = NO2 + H2O + O2 :                farr(3.2d-13,690)*CONV1 ; {IUPAC 10/06}
+{N30} HNO4 + hv = NO2 + HO2 :                     ph_rat( 7) ; {band-model}
+{N31} HNO4 + hv = OH + NO3:                       ph_rat(11) ; {band-model}
+{N32} NH3 + OH = NHS + H2O :                      farr(3.5d-12,-925)*CONV1 ; {IUPAC 10/06 - product NHS => NH2}
+{--- N33 NH2 + NO = N2 + H2O :                       farr_sp(1.6d-11,298,-1.4d0,0)*CONV1 ; IUPAC 10/06 - rate coeff VERY uncertain}
+{--- N34 NH2 + NO2 = 0.25 H2O + 0.75 NO +0.25 N2O + 0.75 H2NO : farr_sp(2.0d-11,298,-1.3d0,0)*CONV1 ; IUPAC 10/06 - branching ratio VERY uncertain}
+{--- N35 NH2 + O3 = O2 + NH2O :                     farr(4.9d-12,-1000)*CONV1 ; IUPAC 10/06 - products VERY uncertain}
+
+
+{--- ORGANIC reactions}
+{--- Simplified CO-CH4-ethane-ethene Mechanism}
+{--- Generic rate coeff. and branching ratios taken from the Master Chemical Mechanism (MCM, http://mcm.leeds.ac.uk/}
+{--- Higher alcohols, aldehydes and peroxides are treated as C2H5OH, CH3CHO and CH3OOH}
+
+      {--- initial radical attack}
+{C01} CO + OH = HO2 + CO2 :                       sp_17(1.44d-13,4.2d19)*CONV1 ; {IUPAC 10/06}
+{C02} CH4 + OH = MO2 + H2O :                      farr_sp(1.85d-20,1,2.82d0,-987)*CONV1 ; {Atkinson & Arey, 2003}
+{C03} C2H6 + OH = ETO2 + H2O :                    farr_sp(1.49d-17,1,2.00d0,-499)*CONV1 ; {Atkinson & Arey, 2003}
+{C04} ETHE + OH {+O2} = EO2 :                     farr(1.96d-12,438)*CONV1 ; {Atkinson & Arey, 2003}
+{C05} ETHE + O3 = HCHO + 0.63 CO + 0.13 HO2 + 0.13 OH + 0.37 CHO2 :
+                                                  farr(9.14d-15,-2580)*CONV1 ; {Atkinson & Arey, 2003}
+{C06} ETHE + NO3 {+O2} = EO2 :                    farr_sp(4.88d-18,1,2.00d0,-2282)*CONV1 ; {Atkinson & Arey, 2003}
+
+      {--- criegee biradicals and peroxy radicals}
+      {--- parametrization of self- and cross- reactions: assume that CH3O2 is the most abundant RO2}
+      {--- MO2 reacts only with itself; the other RO2 react with themselves and with MO2}
+{C07} CHO2 + H2O = ACO2 :                         1.00d-17*CONV1 ; {MCM}
+{C08} MO2 + NO {+O2} = HCHO + HO2 + NO2 :         farr(2.8d-12,300)*9.99d-1*CONV1 ; {Tyndall et al., 2001}
+{C09} MO2 + HO2 = ROOH + O2 :                     farr(4.15d-13,750)*CONV1 ; {Tyndall et al., 2001}
+{C10} MO2 + MO2 = CH3OH + HCHO {+O2} :            farr(9.5d-14,390)*0.63d0*CONV1 ; {Tyndall et al., 2001}
+{C11} MO2 + MO2 = 2 HCHO + 2 HO2 :                farr(9.5d-14,390)*0.37d0*CONV1 ; {Tyndall et al., 2001}
+{C12} ETO2 + NO = ALD2 + HO2 + NO2 :              farr(2.6d-12,365)*9.91d-1*CONV1 ; {MCM}
+{C13} ETO2 + HO2 = ROOH + O2 :                    farr(2.7d-13,1000)*CONV1 ; {MCM}
+{C14} ETO2 + ETO2 = C2H5OH + ALD2 {+O2} :         3.10d-13*0.4d0*CONV1 ; {MCM}
+{C15} ETO2 + ETO2 = 2 ALD2 + 2 HO2 :              3.10d-13*0.6d0*CONV1 ; {MCM}
+{C16} ETO2 + MO2 = ALD2 + CH3OH :                 3.10d-13*0.2d0*CONV1 ; {MCM}
+{C17} ETO2 + MO2 = C2H5OH + HCHO :                3.10d-13*0.2d0*CONV1 ; {MCM}
+{C18} ETO2 + MO2 = HCHO + ALD2 + 2 HO2 :          3.10d-13*0.6d0*CONV1 ; {MCM}
+{C19} EO2 + NO = ALD2 + HO2 + NO2 :               farr(2.54d-12,360)*0.33d0*CONV1 ; {MCM}
+{C20} EO2 + NO = 2 HCHO + HO2 + NO2 :             farr(2.54d-12,360)*0.66d0*CONV1 ; {MCM}
+{C21} EO2 + HO2 = ROOH + O2 :                     farr(2.0d-13,1250)*CONV1 ; {MCM}
+{C22} EO2 + EO2 = C2H5OH + ALD2 {+O2} :           2.00D-12*0.4d0*CONV1 ; {MCM}
+{C23} EO2 + EO2 = 2 HCHO + ALD2 + 2 HO2 :         2.00D-12*0.6d0*CONV1 ; {MCM}
+{C24} EO2 + MO2 = C2H5OH + HCHO  :                2.00D-12*0.2d0*CONV1 ; {MCM}
+{C25} EO2 + MO2 = ALD2 + CH3OH :                  2.00D-12*0.2d0*CONV1 ; {MCM}
+{C26} EO2 + MO2 = 2 HCHO + 0.5 ALD2 + 2 HO2 :     2.00D-12*0.6d0*CONV1 ; {MCM}
+{C27} MCO3 + NO {+O2} = MO2 + NO2 :               farr(8.1d-12,270)*CONV1 ; {Tyndall et al., 2001}
+{C28} MCO3 + HO2 = ROOH + O2 :                    farr(4.3d-13,1040)*CONV1 ; {Tyndall et al., 2001}
+{C29} MCO3 + MCO3 = 2 MO2 :                       farr(2.5d-12,500)*CONV1 ; {Tyndall et al., 2001}
+{C30} MCO3 + MO2  = MO2 + HO2 + HCHO :            farr(2.0d-12,500)*0.9d0*CONV1 ; {Tyndall et al., 2001}
+{C31} MCO3 + MO2 = ACTA + HCHO :                  farr(2.0d-12,500)*0.1d0*CONV1 ; {Tyndall et al., 2001}
+{C32} MCO3 + NO2 = PAN :                          atk_3(2.7d-28,-7.1d0,1.2d-11,-0.9d0,0.3d0)*CONV1 ; {JPL 07/06, note D12}
+{C33} PAN = MCO3 + NO2 :                          fbck(2.7d-28,-7.1d0,1.2d-11,-0.9d0,0.3d0,9.0d-29,14000.d0) ; {1st order; JPL 07/06}
+{C34} PAN + OH = HCHO + CO + NO2 :                farr(9.5d-13,-650)*CONV1 ; {MCM}
+
+      {--- carbonyls}
+{C35} HCHO + OH = HO2 + CO + H2O :                farr_sp(1.2d-14,1,1.0d0,287)*CONV1 ; {Atkinson & Arey, 2003}
+{C36} HCHO + NO3 = HNO3 + HO2 + CO :              5.6d-16*CONV1 ; {Atkinson & Arey, 2003}
+{C37} HCHO + hv = 2 HO2 + CO :                    ph_rat( 8) ; {band-model}
+{C38} HCHO + hv = CO + H2 :                       ph_rat( 9) ; {band-model}
+{C39} ALD2 + OH = MCO3 + H2O :                    farr(4.4d-12,365)*CONV1 ; {Atkinson & Arey, 2003}
+{C40} ALD2 + NO3 = HNO3 + MCO3 :                  farr(1.4d-12,-1860)*CONV1 ; {Atkinson & Arey, 2003}
+{C41} ALD2 + hv = MO2 + HO2 + CO :                ph_rat( 3)/9.0d0 ; {band-model - same as O3 scaled by factor of 9}
+
+      {--- alcohols, acids and peroxides}
+{C42} CH3OH + OH = HO2 + HCHO :                   farr_sp(6.0d-18,1,2.0d0,170)*CONV1 ; {Atkinson & Arey, 2003}
+{C43} C2H5OH + OH = EO2 :                         farr_sp(6.1d-18,1,2.0d0,530)*0.11d0*CONV1 ; {Atkinson & Arey, 2003}
+{C44} C2H5OH + OH = ALD2 + HO2 :                  farr_sp(6.1d-18,1,2.0d0,530)*0.89d0*CONV1 ; {Atkinson & Arey, 2003}
+{C45} ACO2 + OH = HO2 + H2O + CO2 :               4.5d-13*CONV1 ; {MCM}
+{C46} ACTA + OH = MO2 + H2O + CO2 :               8.0d-13*CONV1 ; {MCM}
+{C47} ROOH + OH = MO2 + H2O :                     farr(1.9d-12,190)*CONV1 ; {MCM}
+{C48} ROOH + OH = HCHO + OH :                     farr(1.0d-12,190)*CONV1 ; {MCM}
+{C49} ROOH + hv = HCHO + OH + HO2:                ph_rat(17) ; {band-model}
+
+     {--- alkyl nitrates: assumed only CH3O2/CH3NO3 and ETO2/C2H5NO3}
+{C50} MO2 + NO = RAN1 :                           farr(2.8d-12,300)*1.0d-3*CONV1 ; {Tyndall et al., 2001}
+{C12} ETO2 + NO = RAN1 :                          farr(2.6d-12,365)*9.0d-3*CONV1 ; {MCM}
+{C51} RAN1 + OH = HCHO + NO2 :                    farr(1.0d-14,1060)*CONV1 ; {MCM}
+{C52} RAN1 + hv = HCHO + HO2 + NO2 :              ph_rat(17)*2.5d-1 ;  {band-model - same as ROOH scaled}
+{c53} ALKE + O3 = O2 + CO :	                  8.7d-17*CONV1 ; {Atkinson1990}
+
+{--- S reactions}
+
+{S1} SO2 + O3P {+M} = SO3 :                       farr(4.0d-32,-1000)*FIX(indf_N2)/0.79d0*CONV1 ; {IUPAC 10/06}
+{S2} SO2 + OH {+M} = HOSO2 :                      atk_3(4.5d-31,-3.9d0,1.3d-12,-0.7d0,0.525d0)*CONV1 ; {IUPAC 10/06}
+{S3} SO2 + O3 = SO3 + O2 :                        farr(3.0d-12,-7000)*CONV1 ; {JPL 07/06}
+{S3} HOSO2 + O2 = HO2 + SO3:                      farr(1.3d-12,-330)*CONV1 ; {IUPAC 10/06}
+{S4} SO3 = H2SO4 {-2 H2O} :                       farr(3.9d-41,6830)*3.626d35*FIX(indf_H2O)*FIX(indf_H2O) ; {pseudo 1st order; IUPAC 10/06 - conversion mol m-3 --> molec cm-3, #228}
+{S5} SO3 + NH3 {+M} = NHS :                       2.0d-11*CONV1 ; {IUPAC 10/06 / discussion in #2729 - product NHS => H3NSO3}
+
+
+{--- DMS reactions}
+{--- DMS chemistry is still largely uncertain. The following mechanism includes the more established reaction pathways}
+{--- according to the review by Barnes et al., 2006. The existence of additional pathways that form SO2 from CH3S, }
+{--- CH3SO, CH3SO2 and CH3SO3 is unclear. The formation of PAN-like compounds from adducts formed by reaction of }
+{--- these species with O2 is also uncertain. Lucas and Prinn, 2002 also suggested additional pathways to MSA and}
+{--- H2SO4, based on field measurements, but this mechanism needs to be backed up by lab experiments.}
+
+     {--- initial DMS reactions}
+{D01} DMS + OH {+O2} = DMOO +H2O :                farr(1.12d-11,-250)*CONV1 ; {IUPAC 10/06 - abstraction channel}
+{D02} DMS + OH {+O2} = DMSO + HO2 :               DMS_add()*1.0d0*CONV1 ; {IUPAC 10/06 - addition channel}
+{--- D03 DMS + OH +O2 = DMSO2 + HO2 + NO2 - NO :   DMS_add()*0.5d0*CONV1 ; IUPAC 10/06 - addition channel where the adduct reacts with NO with a branching ratio of 0.5 with respect to reaction with O2 has been suggested by some experiments, needs confirmation; see discussion in Barnes et al., 2006}
+{D04} DMS + NO3 {+O2} = DMOO + HNO3 :             farr(1.9d-13,520)*CONV1 ; {IUPAC 10/06 - abstraction channel}
+{D05} DMS + Cl {+O2} = 0.45 DMOO + 0.45 HCl + 0.55 DMSO + 0.55 ClO :
+                                                  xhal*farr(3.4d-13,2081)*CONV1 ; {IUPAC 10/06 - abstraction+addition / yield of DMSO might be much higher, up to 80%}
+{D06} DMS + Br {+O2} = MO2 + RBr :                xhal*farr(9.0d-11,-2386)*CONV1 ; {Jefferson et al., 1994 - abstraction+addition: the abstraction is significant only at low P or high T}
+{D07} DMS + ClO = DMSO + Cl :                     xhal*farr(1.7d-15,340)*CONV1 ; {IUPAC 10/06}
+{D08} DMS + BrO = DMSO + Br :                     xhal*farr(1.5d-14,1000)*CONV1 ; {IUPAC 10/06}
+{D09} DMS + IO = DMSO + I :                       xiod*farr(3.3d-13,-925)*CONV1 ; {IUPAC 10/06}
+
+     {--- follow-on reactions for abstraction}
+     {--- CH3SO2 is NOT CH3SOO, the latter is a weakly bound CH3S - O2 adduct}
+     {--- most of the following reactions have branching ratios and products VERY uncertain}
+{D10} DMOO + NO = HCHO + CH3S + NO2 :             farr(4.9d-12,260)*CONV1 ; {IUPAC 10/06}
+{D11} DMOO + HO2 = SOR :                          5.0d-12*CONV1 ; {Barnes et al., 2006}
+{D12} DMOO + DMOO = 2 HCHO + 2 CH3S {+O2} :       1.0d-11*CONV1; {IUPAC 10/06}
+{D13} DMOO + MO2 = CH3S + 2 HCHO + HO2 :          3.10d-13*CONV1 ; {MCM - same as ETO2}
+{D14} DMOO + NO2 = SPAN :                         9.0d-12*CONV1 ; {IUPAC 10/06}
+{D15} CH3S + O3 = CH3SO {+O2} :                   farr(1.15d-12,432)*CONV1 ; {IUPAC 10/06 - additional SO2 channel may be dominant ???}
+{D16} CH3S + NO2 = CH3SO + NO :                   farr(3.0d-11,210)*CONV1 ; {IUPAC 10/06}
+{D17} CH3S + NO2 {+O2} = SPAN :                   2.2d-11*CONV1 ; {IUPAC 10/06 - via the CH3SOO adduct}
+{D18} CH3S + NO {+O2} = CH3SO + NO2 :             1.1d-11*CONV1 ; {IUPAC 10/06 - via the CH3SOO adduct}
+{D19} CH3S + NO = NHS :                           9.0d-12*CONV1 ; {Turnipseed et al., 1996 - product NHS => CH3SNO}
+{D20} CH3SO + O3 = CH3SO2 {+O2} :                 4.1d-13*CONV1 ; {IUPAC 10/06, Barnes et al., 2006 - one study reported SO2 + MO2}
+{D21} CH3SO + NO2 = CH3SO2 + NO :                 1.2d-11*0.75d0*CONV1 ; {IUPAC 10/06, Barnes et al., 2006 - ratio is 0.82 for #1098}
+{D22} CH3SO + NO2 = SO2 + MO2 + NO :              1.2d-11*0.25d0*CONV1 ; {IUPAC 10/06, Barnes et al., 2006 - most assume no SO2; #2194 say it's 0.2}
+     {--- possibly other CH3SO reactions (with O2?): rates and products TOO uncertain/unknown.}
+     {--- calc from #244; #2195 is too high (see #2194)}
+{D23} CH3SO2 {+M} = MO2 + SO2 :                   farr(1.36d14,-8656) ; {1st order; temperature dependence uncertain}
+{D24} CH3SO2 + O3 = CH3SO3 {+O2} :                5.0d-15*CONV1 ; {Barnes et al., 2006 - #244 assumes 3.d-13}
+{D25} CH3SO2 + NO2 = CH3SO3 + NO :                1.0d-15*CONV1 ; {IUPAC 10/06}
+{D26} CH3SO2 + NO2 {+O2} = SPAN :                 1.0d-12*CONV1 ; {Barnes et al., 2006 - via the CH3SO2OO adduct}
+{D27} CH3SO2 + NO {+O2} = CH3SO3 + NO :           1.0d-11*CONV1 ; {Barnes et al., 2006 - via the CH3SO2OO adduct}
+{D28} CH3SO3 + HO2 = CH3SO3H {+O2} :              5.0d-11*CONV1 ; {Barnes et al., 2006 - #752-CIT: 2.5d-13}
+{--- D29 CH3SO3 +H2O = MO2 + H2SO4 :               farr(1.36d14,-11071) ; unimolecular, #244 - dubious reaction}
+{D30} SOR + OH = DMOO + H2O :                     farr(2.9d-12,190)*CONV1 ; {MCM - same as ROOH}
+{D31} SOR + hv = CH3S + HCHO + OH :               ph_rat(17) ; {band-model}
+{D32} SPAN = CH3SO2 + NO2 {+O2} :                 farr(2.7d15,99) ; {1st order; Barnes et al., 2006}
+
+     {--- follow-on reactions for addition}
+     {--- CH3 yield is probably 1 then no SO2 would be formed; CH3 + O2 --> MO2}
+     {--- DMSO possibly reacting with NO3: DMSO2 yield between 10 and 94%, other products unknown}
+{D33} DMSO + OH = 0.95 CH3SO2H + 0.95 MO2 + 0.05 DMSO2 :
+                                                  9.0d-11*CONV1 ; {Kukui et al., 2003 - DMSO2 channel possibly inexistent}
+{D34} DMSO + Cl = 0.9 DMOO + 0.9 HCl + 0.1 CH3SO + 0.1 MO2 :
+                                                  xhal*farr(1.37d-11,709)*CONV1 ; {Barnes et al., 2006 & I. Barnes poster AGU08 - products estimated}
+{D35} DMSO + BrO = DMSO2 + Br :                   xhal*1.0d-14*CONV1 ;{Ballesteros et al., 2002}
+{D36} CH3SO2H + OH = 0.95 CH3SO2 + 0.05 CH3SO3H + 0.05 HO2 :
+                                                  9.0d-11*CONV1 ; {Kukui et al., 2003 - CH3SO3H channel possibly inexistent}
+{D37} CH3SO2H + NO3 = CH3SO2 + HNO3:              1.0d-13*CONV1 ; {Yin et al., 1990 - uncertain reaction}
+
+
+{--- Cl reactions}
+
+     {--- inorganic chlorine}
+     {--- ClOO assumed to quickly dissociate to Cl+O2}
+{Cl01} Cl + O3  = ClO + O2 :                      xhal*farr(2.8d-11,-250)*CONV1 ; {IUPAC 10/06}
+{Cl02} Cl + HO2 = HCl + O2 :                      xhal*4.4d-11*(1.0d0-farr(1.7d0,-620))*CONV1 ; {IUPAC 10/06}
+{Cl03} Cl + HO2 = ClO + OH :                      xhal*4.4d-11*farr(1.7d0,-620)*CONV1 ; {IUPAC 10/06}
+{Cl04} Cl + H2O2 = HCl + HO2 :                    xhal*farr(1.1d-11,-980)*CONV1 ; {IUPAC 10/06}
+{Cl05} Cl + H2 {+O2} = HCl + HO2 :                xhal*farr(3.9d-11,-2310)*CONV1 ; {IUPAC 10/06}
+{Cl06} Cl + HNO3 = HCl + NO3 :                    xhal*2.0d-16*CONV1 ; {IUPAC 10/06}
+{--- Cl07 Cl + NO2 = ClONO :                         xhal*atk_3(1.3d-30,-2.d0,1.0d-10,-1.d0,0.6d0)*CONV1 ; JPL 07/06 - ClONO photolysis ???}
+{Cl07} ClONO = DUMM1 :                             xhal*0. ; {let KPP see an existing ClONO specie}
+{Cl08} Cl + NO2 = ClNO2 :                         xhal*atk_3(1.8d-31,-2.d0,1.0d-10,-1.d0,0.6d0)*CONV1 ; {JPL 07/06}
+{Cl09} Cl + NO3 = ClO + NO2 :                     xhal*2.4d-11*CONV1 ; {IUPAC 10/06}
+{Cl10} Cl2 + OH = HOCl + Cl :                     xhal*farr(3.6d-12,-1200)*CONV1 ; {IUPAC 10/06}
+{Cl11} Cl2 + hv = 2 Cl :                          xhal*ph_rat(19) ; {band-model}
+{Cl12} ClO + O3P = Cl + O2 :                      xhal*farr(2.5d-11,110)*CONV1 ; {IUPAC 10/06}
+{Cl13} ClO + OH = Cl + HO2 :                      xhal*farr(7.3d-12,300)*0.94d0*CONV1 ; {IUPAC 10/06}
+{Cl14} ClO + OH = HCl + O2 :                      xhal*farr(7.3d-12,300)*0.06d0*CONV1 ; {IUPAC 10/06}
+{Cl15} ClO + HO2 = HOCl + O2 :                    xhal*farr(2.2d-12,340)*CONV1 ; {IUPAC 10/06}
+{Cl16} ClO + O3 = Cl + 2 O2 :                     xhal*1.5d-17*CONV1 ; {IUPAC 10/06}
+{Cl17} ClO + O3 = OClO + O2 :                     xhal*1.0d-18*CONV1 ; {IUPAC 10/06}
+{Cl18} ClO + NO = Cl + NO2 :                      xhal*farr(6.2d-12,295)*CONV1 ; {IUPAC 10/06}
+{Cl19} ClO + NO2 {+M} = ClNO3 :                   xhal*atk_3(1.6d-31,-3.4d0,7.0d-11,0.0d0,0.4d0)*CONV1 ; {IUPAC 10/06}
+{Cl20} ClO + NO3 = Cl + NO2 + O2 :                xhal*4.6d-13*0.74d0*CONV1 ; {IUPAC 10/06}
+{Cl21} ClO + NO3 = OClO + NO2 :                   xhal*4.6d-13*0.26d0*CONV1 ; {IUPAC 10/06}
+{Cl22} ClO + ClO = Cl2 + O2 :                     xhal*farr(1.0d-12,-1590)*CONV1 ; {IUPAC 10/06}
+{Cl23} ClO + ClO = 2 Cl + O2 :                    xhal*farr(3.0d-11,-2450)*CONV1 ; {IUPAC 10/06}
+{Cl24} ClO + ClO = Cl + OClO :                    xhal*farr(3.5d-13,-1370)*CONV1 ; {IUPAC 10/06}
+{Cl25} ClO + ClO {+M} = Cl2O2 :                   xhal*atk_3(1.6d-32,-4.5d0,2.0d-12,-2.4d0,0.6d0)*CONV1 ; {JPL 07/06}
+{--- Cl26 ClO + hv = O3 + ClO - O2 :                 xhal*ph_rat(??) ; in stratosphere unimportant as ClO loss - include anyways! use ClCHO cross-section to calculate photolysis rate?}
+{Cl27} ClO + OClO {+M} = Cl2O3 :                  xhal*atk_3(6.2d-32,-4.7d0,2.4d-11,0.0d0,0.6d0)*CONV1 ; {JPL 07/06}
+{Cl28} OClO + Cl = ClO + ClO :                    xhal*farr(3.2d-11,170)*CONV1 ; {IUPAC 10/06}
+{Cl29} OClO + O3P = ClO + O2 :                    xhal*farr(2.4d-12,-960)*CONV1 ; {IUPAC 10/06}
+{Cl30} OClO + O3P {+M} = ClO3 :                   xhal*atk_3f(1.8d-31,-1.0d0,2.8d-11,0.0d0,0.5d0)*CONV1 ; {IUPAC 10/06 - no losses for ClO3 !!!}
+{Cl31} OClO + OH = HOCl + O2 :                    xhal*farr(1.4d-12,600)*CONV1 ; {IUPAC 10/06}
+{Cl32} OClO + O3 = ClO3 + O2 :                    xhal*farr(2.1d-12,-4700)*CONV1 ; {IUPAC 10/06 - no losses for ClO3 !!!}
+{Cl33} OClO + NO = ClO + NO2 :                    xhal*farr(1.1d-13,350)*CONV1 ; {IUPAC 10/06}
+{Cl34} OClO + hv = O3 + ClO {-O2} :               xhal*ph_rat(35) ; {band-model}
+{Cl35} Cl2O2 + Cl = Cl2 + Cl {+O2} :              xhal*farr(7.6d-11,65)*CONV1 ; {IUPAC 10/06}
+{Cl36} Cl2O2 + O3 = ClO + Cl {+2 O2} :            xhal*1.0d-19*CONV1; {IUPAC 10/06}
+{Cl37} Cl2O2 {+M} = ClO + ClO :                   xhal*fbckJ(1.6d-32,-4.5d0,2.0d-12,-2.4d0,9.3d-28,8835.d0) ; {1st order; JPL 07/06}
+{Cl38} Cl2O2 + hv = Cl + Cl + O2 :                xhal*ph_rat(16) ; {band-model}
+{Cl39} Cl2O3 {+M} = ClO + OClO :                  xhal*fbckJ(6.2d-32,-4.7d0,2.4d-11,0.0d0,1.6d-27,7155.d0) ; {1st order; JPL 07/06}
+{Cl40} HCl + OH = H2O + Cl :                      xhal*farr(1.7d-12,-230)*CONV1 ; {IUPAC 10/06}
+{Cl41} HOCl + O3P = ClO + OH :                    xhal*1.7d-13*CONV1 ; {IUPAC 10/06}
+{Cl42} HOCl + OH = ClO + H2O :                    xhal*farr(3.0d-12,-500)*CONV1 ; {JPL 07/06 - temperature dependence VERY uncertain}
+{Cl43} HOCl + hv = Cl + OH :                      xhal*ph_rat(13) ; {band-model}
+{Cl44} ClNO2 + OH = HOCl + NO2 :                  xhal*farr(2.4d-12,-1250)*CONV1 ; {IUPAC 10/06}
+{Cl45} ClNO2 + hv = Cl + NO2 :                    xhal*ph_rat(18) ; {band-model}
+{Cl46} ClNO3 + Cl = Cl2 + NO3 :                   xhal*farr(6.2d-12,145)*CONV1 ; {IUPAC 10/06}
+{Cl47} ClNO3 + O3P = ClO + NO3 :                  xhal*farr(4.5d-12,-900)*CONV1 ; {IUPAC 10/06}
+{Cl48} ClNO3 + OH = 0.5 ClO + 0.5 HNO3 + 0.5 HOCl + 0.5 NO3 :
+                                                  xhal*farr(1.2d-12,-330)*CONV1 ; {IUPAC 10/06 - products estimated with equal yield for 2 exothermic channels / third channel with HO2 and ClONO ???}
+{Cl49} ClNO3 {+M} = ClO + NO2 :                   xhal*fcn(CONV1) ; {Anderson and Fahey, 1990 - CHECK FUNCTION}
+{Cl50} ClNO3 + hv = Cl + NO3 :                    xhal*ph_rat(14) ; {band-model}
+
+     {--- organic chlorine}
+{Cl51} Cl + CH4 {+O2} = HCl + MO2 :               xhal*farr(6.6d-12,-1240)*CONV1 ; {IUPAC 10/06}
+{Cl52} Cl + C2H6 {+O2} = HCl + ETO2 :             xhal*farr(8.3d-11,-100)*CONV1 ; {IUPAC 10/06}
+{Cl53} Cl + ETHE {+O2} =  ClRO2 :                 xhal*atk_3(1.85d-29,-3.3d0,6.0d-10,0.0d0,0.4d0)*CONV1 ; {IUPAC 10/06}
+{Cl54} Cl + HCHO = HCl + HO2 + CO :               xhal*farr(8.1d-11,-34)*CONV1 ; {IUPAC 10/06}
+{Cl55} Cl + ALD2 = HCl + MCO3 :                   xhal*8.0d-11*CONV1 ; {IUPAC 10/06}
+{Cl56} Cl + CH3OH = HCl + HO2 + HCHO :            xhal*5.5d-11*CONV1 ; {IUPAC 10/06}
+{Cl57} Cl + C2H5OH = HCl + 0.92 ALD2 + 0.92 HO2 + 0.08 EO2 :
+                                                  xhal*farr(8.6d-11,45)*CONV1 ; {IUPAC 10/06}
+{Cl58} Cl + ROOH = HCl + HCHO + OH :              xhal*5.9d-11*CONV1 ; {IUPAC 10/06}
+{Cl59} Cl + ACO2 = HCl + HO2 :                    xhal*1.9d-13*CONV1 ; {IUPAC 10/06}
+{Cl60} Cl + ACTA = HCl + MO2 :                    xhal*2.65d-14*CONV1 ; {IUPAC 10/06}
+{Cl61} Cl + PAN = HCl + HCHO + CO + NO2 :         xhal*2.0d-14*CONV1 ; {IUPAC 10/06 - reaction VERY uncertain}
+{Cl62} Cl + MO2 = 0.5 ClO + 0.5 HCHO + 0.5 HO2 + 0.5 HCl + 0.5 CO + 0.5 H2O :
+                                                  xhal*1.6d-10*CONV1 ; {JPL 07/06 - product yields VERY uncertain}
+{Cl63} ClO + MO2 = Cl + HCHO + HO2 :              xhal*farr(3.3d-12,-115)*CONV1 ; {JPL 07/06 - products VERY uncertain}
+{Cl64} RCl + OH = ClRO2 + H2O :                   xhal*farr_sp(7.78d-18,1,2.0d0,-152)*CONV1 ; {MCM - chloroethane}
+{Cl65} ClRO2 + NO = HCl + MCO3 + NO2 :            xhal*farr(4.06d-12,360)*CONV1 ; {rate coeff. for ClCH2CH2OO: Toyota et al., 2004}
+{Cl66} ClRO2 + HO2 = XOR + H2O :                  xhal*7.50d-12*CONV1 ; {rate coeff. for ClCH2CH2OO: Toyota et al., 2004}
+{Cl67} ClRO2 + ClRO2 = 2 HCl + 2 MCO3 :           xhal*farr(1.10d-13,1020)*CONV1 ; {rate coeff. for ClCH2CH2OO: Toyota et al., 2004}
+{Cl68} ClRO2 + MO2 = HCl + MCO3 + HO2 + HCHO :    xhal*1.76d-12*CONV1 ; {rate coeff. for ClCH2CH2OO: Toyota et al., 2004}
+
+
+{--- Br reactions}
+
+     {--- inorganic bromine}
+     {--- BrOO assumed to quickly dissociate to Br+O2}
+{Br01} Br + O3  = BrO + O2 :                      xhal*farr(1.7d-11,-800)*CONV1 ; {IUPAC 10/06}
+{Br02} Br + HO2 = HBr + O2 :                      xhal*farr(7.7d-12,-450)*CONV1 ; {IUPAC 10/06}
+{Br03} Br + H2O2 = 0.5 HBr + 0.5 HO2 + 0.5 HOBr + 0.5 OH :
+                                                  xhal*5.0d-16*CONV1 ; {IUPAC 10/06 - estimated branching ratio}
+{Br04} Br + NO2 {+M} = BrNO2 :                    xhal*atk_3(4.2d-31,-2.4d0,2.7d-11,0.d0,0.55d0)*CONV1 ; {IUPAC 10/06}
+{Br05} Br + NO3 = BrO + NO2 :                     xhal*1.6d-11*CONV1 ; {IUPAC 10/06}
+{Br06} Br2 + OH = HOBr + Br :                     xhal*farr(1.9d-11,240)*CONV1 ; {IUPAC 10/06}
+{Br07} Br2 + O3P = BrO + Br :                     xhal*farr(5.12d-13,989)*CONV1 ; {Harwood et al., 1998}
+{Br08} Br2 + hv = 2 Br :                          xhal*ph_rat(22) ; {band-model}
+{--- Br09 BrO + Br +M = Br2O :                     xhal*9.1d-12*CONV1 ; Harwood et al., 1998 - Br2O photolysis ???}
+{Br09} Br2O = DUMM1 :                              xhal*0. ; {let KPP see an existing Br2O specie}
+{Br10} BrO + O3P = Br + O2 :                      xhal*farr(1.9d-11,230)*CONV1 ; {IUPAC 10/06}
+{Br11} BrO + OH = Br + HO2 :                      xhal*farr(1.8d-11,250)*CONV1 ; {IUPAC 10/06}
+{Br12} BrO + HO2 = HOBr + O2 :                    xhal*farr(4.5d-12,500)*CONV1 ; {IUPAC 10/06}
+{Br13} BrO + NO = Br + NO2 :                      xhal*farr(8.7d-12,260)*CONV1 ; {IUPAC 10/06}
+{Br14} BrO + NO2 {+M} = BrNO3 :                   xhal*atk_3(5.2d-31,-3.2d0,6.9d-12,-2.9d0,0.6d0)*CONV1; {JPL 07/06}
+{Br15} BrO + NO3 = Br + NO2 {+O2} :               xhal*1.0d-12*CONV1 ; {IUPAC 10/06}
+{Br16} BrO + O3 = Br + 2 O2 :                     xhal*farr(1.0d-12,-3200)*CONV1 ; {JPL 07/06 - temperature dependence VERY uncertain / OBrO channel ???}
+{Br17} BrO + BrO = 2 Br + O2 :                    xhal*2.7d-12*CONV1 ; {IUPAC 10/06}
+{Br18} BrO + BrO = Br2 + O2 :                     xhal*farr(2.9d-14,840)*CONV1 ; {IUPAC 10/06}
+{Br19} BrO + hv = Br + O3 {-O2} :                 xhal*ph_rat(24) ; {band-model}
+{--- Br20 Br2O + Br = Br2 + BrO :                    xhal*2.0d-10*CONV1 ; Burkholder, 1998}
+{Br21} HBr + OH = Br + H2O :                      xhal*farr(6.7d-12,155)*CONV1 ; {IUPAC 10/06}
+{Br22} HBr + NO3 = Br + HNO3 :                    xhal*1.0d-16*CONV1 ; {IUPAC 10/06}
+{Br23} HOBr + O3P = OH + BrO :                    xhal*farr(1.2d-10,-430)*CONV1 ; {IUPAC 10/06}
+{Br24} HOBr + hv = Br + OH :                      xhal*ph_rat(20) ; {band-model}
+{Br25} BrNO2 + hv = Br + NO2 :                    xhal*ph_rat(21) ; {band-model}
+{Br26} BrNO3 + O3P = Br + NO3 :                   xhal*farr(1.9d-11,215)*CONV1 ; {IUPAC 10/06}
+{Br27} BrNO3 + Br = Br2 + NO3 :                   xhal*farr(2.08d-11,320)*CONV1; {cited in Orlando and Tyndall, 1996}
+{Br28} BrNO3 {+M} = BrO + NO2 :                   xhal*fbck2(5.2d-31,-3.2d0,6.9d-12,-2.9d0,0.6d0,CONV1); {JPL 07/06 & Orlando and Tyndall, 1996}
+{Br29} BrNO3 + hv = Br + NO3 :                    xhal*ph_rat(15) ; {band-model}
+
+     {--- organic bromine}
+{Br30} Br + ETHE {+O2} = HBr + BrRO2 :            xhal*1.3d-13*CONV1 ; {IUPAC 10/06}
+{Br31} Br + HCHO = HBr + CO + HO2 :               xhal*farr(7.7d-12,-580)*CONV1 ; {IUPAC 10/06}
+{Br32} Br + ALD2 = HBr + MCO3 :                   xhal*farr(1.8d-11,-460)*CONV1 ; {IUPAC 10/06}
+{Br33} Br + ROOH = MO2 + HBr :                    xhal*farr(2.66d-12,-1610)*CONV1 ; {Kondo and Benson, 1984}
+{Br34} Br + MO2 = HBr + CHO2 :                    xhal*4.4d-13*CONV1 ; {Francisco and Crowley, 2006 - reaction VERY uncertain}
+{Br35} BrO + HCHO {+O2} = HOBr + CO + HO2 :       xhal*1.5d-14*CONV1 ; {Hansen et al., 1999}
+{Br36} BrO + MO2 = Br + HCHO + HO2 {+O2} :        xhal*farr(4.1d-13,800)*0.25d0*CONV1; {IUPAC 10/06}
+{Br37} BrO + MO2 = HOBr + HCHO :                  xhal*farr(4.1d-13,800)*0.75d0*CONV1 ; {IUPAC 10/06}
+{Br38} RBr + OH = BrRO2 + H2O :                   xhal*farr_sp(1.03d-17,1,2.0d0,-422)*CONV1 ; {MCM - dibromoethane}
+{Br39} BrRO2 + NO = Br + ALD2 + NO2 :             xhal*farr(4.06d-12,360)*CONV1 ;  {rate coeff. for BrCH2CH2OO: Toyota et al., 2004}
+{Br40} BrRO2 + HO2 = XOR + H2O :                  xhal*7.50d-12*CONV1 ; {rate coeff. for BrCH2CH2OO: Toyota et al., 2004}
+{Br41} BrRO2 + BrRO2 = 2 Br + 2 ALD2:             xhal*farr(6.15d-14,1247)*CONV1 ; {rate coeff. for BrCH2CH2OO: Toyota et al., 2004}
+{Br42} BrRO2 + MO2 =  Br + ALD2 + HO2 + HCHO :    xhal*2.45d-12*CONV1 ; {rate coeff. for BrCH2CH2OO: Toyota et al., 2004}
+{Br43} Br + ALKE = O2 + HBr :			  xhal*2.21d-11*CONV1 ; {Bierbach et al. 1996, simplyfied product}
+
+{--- I reactions}
+
+     {--- inorganic iodine}
+{I01} I + O3 = IO + O2 :                          xiod*farr(2.1d-11,-830)*CONV1 ; {IUPAC 10/06}
+{I02} I + HO2 = HI + O2 :                         xiod*farr(1.5d-11,-1090)*CONV1 ; {IUPAC 10/06}
+{I03} I + NO {+M} = INO :                         xiod*atk_3(1.8d-32,-1.0d0,1.7d-11,0.0d0,0.6d0)*CONV1 ; {IUPAC 10/06}
+{I04} I + NO2 {+M} = INO2 :                       xiod*atk_3(3.0d-31,-1.0d0,6.6d-11,0.0d0,0.63d0)*CONV1 ; {IUPAC 10/06}
+{--- I05 I + NO3 = IO + NO2 :                        xiod*1.0d-10*CONV1 ; IUPAC 10/06 - NO recommendation}
+{I06} I + I {+M} = I2 :                           xiod*(1.0d-32*FIX(indf_N2)+1.9d-32*FIX(indf_O2))*CONV1 ; {Jenkin et al, 1990 - dubious reaction}
+{I07} I + IO = I2O :                              xiod*1.7d-10*CONV1 ; {Bloss et al, 2001; Crowley pers. comm.}
+{I08} I + I2O = IO + I2 :                         xiod*2.1d-10*CONV1 ; {Bloss et al, 2001; Crowley pers. comm.}
+{I09} I2 + O3P = IO + I :                         xiod*1.25d-10*CONV1 ; {IUPAC 10/06}
+{I10} I2 + OH = HOI + I :                         xiod*2.1d-10*CONV1 ; {IUPAC 10/06}
+{I11} I2 + NO3 = I + INO3 :                       xiod*1.5d-12*CONV1 ; {IUPAC 10/06}
+{I12} I2 + hv  = 2 I :                            xiod*ph_rat(27) ; {band-model}
+{I13} HI + OH  = I + H2O :                        xiod*farr(1.6d-11,440)*CONV1 ; {IUPAC 10/06}
+{--- I14 HI + NO3 = I + HNO3 :                       xiod*farr(1.3d-12,-1830)*CONV1 ; IUPAC 10/06 - NO recommendation}
+{I15} HOI + hv = I + OH :                         xiod*ph_rat( 1)*1.124d0 ; {band-model}
+{I16} HOI + OH = IO + H2O :                       xiod*5.0d-12*CONV1 ; {Riffault et al., 2005 - products VERY uncertain}
+{I17} IO + O3P = I + O2 :                         xiod*1.4d-10*CONV1 ; {IUPAC 10/06}
+{I18} IO + HO2 = HOI + O2 :                       xiod*farr(1.4d-11,540)*CONV1 ; {IUPAC 10/06}
+{I19} IO + NO  = I + NO2 :                        xiod*farr(7.15d-12,300)*CONV1 ; {IUPAC 10/06}
+{I20} IO + NO2 = INO3  {+M} :                     xiod*atk_3(7.7d-31,-5.0d0,1.6d-11,0.0d0,0.4d0)*CONV1; {IUPAC 10/06}
+{--- I21 IO + NO3 = OIO + NO2 :                      xiod*9.0d-12*CONV1 ; Dillon et al., 2008}
+{--- I22 IO + O3 = 0.83 I + 0.17 OIO +1.83 O2 :    xiod*1.2d-15*CONV1 ; IUPAC 10/06}
+{I23} IO + hv  = I + O3 {-O2} :                   xiod*ph_rat( 1)*1.857d1 ; {band-model}
+{I24} IO + OIO {+M} = I2O3 :                      xiod*1.0d-10*CONV1 ; {Gomez-Martin et al., 2007}
+
+     {--- alternative for IO self-reaction}
+     {--- there might be an I2 channel (5%) but no positive I2 identification in lab studies}
+     {--- I25 IO + IO = 0.05 I2 + 0.5 I + 0.38 OIO + 0.51 I2O2 : xiod*farr(5.4d-11,180)*CONV1 ; IUPAC 10/06, Bloss et al., 2001}
+{I25} IO + IO = 0.4 I + 0.4 OIO + 0.6 I2O2 :      xiod*farr(5.4d-11,180)*CONV1 ; {Bloss et al., 2001; J. Crowley/B. Bloss pers. comm.}
+
+     {--- OIO and I2O2 reactions}
+{I26} OIO + OH = HIO3 :                           xiod*farr(2.2d-10,243)*CONV1 ; {Plane et al., 2006}
+{I27} OIO + NO = NO2 + IO :                       xiod*farr(1.1d-12,542)*CONV1 ; {IUPAC 10/06}
+{I28} OIO + hv = I + O2 :                         xiod*(ph_rat( 2)+ph_rat(10))*2.105d0 ; {quantum yield = 1, Gomez-Martin et al., 2009}
+     {--- OIO+OIO=I2O4 is preferred alternative}
+     {--- I29 OIO + OIO = I2O2 :                          xiod*5.0d-11*CONV1 ; RvG, @6}
+{I29} OIO + OIO = I2O4 :                          xiod*1.5d-10*CONV1 ; {Gomez-Martin et al., 2007}
+{I30a} I2O2 {+M} = IO + IO :                      xiod*4.0d-2 ; {1st order; Kaltsoyannis and Plane, 2008}
+{I30b} I2O2 {+M} = OIO + I :                      xiod*1.0d+1 ; {1st order; Kaltsoyannis and Plane, 2008}
+{I31} I2O2 + hv = IO + IO :                      xiod*ph_rat(36) ; {band-model - alternative products: 2I + O2}
+
+     {--- reactions involving higher iodine oxides (IxOy)}
+     {--- these reactions lead to the formation of I2O4, I2O5 and higher condensable iodine oxides}
+     {--- the kinetic information is very sparse and unreliable}
+{I32} I2O2 + O3 = I2O3 + O2 :                   xiod*1.0d-12*CONV1 ; {Saunders and Plane, 2005}
+{--- I3x I2O3 + O3 = I2O4 + O2 :                  xiod*1.0d-12*CONV1 ; Saunders and Plane, 2005 - rate coefficient may be smaller as per  Kaltsoyannis and Plane, 2008}
+{--- I3x I2O3 + OIO = ??? :                       xiod*1.5d-10*CONV1 ; assumed same as OIO+OIO}
+{--- I3x I2O3 + I2O4 = ??? :                      xiod*???*CONV1 ; unstudied reaction(s)}
+{--- I3x I2O4 + O3 = I2O5 + O2 :                  xiod*1.0d-12*CONV1 ; Saunders and Plane, 2005}
+{--- I3x I2O4 + OIO = ??? :                       xiod*1.5d-10*CONV1 ; assumed same as OIO+OIO}
+{--- I3x I2O4 + I2O4 = ??? :                      xiod*???*CONV1 ; unstudied reaction(s)}
+{--- I3x I2O4 +M = 2 OIO :                        xiod*3.8d-2 ; 1st order; Kaltsoyannis and Plane, 2008}
+
+    {--- reactions involving INOy}
+{I38} INO + INO = I2 + 2 NO :                     xiod*farr(8.4d-11,-2620)*CONV1 ; {IUPAC 10/06}
+{I39} INO {+M} = I + NO :                         xiod*fbck2b(1.8d-32,-1.0d0,1.7d-11,0.0d0,1.d-6,9.2d3,CONV1) ; {1st order; van den Bergh and Troe, 1976}
+{I40} INO2 + INO2 = I2 + 2 NO2 :                  xiod*farr(4.7d-13,-1670)*CONV1 ; {IUPAC 10/06}
+{I41} INO2 {+M} = I + NO2 :                       xiod*fbck2b(3.0d-31,-1.0d0,6.6d-11,0.0d0,1.d-6,9.6d3,CONV1) ; {1st order; van den Bergh and Troe, 1976}
+{I42} INO2 + hv = I + NO2 :                       xiod*ph_rat(37) ; {band-model}
+{I43} INO3 {+M} = IO + NO2 :                      xiod*farr(2.1d15,-13670) ; {1st order; Kaltsoyannis and Plane, 2008}
+{I44} INO3 + hv = I + NO3 :                       xiod*ph_rat(30) ; {band-model}
+{I45} INO3 + I = I2 + NO3 :                       xiod*farr(9.1d-11,-146)*CONV1 ; {Kaltsoyannis and Plane, 2008}
+
+     {--- organic iodine}
+{I46} CH2I2 + hv {+O2} = I + IO + HCHO :          xiod*ph_rat(34) ; {band-model; Enami et al. (2004) - products VERY uncertain}
+{--- I46 CH2I2 + hv = 2 I + 2 HO2 + CO :             xiod*ph_rat(34) ; band-model - alternative product distribution}
+{I47} CH3I + OH = 0.7 H2O + 0.7 IRO2 + 0.3 CH3OH + 0.3 I : xiod*farr(4.3d-12,-1120)*CONV1 ; {IUPAC 10/06}
+{I48} CH3I + hv = I + MO2 :                       xiod*ph_rat(31) ; {band-model}
+{I49} C2H5I + OH {+O2} = 0.5 H2O + 0.5 IRO2 + 0.5 C2H5OH + 0.5 I : xiod*7.7d-13*CONV1 ; {Cotter et al., 2003}
+{I50} C2H5I + hv = I + ETO2 :                     xiod*ph_rat(46) ; {analog. to CH3I: Carpenter et al., 1999}
+{I51} C3H7I + OH {+O2} = 0.7 H2O + 0.7 IRO2 + 0.3 C2H5OH + 0.3 I : xiod*2.05d-12*CONV1 ; {average of 2 isomers; Cotter et al., 2003}
+{I52} C3H7I + hv = I + ETO2 :                     xiod*ph_rat(32) ; {band-model}
+
+     {--- alternatives for the CH3O2 + IO reaction}
+{--- I53 IO + MO2 +O2 = HCHO + HO2 + 0.5 OIO + 0.5 I + 0.5 O2 : xiod*2.0d-12*CONV1 ; {Dillon et al., 2006 - products equal yields for two channels}
+{I53} IO + MO2 {+O2} = HCHO + HO2 + I :           xiod*2.0d-12*CONV1 ; {Dillon et al., 2006 - products estimated}
+
+     {--- lumped iodinated peroxy radicals reactions}
+{I54} IRO2 + NO = I + HCHO + NO2 :                xiod*farr(4.06d-12,360)*CONV1 ; {rate coeff. for BrCH2CH2OO: Toyota et al., 2004}
+{I55} IRO2 + HO2 = XOR + H2O :                    xiod*7.50d-12*CONV1 ; {rate coeff. for BrCH2CH2OO: Toyota et al., 2004}
+{I56} IRO2 + IRO2 = 2 I + 2 HCHO:                 xiod*farr(6.15d-14,1247)*CONV1 ; {rate coeff. for BrCH2CH2OO: Toyota et al., 2004}
+{I57} IRO2 + MO2 =  I + HCHO + HO2 + HCHO :       xiod*2.45d-12*CONV1 ; {rate coeff. for BrCH2CH2OO: Toyota et al., 2004}
+
+
+{--- INTERHALOGEN reactions}
+
+     {--- inorganic interhalogens}
+     {--- ClOO and BrOO assumed to quickly dissociate to Br+O2 and Cl+O2}
+{Hx01} Cl + BrCl = Br + Cl2 :                     xhal*1.45d-11*CONV1 ; {Clyne and Cruse, 1972}
+{Hx02} Cl + Br2  = BrCl + Br :                    xhal*farr(2.3d-10,-135)*CONV1 ; {Bedjanian et al., 1998}
+{Hx03} Cl + I2 = I + ICl :                        xiod*2.7d-10*CONV1 ; {Bedjanian et al., 1996}
+{Hx04} Cl + IO = I + ClO :                        xiod*4.4d-11*CONV1 ; {Bedjanian et al., 1996}
+{Hx05} Br + OClO = BrO + ClO:                     xhal*farr(2.7d-11,-1300)*CONV1 ; {IUPAC 10/06}
+{Hx06} Br + Cl2 = BrCl + Cl :                     xhal*1.1d-15*CONV1 ; {Dolson and Leone, 1987}
+{Hx07} Br + Cl2O2 = BrCl + Cl + O2 :              xhal*farr(5.9d-12,170)*CONV1 ; {IUPAC 10/06}
+{Hx08} Br + BrCl = Br2 + Cl :                     xhal*3.32d-15*CONV1 ; {Baulch et al., 1981}
+{Hx09} Br + I2 = I + IBr :                        xiod*1.2d-10*CONV1; {Bedjanian et al., 1997}
+{Hx10} Br + IO = I + BrO :                        xiod*2.5d-11*CONV1; {average Bedjanian et al., 1997 and 1998}
+{Hx11} Br + IBr = I + Br2 :                       xiod*2.7d-11*CONV1 ; {Bedjanian et al., 1998}
+{Hx12} I + Br2 = Br + IBr :                       xiod*1.65d-13*CONV1 ; {Bedjanian et al., 1998}
+{Hx13} I + BrO  = IO + Br :                       xiod*1.2d-11*CONV1 ; {JPL 07/06}
+{Hx14} I2 + BrO = IO + IBr :                      xiod*2.0d-14*CONV1 ; {Bedjanian et al., 1998 - products estimated}
+{Hx15} BrO + ClO = Br + OClO :                    xhal*farr(1.6d-12,430)*CONV1 ; {IUPAC 10/06}
+{Hx16} BrO + ClO = Br + Cl + O2 :                 xhal*farr(2.9d-12,220)*CONV1 ; {IUPAC 10/06}
+{Hx17} BrO + ClO = BrCl + O2 :                    xhal*farr(5.8d-13,170)*CONV1 ; {IUPAC 10/06}
+{Hx18} BrO + IBr = Br2 + IO :                     xiod*2.5d-14*CONV1 ; {Bedjanian et al., 1998 - products estimated}
+{Hx19} IO + ClO = ICl + O2 :                      xiod*farr(4.7d-12,280)*0.20d0*CONV1 ; {IUPAC 10/06}
+{Hx20} IO + ClO = I + Cl + O2 :                   xiod*farr(4.7d-12,280)*0.25d0*CONV1 ; {IUPAC 10/06}
+{Hx21} IO + ClO = I + OClO :                      xiod*farr(4.7d-12,280)*0.55d0*CONV1 ; {IUPAC 10/06}
+{Hx22} IO + BrO = Br + I + O2 :                   xiod*farr(1.5d-11,510)*0.20d0*CONV1 ; {IUPAC 10/06}
+{Hx23} IO + BrO = Br + OIO :                      xiod*farr(1.5d-11,510)*0.80d0*CONV1 ; {IUPAC 10/06}
+{Hx24} IBr + OH = 0.85 HOI + 0.85 Br + 0.15 HOBr + 0.15 I : xiod*1.4d-10*CONV1 ; {Riffault et al., 2005 - branching ratios adjusted}
+{Hx25} IBr + hv = I + Br:                         xiod*ph_rat(29) ; {band-model}
+{Hx26} ICl + Br = BrCl + I :                      xiod*3.01d-14*CONV1 ; {Clyne and Cruse, 1972}
+{Hx27} ICl + Cl = Cl2 + I :                       xiod*1.20d-11*CONV1 ; {Chesnokov, 1991}
+{Hx28} ICl + OH = HOCl + I :                      xiod*2.01d-11*CONV1 ; {Loewenstein and Anderson, 1985}
+{Hx29} ICl + hv = I + Cl:                         xiod*ph_rat(28) ; {band-model}
+{Hx30} BrCl + O3P = BrO + Cl :                    xhal*2.09d-11*CONV1 ; {Clyne et al., 1976}
+{Hx31} BrCl + OH = HOBr + Cl :                    xhal*1.5d-12*CONV1 ; {Kukui et al., 1996}
+{Hx32} BrCl + hv = Br + Cl:                       xhal*ph_rat(23) ; {band-model}
+
+     {--- organic interhalogens}
+{Hx33} Cl + CH3I {+O2} = 0.7 HCl + 0.7 IRO2 + 0.3 RCl + 0.3 I :
+                                                  xiod*farr(2.9d-11,-1000)*CONV1 ; {JPL 07/06}
+{Hx34} Cl + C2H5I {+O2} = 0.5 HCl + 0.5 IRO2 + 0.5 RCl + 0.5 I :
+                                                  xiod*1.6d-11*CONV1 ; {Cotter et al., 2001}
+{Hx35} Cl + C3H7I {+O2} = 0.7 HCl + 0.7 IRO2 + 0.3 RCl + 0.3 I :
+                                                  xiod*5.67d-11*CONV1 ; {average of 2 isomers; Cotter et al., 2001}
+{Hx36} CH2BrI + hv = I + Br + 2 HO2 + CO :        xiod*ph_rat(44) ; {1/17 ph_rat of CH2I2: Moessinger et al., 1998(@277)}
+{--- Hx37 CHBr2I + hv = 2 Br + I + HO2 + CO:            xiod*ph_rat(45) ; }
+{Hx38} CH2ClI + hv = I + Cl + 2 HO2 + CO :        xiod*ph_rat(33) ; {band-model}
+
+     {--- reactions on saharan dust}
+{--- SD01 O3   = DUMM1 : het_uptake (6.6d-6,4.8d+1) ; saharan dust at 35 ppb O3}
+{--- SD02 H2O2 = DUMM1 : het_uptake (9.42d-4,3.4d+1) ; saharan dust at 70%}
+{--- SD03 NO2  = DUMM1 : het_uptake (8.9d-9,4.6d+1) ; saharan sand at 25%}
+{--- SD04 NO3  = DUMM1 : het_uptake (1.2d-2,6.2d+1) ; saharan dust at 0-70%}
+{--- SD05 HNO3 = DUMM1 : het_uptake (1.0d-1,6.3d+1) ; saharan dust - estimate}
+{--- SD06 N2O5 = DUMM1 : het_uptake (1.3d-2,1.08d+2) ; saharan dust}
+{--- SD07 SO2  = DUMM1 : het_uptake (6.4d-5,6.41d+1) ; saharan sand at 27%}
+{--- SD08 ACO2 = DUMM1 : het_uptake (2.3d-5,4.6d+1) ; montmorillonite at 45%}

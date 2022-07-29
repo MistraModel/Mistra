@@ -74,7 +74,7 @@
       double precision bg ! reaction rates (bg(1,:,:): instantaneous, bg(2,:,:): cumulative)
       integer il          ! indexes of the selected levels for reaction rates output
 
-      common /kpp_dryg/ xkmtd(n,2,NSPEC),henry(n,NSPEC),xeq(n,NSPEC)
+      common /kpp_dryg/ xkmtd(NSPEC,2,n),henry(NSPEC,n),xeq(NSPEC,n)
       double precision xkmtd, henry, xeq
 !     common /kpp_dryp/ rcd(n,2),cwd(n,2)
 
@@ -88,19 +88,10 @@
       ph_rat=xph_rat ! jjb
 
 c the following data is needed only for heterogeneous reactions on dry aerosol
-! jjb matrix below
-!!$      ycwd(1)=cwd(k,1)
-!!$      ycwd(2)=cwd(k,2)
-!!$      do l=1,nspec
-!!$         yxkmtd(1,l)=xkmtd(k,1,l)
-!!$         yxkmtd(2,l)=xkmtd(k,2,l)
-!!$         yhenry(l)  =henry(k,l)
-!!$         yxeq(l)    =xeq(k,l)
-!!$      enddo
-      ycwd(:)=cwd(:2,k) ! jjb matrix
-      yxkmtd(:,:)=xkmtd(k,:,:) ! jjb matrix
-      yhenry(:)  =henry(k,:) ! jjb matrix
-      yxeq(:)    =xeq(k,:) ! jjb matrix
+      ycwd(:)=cwd(:2,k)
+      yxkmtd(:,:)=xkmtd(:,:,k)
+      yhenry(:)  =henry(:,k)
+      yxeq(:)    =xeq(:,k)
 
 c concentrations are handed over HERE (and not in seperate SRs) because the
 c parameter (ind_XXX) are different for each KPP block

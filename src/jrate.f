@@ -109,13 +109,14 @@
 !       - update of subroutine calls after arguments removal
 !       - explicit definition of SW* switches (were assumed as real, when implicit DP was used)
 !       - reorganisation of SRs band, lookup and photo_cal:
-!            the former remover, the last 2 directly called by this SR
+!            the first removed, the last 2 directly called by this SR
 !            see more comments below
 !       - implicit none
 !
 
       USE global_params, ONLY :
      &     n_m=>n,
+     &     nphrxn,
      &     nrlay
 
       IMPLICIT NONE
@@ -133,11 +134,11 @@ c top layer in  MISTRA is already "infinity" in Jochens code "infinity" is layer
      $     PRESS(0:MAXLAY),  !pressure at model levels [hPa]
      $     RELO3(0:MAXLAY),  !O3 volumn mixing ratio [ppm]
      $     ALBEDO(MAXWAV),   !shortwave albedo
-     $     U0,              !cosine of solar zenith angle
-     $     SCALEO3              !total vert. ozone column for scaling
+     $     U0,               !cosine of solar zenith angle
+     $     SCALEO3           !total vert. ozone column for scaling
 
-      INTEGER
-     $     ITYPE(MAXLAY)         !aerosol type
+!      INTEGER
+!     $     ITYPE(MAXLAY)         !aerosol type
 
       DOUBLE PRECISION
      $     V2(0:MAXLAY),    !O2 column density [part./cm^2]
@@ -148,7 +149,7 @@ c top layer in  MISTRA is already "infinity" in Jochens code "infinity" is layer
      $     DV3(MAXLAY),     !diff. O3 column density [part./cm^2]
      $     V3S(0:MAXLAY),   !slant O3 column density [part./cm^2]
      $     DV3S(MAXLAY),    !diff. slant O2 column density [part./cm^2]
-     $     DENS(0:MAXLAY)   !densety of air molecules [part./cm^3]
+     $     DENS(0:MAXLAY)   !density of air molecules [part./cm^3]
 
 c     actinic fluxes
 
@@ -230,7 +231,7 @@ c     photolysis rates
       INTEGER K,L ! indexes of do loops
 
 c jrates for MISTRA
-      common /band_rat/ photol_j(47,n_m)
+      common /band_rat/ photol_j(nphrxn,n_m)
       double precision photol_j
 
       INTEGER SW2, SW4, SW7, SW12, SW13 ! jjb added 18/07/2015 for correct use below. Such integer definition was probably in Swich.dat (commented below) but was missing here.
@@ -255,8 +256,11 @@ c----------------------------------------------------------------------
 
       WRITE(*,'(8I4)')NWS
 
+!      CALL READ_DATA(TEMP,  PRESS,   RELO3,
+!     $               ITYPE, ALBEDO,  U0,    SCALEO3,
+!     $               SW4)
       CALL READ_DATA(TEMP,  PRESS,   RELO3,
-     $               ITYPE, ALBEDO,  U0,    SCALEO3,
+     $                      ALBEDO,  U0,    SCALEO3,
      $               SW4)
 
       CALL COLUMN(
@@ -390,8 +394,11 @@ c         photol_j(45,MAXLAY-k+1)= ??? !CHBr2I
 
 
 *******************************************************************
+!     SUBROUTINE READ_DATA(TEMP,    PRESS,  RELO3,
+!    $                     ITYPE,   ALBEDO,  U0,      SCALEO3,
+!    $                     SW4)
       SUBROUTINE READ_DATA(TEMP,    PRESS,  RELO3,
-     $                     ITYPE,   ALBEDO,  U0,      SCALEO3,
+     $                              ALBEDO,  U0,      SCALEO3,
      $                     SW4)
 
 ! Description:
@@ -428,6 +435,9 @@ c   blocks. Upper case variables are from Jochen's code and are passed explicitl
 !      removed ntypa and ntypd from /cb02/, defined but unused
 
 
+      USE config, ONLY :
+     &     scaleo3_m
+
       USE global_params, ONLY :
 ! Imported Parameters:
      &     nrlay,
@@ -448,8 +458,8 @@ C     OUTPUTS
      $     U0,               !cosine of solar zenith angle
      $     SCALEO3,          !total vert. ozone column for scaling
      $     Z(MAXLAY)         !hight of levels [m]                      ! jjb for output purpose only
-      INTEGER
-     $     ITYPE(MAXLAY)     !aerosol type
+!     INTEGER
+!    $     ITYPE(MAXLAY)     !aerosol type
 
 c commom blocks from MISTRA:
       common /cb02/ t_m(nrlev),p_m(nrlev),rho_m(nrlev),xm1_m(nrlev),ts_m
@@ -463,9 +473,6 @@ c commom blocks from MISTRA:
 
       common /height/ z_mi(nrlev)
       double precision z_mi
-
-      common /band_o3/ scaleo3_m
-      double precision scaleo3_m
 
 ! indexes for do loops
       INTEGER K,L
@@ -530,14 +537,16 @@ C----------------------------------------------------------------------
 C     CHECK DATA
 C----------------------------------------------------------------------
 
-      IF(SW4.EQ.1) CALL ATM_OUT(ALBEDO,PRESS,TEMP,Z,RELO3,ITYPE)
+!     IF(SW4.EQ.1) CALL ATM_OUT(ALBEDO,PRESS,TEMP,Z,RELO3,ITYPE)
+      IF(SW4.EQ.1) CALL ATM_OUT(ALBEDO,PRESS,TEMP,Z,RELO3)
 
       END SUBROUTINE READ_DATA
 *******************************************************************
 
 
 ********************************************************************
-      subroutine atm_out(ALBEDO,PRESS,TEMP,Z,RELO3,ITYPE)
+!     subroutine atm_out(ALBEDO,PRESS,TEMP,Z,RELO3,ITYPE)
+      subroutine atm_out(ALBEDO,PRESS,TEMP,Z,RELO3)
 
 ! This SR writes atmospheric profiles after importing them from Mistra in the previous SR (read_data)
 ! In SR photol, this can be switched on/off using SW4
@@ -553,7 +562,14 @@ C----------------------------------------------------------------------
 !
 ! 23/10/2016 jjb
 !     removed FRAC, which was initialised to 0 in READ_DATA, and used nowhere
+!
+! 05/06/2021 jjb
+!     commented out ITYPE output, this variable is not linked to actual mistra aerosol type in jrate
 
+
+      USE file_unit, ONLY :
+! Imported Parameters:
+     &     fun=>jpfunprofj   ! file unit number
 
       USE global_params, ONLY :
 ! Imported Parameters:
@@ -571,11 +587,10 @@ C----------------------------------------------------------------------
      $     Z(MAXLAY),        !hight of levels [m]
      $     RELO3(0:MAXLAY)   !O3 volumn mixing ratio [1]
 
-      INTEGER
-     $     ITYPE(MAXLAY)     !aerosol type
+!      INTEGER
+!     $     ITYPE(MAXLAY)     !aerosol type
 
-      INTEGER K,FUN
-      PARAMETER ( FUN = 7 ) ! file unit number
+      INTEGER K
 
 
  11   FORMAT(5(1P,E9.2))
@@ -599,9 +614,9 @@ C----------------------------------------------------------------------
       WRITE(FUN,*)'MIXING RATIO OF OZON [1]'
       WRITE(FUN,13)(RELO3(K), K=1,MAXLAY)
 
-      WRITE(FUN,*)'AEROSOL TYPE '//
-     $          '(1=rural,2=maritime,3=urban,4=free troposphere)'
-      WRITE(FUN,'(10I2)')(ITYPE(K),K=1,MAXLAY)
+!      WRITE(FUN,*)'AEROSOL TYPE '//
+!     $          '(1=rural,2=maritime,3=urban,4=free troposphere)'
+!      WRITE(FUN,'(10I2)')(ITYPE(K),K=1,MAXLAY)
 
       CLOSE(FUN)
 
@@ -628,7 +643,16 @@ C----------------------------------------------------------------------
 !        - removal of 2 unused parameters
 !        - little cleaning
 !        - implicit none
+!
+! 13/05/2021 jjb
+!        - USE constants
 
+
+      USE constants, ONLY :
+! Imported Parameters:
+     &     AIR_M => M_air,
+     &     AVOGA => Avogadro,
+     &     GRAV  => g
 
       USE global_params, ONLY :
 ! Imported Parameters:
@@ -668,14 +692,15 @@ c      internal variables
 C--------------------------------------------------------------------------
       INTEGER K
 
-      DOUBLE PRECISION GRAV,BOLTZ,RELO2,AVOGA,AIR_M,SP,CONST,CONSTANT
+      !DOUBLE PRECISION GRAV,BOLTZ,RELO2,AVOGA,AIR_M,SP,CONST,CONSTANT
+      DOUBLE PRECISION BOLTZ,RELO2,SP,CONST,CONSTANT
 
 
-      GRAV=9.81
+      !GRAV=9.81
       BOLTZ=1.381D-23
-      RELO2 = 0.2095
-      AVOGA = 6.022E23
-      AIR_M = 28.97D-3
+      RELO2 = 0.2095D0
+      !AVOGA = 6.022E23
+      !AIR_M = 28.97D-3
 
       SP=AVOGA/(AIR_M*GRAV)*1.D-2               ![part./cm^2 * 1/hPa]
       CONST=SP * RELO2                          ![part./cm^2 * 1/hPa]
@@ -686,24 +711,24 @@ C--------------------------------------------------------------------------
 C     O2 AND O3 COLUMNS AND SLANT COLUMNS
 
       IF (U0.gt.0.) THEN
-         SECA = 1./U0
+         SECA = 1.D0 / U0
       ELSE
-         SECA = 0.
+         SECA = 0.D0
       ENDIF
 
       V2(0)=CONST*PRESS(0)
-      V3(0)=0.7 * SP * PRESS(0) * RELO3(0)
+      V3(0)=0.7D0 * SP * PRESS(0) * RELO3(0)
       V2S(0)=SECA*V2(0)
       V3S(0)=SECA*V3(0)
-      DENS(0)=100.* PRESS(0)/(BOLTZ*TEMP(0))*1.D-6
+      DENS(0)=100.D0 * PRESS(0)/(BOLTZ*TEMP(0))*1.D-6
 
       DO K=1,MAXLAY
          V2(K)  = CONST*PRESS(K)
          V3(K)  = V3(K-1) + SP*(PRESS(K)-PRESS(K-1))*
-     1            0.5*( RELO3(K) + RELO3(K-1) )
+     1            0.5D0 *( RELO3(K) + RELO3(K-1) )
          V2S(K) = SECA*V2(K)
          V3S(K) = SECA*V3(K)
-         DENS(K)=100.* PRESS(K)/(BOLTZ*TEMP(K))*1.D-6
+         DENS(K)=100.D0 * PRESS(K)/(BOLTZ*TEMP(K))*1.D-6
       ENDDO
 
 c     SCALING OF O3 COLUMN
@@ -756,21 +781,38 @@ C     DIFFERENTIAL O2 AND O3 COLUMNS AND SLANT COLUMNS
 
       USE config, ONLY : cinpdir_phot ! input directory for photolysis data files
 
+      USE file_unit, ONLY :
+! Imported Parameters:
+     &     jpfunflx,
+     &     jpfunsig,
+     &     jpfuncheb
+
       USE global_params, ONLY :
 ! Imported Parameters:
      &     nrlay
 
-      IMPLICIT DOUBLE PRECISION (A-H,O-Z)
+      USE precision, ONLY :
+! Imported Parameters:
+     &     dp
+
+      IMPLICIT NONE
 
       INTEGER MAXLAY,MAXWAV
       PARAMETER(MAXLAY=nrlay, MAXWAV=176)
+
+      CHARACTER (LEN=14) :: CLFMT    ! format for read
+      CHARACTER (LEN=130) :: CLPATH  ! path to input files
+      INTEGER :: I, L                ! running indexes
+      REAL (KIND=DP) :: sk, WL, X
 
       COMMON/WL/WAVE(MAXWAV),  !wavelength in the middle of the interval [cm]
      $          DWAVE(MAXWAV)  !width of the wavelength intervals [cm]
       COMMON/FL/FLUX(MAXWAV)   !extraterrestic flux per interval
 c                               [photons/(cm^2 s)]
+      REAL (KIND=DP) :: FLUX, WAVE, DWAVE
 
       COMMON/RAY_J/CS_RAY(MAXWAV)!Rayleigh scattering cross section [cm^2/part.]
+      REAL (KIND=DP) :: CS_RAY
 
       COMMON/CROSS_SEC/        !cross sections [cm^2/part.]
      $     CS_H2O(MAXWAV),    CS_HNO3(MAXWAV),    CS_HNO4(MAXWAV),
@@ -794,6 +836,28 @@ c                               [photons/(cm^2 s)]
      $     CS_HONO(MAXWAV),
      $     CS_NO2m(MAXWAV),   CS_dumm23(MAXWAV),
      $     CS_dumm24(MAXWAV),  CS_dumm25(MAXWAV),   CS_dumm26(MAXWAV)
+      REAL (KIND=DP) ::
+     $     CS_H2O,    CS_HNO3,    CS_HNO4,
+     $     CS_SO2,    CS_HCl,     CS_HOCl,
+     $     CS_BrNO3,  CS_CF3Cl,   CS_CCl3F,
+     $     CS_CCl4,   CS_CCl2O,   CS_F115,
+     $     CS_F114,   CS_F113,    CS_CF2O,
+     $     CS_CClFO,  CS_O2,      CS_CH3OH,
+     $     CS_H2O2,   CS_F22,     CS_F13B1,
+     $     CS_F12B1,  CS_CH3Br,   CS_CCl2F2,
+     $     CS_CH3OOH, CS_Cl2,     CS_CHBr3,
+     $     CS_Cl2O2,  CS_N2O5,    CS_O4,
+     $     CS_NO3n,   CS_O3H2O,   CS_HOI_Jen91,
+     $     CS_HOCH2OOH,CS_HOBr_JPL,CS_HOBr,
+     $     CS_BrCl,   CS_BrCl_noT,   CS_ClNO2,
+     $     CS_BrNO2,  CS_Br2,     CS_IO,
+     $     CS_INO3,   CS_CH3I,    CS_I2,
+     $     CS_ICl,    CS_IBr,     CS_C3H7I,
+     $     CS_CH2ClI, CS_CH2I2,   CS_INO2,
+     $     CS_BrO_noT, CS_OClO_noT, CS_Cl2_noT,
+     $     CS_HONO,
+     $     CS_NO2m,   CS_dumm23,
+     $     CS_dumm24,  CS_dumm25,   CS_dumm26
 
 c     cross sections CS_X at temperature T_X (X=specie)
       COMMON/CROSS_SEC_T/
@@ -805,12 +869,18 @@ c     cross sections CS_X at temperature T_X (X=specie)
      $     T_OCS(2),          T_ClONO2(3),        T_CH3CCl3(3),
      $     T_CO2(3),          T_HOI(3),           T_CH2O(2),
      $     T_CH3Cl(3)
+      REAL (KIND=DP) ::
+     $     CS_O3, CS_NO3, CS_NO2, CS_OCS, CS_ClONO2, CS_CH3CCl3, CS_CO2,
+     $     COEFF_HNO3, CS_HOI, CS_CH2O, CS_CH3Cl,
+     $     T_O3, T_NO3, T_NO2, T_OCS, T_ClONO2, T_CH3CCl3, T_CO2,
+     $     T_HOI, T_CH2O, T_CH3Cl
 
 C     coefficients for Koppers and Murtagh  parameterization of CS_O2 in
 C     Schuhmann-Runge band
 
       COMMON/CHEB_COEFF/CHEB_COEFF_A(20,13),
      $                  CHEB_COEFF_B(20,13)
+      REAL (KIND=DP) :: CHEB_COEFF_A, CHEB_COEFF_B
 
 
 
@@ -821,23 +891,23 @@ C     see: C. Bruehl, P.J. Crutzen, Scenarios of possible changes in ....
 C          Climate Dynamics (1988)2: 173-203
 
       DO 1 L=1,13
-        WAVE(L)=1./(56250.-500.*L)
+        WAVE(L)=1.D0 /(56250.D0 -500.D0 *L)
     1 CONTINUE
        DO 2 L=14,45
-       WAVE(L)=1./(49750.-(L-13)*500.)
+       WAVE(L)=1.D0 /(49750.D0 -(L-13)*500.D0 )
     2 CONTINUE
       DO 3 L=46,68
-        WAVE(L)=(266.+(L-13))*1.D-7
+        WAVE(L)=(266.D0 +(L-13))*1.D-7
     3 CONTINUE
       DO 4 L=69,71
-        WAVE(L)=(320.5+2.*(L-68))*1.D-7
+        WAVE(L)=(320.5D0 +2.D0 *(L-68))*1.D-7
     4 CONTINUE
       DO 5 L=72,176
-        WAVE(L)=(325.+5.*(L-71))*1.D-7
+        WAVE(L)=(325.D0 +5.D0 *(L-71))*1.D-7
     5 CONTINUE
 
       DO L=2,MAXWAV-1
-         DWAVE(L)=0.5*(WAVE(L+1)-WAVE(L-1))
+         DWAVE(L)=0.5D0*(WAVE(L+1)-WAVE(L-1))
       ENDDO
 
       DWAVE(1)      = DWAVE(2)
@@ -850,214 +920,218 @@ C---------------------------------------------------------------------
 
       DO  L=1,176
         WL=WAVE(L)*1.E4
-        X=0.389*WL+0.09426/WL-0.3228
-        CS_RAY(L)=4.02D-28/WL**(4.+X)
+        X=0.389D0 *WL+0.09426D0 /WL-0.3228D0
+        CS_RAY(L)=4.02D-28/WL**(4.D0 +X)
       ENDDO
 
-      OPEN(UNIT=1, FILE=trim(cinpdir_phot)//'flux.dat',STATUS='OLD')
-      READ(1,10) FLUX
+      CLPATH = trim(cinpdir_phot)//'flux.dat'
+      OPEN(UNIT=jpfunflx, FILE=trim(CLPATH),STATUS='OLD')
+      READ(jpfunflx,10) FLUX
 
-      CLOSE(1)
+      CLOSE(jpfunflx)
 
  10   FORMAT(1P,7E10.2)
 
-      OPEN(UNIT=2, FILE=trim(cinpdir_phot)//'sig0900.dat', STATUS='OLD')
+      CLPATH = trim(cinpdir_phot)//'sig0900.dat'
+      OPEN(UNIT=jpfunsig, FILE=trim(CLPATH), STATUS='OLD')
 
-      READ(2,*)
-      READ(2,101)CS_H2O
-      READ(2,*)
-      READ(2,101)CS_HNO3
-      READ(2,*)
-      READ(2,101)CS_HNO4
-      READ(2,*)
-      READ(2,101)CS_SO2
-      READ(2,*)
-      READ(2,101)CS_HCl
-      READ(2,*)
-      READ(2,101)CS_HOCl
-      READ(2,*)
-      READ(2,101)CS_BrNO3
-      READ(2,*)
-      READ(2,101)CS_CF3Cl
-      READ(2,*)
-      READ(2,101)CS_CCl3F
-      READ(2,*)
-      READ(2,101)CS_CCl4
-      READ(2,*)
-      READ(2,101)CS_CCl2O
-      READ(2,*)
-      READ(2,101)CS_F115
-      READ(2,*)
-      READ(2,101)CS_F114
-      READ(2,*)
-      READ(2,101)CS_F113
-      READ(2,*)
-      READ(2,101)CS_CF2O
-      READ(2,*)
-      READ(2,101)CS_CClFO
-      READ(2,*)
-      READ(2,101)CS_O2
-      READ(2,*)
-      READ(2,101)CS_CH3OH
-      READ(2,*)
-      READ(2,101)CS_H2O2
-      READ(2,*)
-      READ(2,101)CS_F22
-      READ(2,*)
-      READ(2,101)CS_F13B1
-      READ(2,*)
-      READ(2,101)CS_F12B1
-      READ(2,*)
-      READ(2,101)CS_CH3Br
-      READ(2,*)
-      READ(2,101)CS_CCl2F2
-      READ(2,*)
-      READ(2,101)CS_CH3OOH
-      READ(2,*)
-      READ(2,101)CS_Cl2
-      READ(2,*)
-      READ(2,101)CS_CHBr3
-      READ(2,*)
-      READ(2,101)CS_Cl2O2
-      READ(2,*)
-      READ(2,101)CS_N2O5
-      READ(2,*)
-      READ(2,101)CS_O4
-      READ(2,*)
-      READ(2,101)CS_NO3n
-      READ(2,*)
-      READ(2,101)CS_O3H2O
-      READ(2,*)
-      READ(2,101)CS_HOI_Jen91
-      READ(2,*)
-      READ(2,101)CS_HOCH2OOH
-      READ(2,*)
-      READ(2,101)CS_HOBr_JPL
-      READ(2,*)
-      READ(2,101)CS_HOBr
-      READ(2,*)
-c      READ(2,101)CS_BrCl
-c      READ(2,*)
-      READ(2,101)CS_BrCl_noT
-      READ(2,*)
-      READ(2,101)CS_ClNO2
-      READ(2,*)
-      READ(2,101)CS_BrNO2
-      READ(2,*)
-      READ(2,101)CS_Br2
-      READ(2,*)
-      READ(2,101)CS_IO
-      READ(2,*)
-      READ(2,101)CS_INO3
-      READ(2,*)
-      READ(2,101)CS_CH3I
-      READ(2,*)
-      READ(2,101)CS_I2
-      READ(2,*)
-      READ(2,101)CS_ICl
-      READ(2,*)
-      READ(2,101)CS_IBr
-      READ(2,*)
-      READ(2,101)CS_C3H7I
-      READ(2,*)
-      READ(2,101)CS_CH2ClI
-      READ(2,*)
-      READ(2,101)CS_CH2I2
-      READ(2,*)
-      READ(2,101)CS_INO2
-      READ(2,*)
-      READ(2,101)CS_BrO_noT
-      READ(2,*)
-      READ(2,101)CS_OClO_noT
-      READ(2,*)
-      READ(2,101)CS_Cl2_noT
-      READ(2,*)
-      READ(2,101)CS_HONO
-      READ(2,*)
-      READ(2,101)CS_NO2m
-      READ(2,*)
-      READ(2,101)CS_dumm23
-      READ(2,*)
-      READ(2,101)CS_dumm24
-      READ(2,*)
-      READ(2,101)CS_dumm25
-      READ(2,*)
-      READ(2,101)CS_dumm26
-      READ(2,*)
-      READ(2,201)T_O3
+      READ(jpfunsig,*)
+      READ(jpfunsig,101)CS_H2O
+      READ(jpfunsig,*)
+      READ(jpfunsig,101)CS_HNO3
+      READ(jpfunsig,*)
+      READ(jpfunsig,101)CS_HNO4
+      READ(jpfunsig,*)
+      READ(jpfunsig,101)CS_SO2
+      READ(jpfunsig,*)
+      READ(jpfunsig,101)CS_HCl
+      READ(jpfunsig,*)
+      READ(jpfunsig,101)CS_HOCl
+      READ(jpfunsig,*)
+      READ(jpfunsig,101)CS_BrNO3
+      READ(jpfunsig,*)
+      READ(jpfunsig,101)CS_CF3Cl
+      READ(jpfunsig,*)
+      READ(jpfunsig,101)CS_CCl3F
+      READ(jpfunsig,*)
+      READ(jpfunsig,101)CS_CCl4
+      READ(jpfunsig,*)
+      READ(jpfunsig,101)CS_CCl2O
+      READ(jpfunsig,*)
+      READ(jpfunsig,101)CS_F115
+      READ(jpfunsig,*)
+      READ(jpfunsig,101)CS_F114
+      READ(jpfunsig,*)
+      READ(jpfunsig,101)CS_F113
+      READ(jpfunsig,*)
+      READ(jpfunsig,101)CS_CF2O
+      READ(jpfunsig,*)
+      READ(jpfunsig,101)CS_CClFO
+      READ(jpfunsig,*)
+      READ(jpfunsig,101)CS_O2
+      READ(jpfunsig,*)
+      READ(jpfunsig,101)CS_CH3OH
+      READ(jpfunsig,*)
+      READ(jpfunsig,101)CS_H2O2
+      READ(jpfunsig,*)
+      READ(jpfunsig,101)CS_F22
+      READ(jpfunsig,*)
+      READ(jpfunsig,101)CS_F13B1
+      READ(jpfunsig,*)
+      READ(jpfunsig,101)CS_F12B1
+      READ(jpfunsig,*)
+      READ(jpfunsig,101)CS_CH3Br
+      READ(jpfunsig,*)
+      READ(jpfunsig,101)CS_CCl2F2
+      READ(jpfunsig,*)
+      READ(jpfunsig,101)CS_CH3OOH
+      READ(jpfunsig,*)
+      READ(jpfunsig,101)CS_Cl2
+      READ(jpfunsig,*)
+      READ(jpfunsig,101)CS_CHBr3
+      READ(jpfunsig,*)
+      READ(jpfunsig,101)CS_Cl2O2
+      READ(jpfunsig,*)
+      READ(jpfunsig,101)CS_N2O5
+      READ(jpfunsig,*)
+      READ(jpfunsig,101)CS_O4
+      READ(jpfunsig,*)
+      READ(jpfunsig,101)CS_NO3n
+      READ(jpfunsig,*)
+      READ(jpfunsig,101)CS_O3H2O
+      READ(jpfunsig,*)
+      READ(jpfunsig,101)CS_HOI_Jen91
+      READ(jpfunsig,*)
+      READ(jpfunsig,101)CS_HOCH2OOH
+      READ(jpfunsig,*)
+      READ(jpfunsig,101)CS_HOBr_JPL
+      READ(jpfunsig,*)
+      READ(jpfunsig,101)CS_HOBr
+      READ(jpfunsig,*)
+c      READ(jpfunsig,101)CS_BrCl
+c      READ(jpfunsig,*)
+      READ(jpfunsig,101)CS_BrCl_noT
+      READ(jpfunsig,*)
+      READ(jpfunsig,101)CS_ClNO2
+      READ(jpfunsig,*)
+      READ(jpfunsig,101)CS_BrNO2
+      READ(jpfunsig,*)
+      READ(jpfunsig,101)CS_Br2
+      READ(jpfunsig,*)
+      READ(jpfunsig,101)CS_IO
+      READ(jpfunsig,*)
+      READ(jpfunsig,101)CS_INO3
+      READ(jpfunsig,*)
+      READ(jpfunsig,101)CS_CH3I
+      READ(jpfunsig,*)
+      READ(jpfunsig,101)CS_I2
+      READ(jpfunsig,*)
+      READ(jpfunsig,101)CS_ICl
+      READ(jpfunsig,*)
+      READ(jpfunsig,101)CS_IBr
+      READ(jpfunsig,*)
+      READ(jpfunsig,101)CS_C3H7I
+      READ(jpfunsig,*)
+      READ(jpfunsig,101)CS_CH2ClI
+      READ(jpfunsig,*)
+      READ(jpfunsig,101)CS_CH2I2
+      READ(jpfunsig,*)
+      READ(jpfunsig,101)CS_INO2
+      READ(jpfunsig,*)
+      READ(jpfunsig,101)CS_BrO_noT
+      READ(jpfunsig,*)
+      READ(jpfunsig,101)CS_OClO_noT
+      READ(jpfunsig,*)
+      READ(jpfunsig,101)CS_Cl2_noT
+      READ(jpfunsig,*)
+      READ(jpfunsig,101)CS_HONO
+      READ(jpfunsig,*)
+      READ(jpfunsig,101)CS_NO2m
+      READ(jpfunsig,*)
+      READ(jpfunsig,101)CS_dumm23
+      READ(jpfunsig,*)
+      READ(jpfunsig,101)CS_dumm24
+      READ(jpfunsig,*)
+      READ(jpfunsig,101)CS_dumm25
+      READ(jpfunsig,*)
+      READ(jpfunsig,101)CS_dumm26
+      READ(jpfunsig,*)
+      READ(jpfunsig,201)T_O3
       DO I=1,3
-         READ(2,101)(CS_O3(L,I),L=1,MAXWAV)
+         READ(jpfunsig,101)(CS_O3(L,I),L=1,MAXWAV)
       ENDDO
-      READ(2,*)
-      READ(2,201)T_NO3
+      READ(jpfunsig,*)
+      READ(jpfunsig,201)T_NO3
       DO I=1,2
-         READ(2,101)(CS_NO3(L,I),L=1,MAXWAV)
+         READ(jpfunsig,101)(CS_NO3(L,I),L=1,MAXWAV)
       ENDDO
-      READ(2,*)
-      READ(2,201)T_NO2
+      READ(jpfunsig,*)
+      READ(jpfunsig,201)T_NO2
       DO I=1,2
-         READ(2,101)(CS_NO2(L,I),L=1,MAXWAV)
+         READ(jpfunsig,101)(CS_NO2(L,I),L=1,MAXWAV)
       ENDDO
-      READ(2,*)
-      READ(2,201)T_OCS
+      READ(jpfunsig,*)
+      READ(jpfunsig,201)T_OCS
       DO I=1,2
-         READ(2,101)(CS_OCS(L,I),L=1,MAXWAV)
+         READ(jpfunsig,101)(CS_OCS(L,I),L=1,MAXWAV)
       ENDDO
-      READ(2,*)
-      READ(2,201)T_ClONO2
+      READ(jpfunsig,*)
+      READ(jpfunsig,201)T_ClONO2
       DO I=1,3
-         READ(2,101)(CS_ClONO2(L,I),L=1,MAXWAV)
+         READ(jpfunsig,101)(CS_ClONO2(L,I),L=1,MAXWAV)
       ENDDO
-      READ(2,*)
-      READ(2,201)T_CH3CCl3
+      READ(jpfunsig,*)
+      READ(jpfunsig,201)T_CH3CCl3
       DO I=1,3
-         READ(2,101)(CS_CH3CCl3(L,I),L=1,MAXWAV)
+         READ(jpfunsig,101)(CS_CH3CCl3(L,I),L=1,MAXWAV)
       ENDDO
-      READ(2,*)
-      READ(2,201)T_CO2
+      READ(jpfunsig,*)
+      READ(jpfunsig,201)T_CO2
       DO I =1,3
-         READ(2,101)(CS_CO2(L,I),L=1,MAXWAV)
+         READ(jpfunsig,101)(CS_CO2(L,I),L=1,MAXWAV)
       ENDDO
-      READ(2,*)
-      READ(2,101)COEFF_HNO3
-      READ(2,*)
-      READ(2,201)T_HOI
+      READ(jpfunsig,*)
+      READ(jpfunsig,101)COEFF_HNO3
+      READ(jpfunsig,*)
+      READ(jpfunsig,201)T_HOI
       DO I =1,3
-         READ(2,101)(CS_HOI(L,I),L=1,MAXWAV)
+         READ(jpfunsig,101)(CS_HOI(L,I),L=1,MAXWAV)
       ENDDO
-      READ(2,*)
-      READ(2,201)T_CH2O
+      READ(jpfunsig,*)
+      READ(jpfunsig,201)T_CH2O
       DO I =1,2
-         READ(2,101)(CS_CH2O(L,I),L=1,MAXWAV)
+         READ(jpfunsig,101)(CS_CH2O(L,I),L=1,MAXWAV)
       ENDDO
-      READ(2,*)
-      READ(2,201)T_CH3Cl
+      READ(jpfunsig,*)
+      READ(jpfunsig,201)T_CH3Cl
       DO I=1,3
-         READ(2,101)(CS_CH3Cl(L,I),L=1,MAXWAV)
+         READ(jpfunsig,101)(CS_CH3Cl(L,I),L=1,MAXWAV)
       ENDDO
 
  101  FORMAT(7E10.2)
  201  FORMAT(4F5.0)
 
-      CLOSE(2)
+      CLOSE(jpfunsig)
+
 
 C     CEBESHEV COEFFICIENT A AND B FOR KOPPER MURTG. PARAMETERIZATION
 
+      CLPATH = trim(cinpdir_phot)//'cheb_coeff.dat'
+      CLFMT = '(17(E23.6,1X))'
+      OPEN(jpfuncheb,file=trim(CLPATH),status='old')
 
-      OPEN(3,file=trim(cinpdir_phot)//'cheb_coeff.dat',status='old')
-
-      READ(3,*)
-      READ(3,*)
+      READ(jpfuncheb,*)
+      READ(jpfuncheb,*)
       DO I=1,20
-         READ(3,'(17(E23.6,1X))')sk,sk,(CHEB_COEFF_A(I,L),L=1,13),sk,sk ! sk = skip
+         READ(jpfuncheb,CLFMT)sk,sk,(CHEB_COEFF_A(I,L),L=1,13),sk,sk ! sk = skip
       ENDDO
 
-      READ(3,*)
-      READ(3,*)
+      READ(jpfuncheb,*)
+      READ(jpfuncheb,*)
       DO I=1,20
-         READ(3,'(17(E23.6,1X))')sk,sk,(CHEB_COEFF_B(I,L),L=1,13),sk,sk ! sk = skip
+         READ(jpfuncheb,CLFMT)sk,sk,(CHEB_COEFF_B(I,L),L=1,13),sk,sk ! sk = skip
       ENDDO
-      CLOSE(3)
+      CLOSE(jpfuncheb)
 
       END SUBROUTINE CROSS_INIT
 *****************************************************************
@@ -1107,8 +1181,8 @@ c$$$      DATA A_NO/
 c$$$     $     -1.790868D+1, -1.654245D+1, -1.924701D-1, +5.836899D-1,
 c$$$     $     -7.217717D-2, +3.449436D-1,  5.648282D-2,  1.700653D-1,
 c$$$     $      4.569175D-2, -3.324717D-2,  8.353572D-3, -4.952424D-2,
-c$$$     $      0.0,          1.579306D-2,  0.0,          1.835462D-2,
-c$$$     $      0.0,          3.368125D-3/
+c$$$     $      0.0D0,        1.579306D-2,  0.0D0,        1.835462D-2,
+c$$$     $      0.0D0,        3.368125D-3/
 c$$$
 c$$$      DATA B_NO/
 c$$$     $      7.836832D+3,  1.297581D+4, -1.549880D+3, -2.582981D+3,
@@ -1119,11 +1193,13 @@ C     coefficients for O(1D) QUANTUM YIELD (MICHELSON)
       COMMON/C_O1D/ A_O1D(19),  B_O1D(19)
       DOUBLE PRECISION A_O1D, B_O1D
 
-      DATA A_O1D/1.01,1.01,1.05,1.15,1.39,1.90,2.93,4.87,8.21,13.3,
-     1           17.6,20.4,18.0,21.8,18.1,17.2,7.99,12.9,11.25/
-      DATA B_O1D/3.933,11.51,33.09,79.39,159.9,272.5,407.9,551.4,
-     1           682.3,791.6,851.3,903.8,900.3,948.4,891.1,1066.,
-     2           969.4,1191.5,1293.5/
+      DATA A_O1D/1.01D0, 1.01D0, 1.05D0, 1.15D0, 1.39D0, 1.90D0, 2.93D0,
+     1           4.87D0, 8.21D0, 13.3D0, 17.6D0, 20.4D0, 18.0D0, 21.8D0,
+     2           18.1D0, 17.2D0, 7.99D0, 12.9D0, 11.25D0 /
+      DATA B_O1D/3.933D0, 11.51D0, 33.09D0, 79.39D0, 159.9D0, 272.5D0,
+     1           407.9D0, 551.4D0, 682.3D0, 791.6D0, 851.3D0, 903.8D0,
+     2           900.3D0, 948.4D0, 891.1D0, 1066.D0, 969.4D0, 1191.5D0,
+     3           1293.5D0 /
 
 c     coefficients for optical depth of Schumann-Runge band above TOA
       COMMON/C_O2_TOP/ CT_TOP(4,13)
@@ -1170,13 +1246,18 @@ c     coefficients for optical depth of Schumann-Runge band above TOA
 !        - most CST_* deleted, as unused, except CST_O3 and CST_O2
 !        - removal of all relevant parts (common blocks, internal functions, calculations)
 !        - re-indexing of CST_O3 for CPU efficiency
+! 25/06/2021 jjb: all missing declarations and implicit none
 
 
       USE global_params, ONLY :
 ! Imported Parameters:
      &     nrlay
 
-      IMPLICIT DOUBLE PRECISION(A-H,O-Z)
+      USE precision, ONLY :
+! Imported Parameters:
+     &     dp
+
+      IMPLICIT NONE
 
       INTEGER MAXLAY,MAXWAV
       PARAMETER(MAXLAY=nrlay, MAXWAV=176)
@@ -1220,6 +1301,28 @@ c     cross section initzialization
      $     CS_HONO(MAXWAV),
      $     CS_NO2m(MAXWAV),   CS_dumm23(MAXWAV),
      $     CS_dumm24(MAXWAV),  CS_dumm25(MAXWAV),   CS_dumm26(MAXWAV)
+      REAL (KIND=DP) ::
+     $     CS_H2O,    CS_HNO3,    CS_HNO4,
+     $     CS_SO2,    CS_HCl,     CS_HOCl,
+     $     CS_BrNO3,  CS_CF3Cl,   CS_CCl3F,
+     $     CS_CCl4,   CS_CCl2O,   CS_F115,
+     $     CS_F114,   CS_F113,    CS_CF2O,
+     $     CS_CClFO,  CS_O2,      CS_CH3OH,
+     $     CS_H2O2,   CS_F22,     CS_F13B1,
+     $     CS_F12B1,  CS_CH3Br,   CS_CCl2F2,
+     $     CS_CH3OOH, CS_Cl2,     CS_CHBr3,
+     $     CS_Cl2O2,  CS_N2O5,    CS_O4,
+     $     CS_NO3n,   CS_O3H2O,   CS_HOI_Jen91,
+     $     CS_HOCH2OOH,CS_HOBr_JPL,CS_HOBr,
+     $     CS_BrCl,   CS_BrCl_noT,   CS_ClNO2,
+     $     CS_BrNO2,  CS_Br2,     CS_IO,
+     $     CS_INO3,   CS_CH3I,    CS_I2,
+     $     CS_ICl,    CS_IBr,     CS_C3H7I,
+     $     CS_CH2ClI, CS_CH2I2,   CS_INO2,
+     $     CS_BrO_noT, CS_OClO_noT, CS_Cl2_noT,
+     $     CS_HONO,
+     $     CS_NO2m,   CS_dumm23,
+     $     CS_dumm24,  CS_dumm25,   CS_dumm26
 
 c     cross sections CS_X at temperature T_X (X=specie)
       COMMON/CROSS_SEC_T/
@@ -1231,6 +1334,11 @@ c     cross sections CS_X at temperature T_X (X=specie)
      $     T_OCS(2),          T_ClONO2(3),        T_CH3CCl3(3),
      $     T_CO2(3),          T_HOI(3),           T_CH2O(2),
      $     T_CH3Cl(3)
+      REAL (KIND=DP) ::
+     $     CS_O3, CS_NO3, CS_NO2, CS_OCS, CS_ClONO2, CS_CH3CCl3, CS_CO2,
+     $     COEFF_HNO3, CS_HOI, CS_CH2O, CS_CH3Cl,
+     $     T_O3, T_NO3, T_NO2, T_OCS, T_ClONO2, T_CH3CCl3, T_CO2,
+     $     T_HOI, T_CH2O, T_CH3Cl
 
       COMMON/WL/WAVE(MAXWAV), !wavelength in the middle of the interval [cm]
      $          DWAVE(MAXWAV)  !width of the wavelength intervals [cm]
@@ -1243,6 +1351,11 @@ c     local arrays
 
       DOUBLE PRECISION
      $     SRO2(13,0:MAXLAY)
+
+c     local scalars
+      INTEGER K, L
+      REAL (KIND=DP) :: A_O1D, B_O1D, C1_O3, C2_O3, C3_O3,
+     $     DWAVE, TEMPER, WAVE
 
 C--------------------------------------------------------------------
 C temperature dependent cross section
@@ -1299,7 +1412,7 @@ C-----------------------------------------------------------------
 
 C        NO3- QUANTUM YIELD IN DROPLETS (ZELLNER ET AL., JAC 10, 411, 1990)
 
-         QYNO3n(K)=1.7D-2*DEXP(1800.*(1./298. - 1./TEMP(K)))
+         QYNO3n(K)=1.7D-2*DEXP(1800.D0 *(1.D0 / 298.D0 - 1./TEMP(K)))
 
 c        QUANTUM YIELDS OF O3-> O1D AS GIVEN BY MICHELSEN ET AL.
 C        GEOPHYS. RES. LETT. 21, 2227-2230, 1994
@@ -1313,13 +1426,13 @@ C        L=71,176 <->  326.5 - 850.0 nm
          IF(TEMPER.LT.185) TEMPER=185
          IF(TEMPER.GT.320) TEMPER=320
          DO L=1,38
-           QYO1D(L,K)=0.87
+           QYO1D(L,K)=0.87D0
          ENDDO
          DO L=39,51
-           QYO1D(L,K)=1.98 - 301/(WAVE(L)*1.E7)
+           QYO1D(L,K)=1.98D0 - 301.D0/(WAVE(L)*1.D7)
          ENDDO
          DO L=52,70
-           QYO1D(L,K)=A_O1D(L-51)*EXP(-1.439*B_O1D(L-51)/TEMPER)
+           QYO1D(L,K)=A_O1D(L-51)*EXP(-1.439D0 * B_O1D(L-51)/TEMPER)
          ENDDO
          DO L=71,176
            QYO1D(L,K)=0.
@@ -1343,7 +1456,7 @@ c$$$* ALLEN M, FREDERICK JE, J. ATMOS. SCI. 39, 2066 FF               *
 c$$$* SPECTRAL RANGE: 179.4 - 201.0 NM,  WMO(1985) intervals          *
 c$$$*******************************************************************
 c$$$
-c$$$      IMPLICIT DOUBLE PRECISION(A-H,O-Z)
+c$$$      IMPLICIT NONE
 c$$$C     INPUTS
 c$$$
 c$$$      INTEGER MAXLAY,MJ
@@ -1364,6 +1477,10 @@ c$$$
 c$$$C     COEFFICIENTS AK(L,I), BK(L,I)
 c$$$
 c$$$      COMMON/C_O2/ AK(13,9),  BK(13,5)
+c$$$      DOUBLE PRECISION AK, BK
+c$$$
+c$$$      INTEGER I, J, K, L
+c$$$      DOUBLE PRECISION ALP, ALV2, CLN, SF, SLN, XL
 c$$$
 c$$$C----------------------------------------------------------------
 c$$$
@@ -1421,7 +1538,7 @@ c$$$      END SUBROUTINE SR_O2_AF
 * Koppers GAA, Murtagh DP, Ann. Geophysicae 14, 68-79          *
 ****************************************************************
 
-      IMPLICIT DOUBLE PRECISION (A-H,O-Z)
+      IMPLICIT NONE
 
 C     INPUTS
 
@@ -1441,6 +1558,7 @@ C     CEBESHEV COEFFICIENT A AND B
 
       COMMON/CHEB_COEFF/CHEB_COEFF_A(20,13),
      $                  CHEB_COEFF_B(20,13)
+      DOUBLE PRECISION CHEB_COEFF_A, CHEB_COEFF_B
 
       DOUBLE PRECISION
      $                 COEFF_A(20),
@@ -1448,7 +1566,11 @@ C     CEBESHEV COEFFICIENT A AND B
 
 C     EXTERNAL FUNCTIONS
 
-      EXTERNAL CHEBEV
+      DOUBLE PRECISION, EXTERNAL :: CHEBEV
+
+C     LOCAL SCALARS
+      INTEGER I, K, L
+      DOUBLE PRECISION A, B, DL_O2
 
 c-----------------------------------------------------------------
 
@@ -1469,9 +1591,9 @@ C     CALCULATION OF COEFFICIENTS A AND B AND EFFECTIVE O2 CROSS SECTION
                A= CHEBEV(38.D0,56.D0,COEFF_A,20,DL_O2)
                B= CHEBEV(38.D0,56.D0,COEFF_B,20,DL_O2)
 
-               SRO2(L,K)= EXP(A * (TEMP(K)-220.) + B)
+               SRO2(L,K)= EXP(A * (TEMP(K)-220.D0) + B)
             ELSE
-                SRO2(L,K) = 0.
+               SRO2(L,K) = 0.D0
             ENDIF
          ENDDO
       ENDDO
@@ -1507,18 +1629,18 @@ C----------------------------------------------------------------
 
       IF ( (X-A)*(X-B).GT.0.) print*,'X NOT IN RANGE IN CHEBEV !!!'
 
-      D=0.
-      DD=0.
+      D=0.D0
+      DD=0.D0
 
-      Y  = (2*X-A-B)/(B-A)            !CHANGE OF VARIABLE TO RANGE [-1,1]
-      Y2 = 2*Y
+      Y  = (2.D0*X-A-B)/(B-A)            !CHANGE OF VARIABLE TO RANGE [-1,1]
+      Y2 = 2.D0*Y
       DO J = M,2,-1                   !CLENSHAW'S RECURRENCE
          SV = D
          D  = Y2*D-DD+C(J)
          DD = SV
       ENDDO
 
-      CHEBEV = Y*D-DD + 0.5*C(1)      !LAST STEP IS DIFFERENT
+      CHEBEV = Y*D-DD + 0.5D0 * C(1)      !LAST STEP IS DIFFERENT
 
       END FUNCTION CHEBEV
 *****************************************************************
@@ -1550,15 +1672,18 @@ c   blocks. Upper case variables are from Jochen's code and are passed explicitl
 ! 17/08/2016 & 23/08/2016 jjb
 !     further changes:
 !        - major cleaning of all unused, comented parts except potentially useful comments
-
+!
+! 17/05/2021 jjb
+!     add missing initialisation of TOTABS and TOTSCA, but commented since unused
+!     missing declarations then implicit none
 
       USE global_params, ONLY :
 ! Imported Parameters:
      &     nrlay
 
-      IMPLICIT DOUBLE PRECISION(A-H,O-Z)
+      IMPLICIT NONE
 
-      INTEGER MAXLAY,MAXWAV,NMOM,NW
+      INTEGER I,K,L,MAXLAY,MAXWAV,NMOM,NW,NL
       PARAMETER(MAXLAY=nrlay, MAXWAV=176, NMOM =4, NW=7)
 
       INTEGER
@@ -1599,16 +1724,24 @@ C     asume fixed temperature of T=220K. Total error in JO2 and FINT of the
 c     fit is less than 4% for 45.5 .le. DLOG(V2S) .le. 54.0.
 
       COMMON/C_O2_TOP/ CT_TOP(4,13)
+      DOUBLE PRECISION CT_TOP
 
       COMMON/RAY_J/ CS_RAY(MAXWAV)
+      DOUBLE PRECISION CS_RAY
       COMMON/FL/   FLUX(MAXWAV)   !extraterrestic flux per interval
 c                                  [photons/(cm^2 s)]
+      DOUBLE PRECISION FLUX
 
       DOUBLE PRECISION
-     $     Ti_SCA(NW,MAXLAY),  !integrated absorption optical depth
-     $     Ti_ABS(NW,MAXLAY),  !integrated absorption optical depth
-     $     TOTABS(NW),         !total absorption optical depth
-     $     TOTSCA(NW)          !total absorption optical depth
+     $     DLV2S,
+     $     TA_O2,
+     $     TA_O3
+
+!      DOUBLE PRECISION
+!     $     Ti_SCA(NW,MAXLAY),  !integrated absorption optical depth
+!     $     Ti_ABS(NW,MAXLAY),  !integrated absorption optical depth
+!     $     TOTABS(NW),         !total absorption optical depth
+!     $     TOTSCA(NW)          !total absorption optical depth
 
 
 c MISTRA common block
@@ -1617,11 +1750,18 @@ c MISTRA common block
 C-------------------------------------------------------------------
 C     internal functions
 
-      P3(C0,C1,C2,C3,X)= C0 + (C1 + (C2+C3*X)*X)*X
+      DOUBLE PRECISION P3
+      DOUBLE PRECISION C0, C1, C2, C3, X
+      P3(C0,C1,C2,C3,X) = C0 + (C1 + (C2+C3*X)*X)*X
 
 C-------------------------------------------------------------------
 
-      IF (1./U0 .ge. 0) THEN
+      IF (1.D0/U0 .ge. 0.D0) THEN
+
+      !! jjb initialisation was missing
+      !TOTABS(:) = 0.D0
+      !TOTSCA(:) = 0.D0
+
       DO NL = 1,NW
          L = NWS(NL)
 
@@ -1629,7 +1769,7 @@ C-------------------------------------------------------------------
 
 c           OPTICAL DEPTHS
 
-            TA_O2 = 0.5*(CST_O2(L,K-1) + CST_O2(L,K)) * DV2(K)
+            TA_O2 = 0.5D0 * (CST_O2(L,K-1) + CST_O2(L,K)) * DV2(K)
 
             IF (K.eq.1 .AND. L.le.13) THEN
                DLV2S = DLOG(V2S(1))
@@ -1638,14 +1778,14 @@ c           OPTICAL DEPTHS
             ENDIF
 
 c crray method is the correct one
-            TA_O3 = 0.5*(CST_O3(K-1,L) + CST_O3(K,L)) * DV3(K)
+            TA_O3 = 0.5D0*(CST_O3(K-1,L) + CST_O3(K,L)) * DV3(K)
 
             TAUA_CLR(NL,K) = TA_O2 + TA_O3
 
 c           in the Schumann-Runge band only absorption
 
             IF(L.le.13) THEN
-               TAUS_CLR(NL,K) = 0.
+               TAUS_CLR(NL,K) = 0.D0
             ELSE
                TAUS_CLR(NL,K) = CS_RAY(L)*1./0.21*DV2(K)
             ENDIF
@@ -1653,34 +1793,35 @@ c           in the Schumann-Runge band only absorption
             TAUA_AER(NL,K) = taer_a(K)
             TAUS_AER(NL,K) = taer_s(K)
 
-            TAUA_CLD(NL) = 0.     !no clouds
-            TAUS_CLD(NL) = 0.
+            TAUA_CLD(NL) = 0.D0     !no clouds
+            TAUS_CLD(NL) = 0.D0
 
 C           PHASE FUNCTIONS
 
-            PRAY(NL,K,0) = 1.
-            PCLD(NL,0) = 1.
-            PAER(NL,K,0) = 1.
+            PRAY(NL,K,0) = 1.D0
+            PCLD(NL,0) = 1.D0
+            PAER(NL,K,0) = 1.D0
 
             DO I = 1,NMOM
-               PRAY(NL,K,I) = 0.
-               PCLD(NL,I) = 0.   !no clouds
+               PRAY(NL,K,I) = 0.D0
+               PCLD(NL,I) = 0.D0   !no clouds
                PAER(NL,K,I) = ga_pl(K)**I    !Henyey-Greenstein Fct
             ENDDO
 
 
-            PRAY(NL,K,2) = 0.1
+            PRAY(NL,K,2) = 0.1D0
 
-            TOTABS(NL) = TOTABS(NL) + TAUA_CLR(NL,K)
-            TOTSCA(NL) = TOTSCA(NL) + TAUS_CLR(NL,K)
+            ! jjb commented out, unused
+            !TOTABS(NL) = TOTABS(NL) + TAUA_CLR(NL,K)
+            !TOTSCA(NL) = TOTSCA(NL) + TAUS_CLR(NL,K)
 
-            IF(K.eq.1)THEN
-               Ti_SCA(NL,K)=TAUS_CLR(NL,K)
-               Ti_ABS(NL,K)=TAUA_CLR(NL,K)
-            ELSE
-               Ti_SCA(NL,K)=Ti_SCA(NL,K-1)+TAUS_CLR(NL,K)
-               Ti_ABS(NL,K)=Ti_ABS(NL,K-1)+TAUA_CLR(NL,K)
-            ENDIF
+            !IF(K.eq.1)THEN
+            !   Ti_SCA(NL,K)=TAUS_CLR(NL,K)
+            !   Ti_ABS(NL,K)=TAUA_CLR(NL,K)
+            !ELSE
+            !   Ti_SCA(NL,K)=Ti_SCA(NL,K-1)+TAUS_CLR(NL,K)
+            !   Ti_ABS(NL,K)=Ti_ABS(NL,K-1)+TAUA_CLR(NL,K)
+            !ENDIF
 
          ENDDO
       ENDDO
@@ -1720,7 +1861,7 @@ C****************************************************************
 ! Imported Parameters:
      &     nrlay
 
-      IMPLICIT DOUBLE PRECISION(A-H,O-Z)
+      IMPLICIT NONE
 
       INTEGER MAXLAY,NMOM,NW,SW13
       PARAMETER(MAXLAY=nrlay, NMOM =4,NW=7)
@@ -1745,7 +1886,6 @@ c     inputs
      $     FLX(NW),                   !extraterrestic flux
      $     U0                     !cosine of solar zenith angle
 
-
       DOUBLE PRECISION
      $     FACT(MAXLAY+1,NW)      !actinic flux
 
@@ -1764,10 +1904,12 @@ c     inputs
      $     FFU(MAXLAY+1),            !upward diffuse flux
      $     UAV(MAXLAY+1)             !actinic flux
 
-C-------------------------------------------------------------------
-      PI=2.*DASIN(1.0D0)
+      INTEGER I, K, L, NRFL, NP
+      DOUBLE PRECISION AS, FF0, PI, TAUSCAT, TAUTOT, UU0, XX
 
-!      MAXLEV  = MAXLAY + 1 ! jjb unreferenced
+C-------------------------------------------------------------------
+      PI=2.D0*DASIN(1.0D0)
+
       DO 100 L  = 1,NW            !wavel. loop
 
          IF (U0.ge.0.) THEN
@@ -1790,10 +1932,10 @@ C-------------------------------------------------------------------
 C  setup of phase function expansion coefficients
 
             IF (TAUSCAT .LT. 1.D-20 ) THEN
-               WW1(K) = 0.
-               WW2(K) = 0.
-               WW3(K) = 0.
-               WW4(K) = 0.
+               WW1(K) = 0.D0
+               WW2(K) = 0.D0
+               WW3(K) = 0.D0
+               WW4(K) = 0.D0
             ELSE
             I = 1
             XX = DBLE(2*I+1)
@@ -1858,12 +2000,13 @@ c     actinic flux
       ELSE
 
          DO K=1,MAXLAY+1
-            FACT(K,L) = 0.0
+            FACT(K,L) = 0.0D0
          ENDDO
 
       ENDIF
  100  CONTINUE
 
+! jjb: it the following block is uncommented, make sure that the unit number is not already open
 c      OPEN(22,FILE='result/fact_four.dat',STATUS='UNKNOWN')
 
 c      DO J=1,MJ
@@ -1889,56 +2032,67 @@ c      CLOSE(22)
 !        - little cleaning
 
 
+      USE file_unit, ONLY :
+! Imported Parameters:
+     &     jpfunchk4
+
       USE global_params, ONLY :
 ! Imported Parameters:
      &     nrlay
 
-      IMPLICIT DOUBLE PRECISION(A-H,O-Z)
+      USE precision, ONLY :
+! Imported Parameters:
+     &     dp
+
+      IMPLICIT NONE
 
       INTEGER MAXLAY
       PARAMETER(MAXLAY=nrlay)
 
-      DOUBLE PRECISION
+      REAL (KIND=DP), INTENT(IN) ::
      $     TT(MAXLAY),
      $     WC(MAXLAY),
      $     WW1(MAXLAY),
      $     WW2(MAXLAY),
      $     WW3(MAXLAY),
      $     WW4(MAXLAY)
+      REAL (KIND=DP), INTENT(IN) :: U0, ALB, FLX
 
-      PI=2.*DASIN(1.0D0)
+      REAL (KIND=DP), PARAMETER :: PI = 2._dp * ASIN(1._dp)
+
+      INTEGER :: K
 
 C-----------------------------------------------------------
-      OPEN(8,FILE='check_four.out',STATUS='UNKNOWN')
+      OPEN(jpfunchk4,FILE='check_four.out',STATUS='UNKNOWN')
 
-      WRITE(8,*)'total extinction optical depth'
-            WRITE(8,'(1P,6E12.4)')(TT(K),K=1,MAXLAY)
+      WRITE(jpfunchk4,*)'total extinction optical depth'
+      WRITE(jpfunchk4,'(1P,6E12.4)')(TT(K),K=1,MAXLAY)
 
-      WRITE(8,*)'single scattering albedo (not delta scaled)'
-            WRITE(8,'(1P,6E12.4)')(WC(K),K=1,MAXLAY)
+      WRITE(jpfunchk4,*)'single scattering albedo (not delta scaled)'
+      WRITE(jpfunchk4,'(1P,6E12.4)')(WC(K),K=1,MAXLAY)
 
-      WRITE(8,*)'phase fn. exp. coeff  I=1 (unscaled)'
-            WRITE(8,'(1P,6E12.4)')(WW1(K),K=1,MAXLAY)
+      WRITE(jpfunchk4,*)'phase fn. exp. coeff  I=1 (unscaled)'
+      WRITE(jpfunchk4,'(1P,6E12.4)')(WW1(K),K=1,MAXLAY)
 
-      WRITE(8,*)'phase fn. exp. coeff  I=2 (unscaled)'
-            WRITE(8,'(1P,6E12.4)')(WW2(K),K=1,MAXLAY)
+      WRITE(jpfunchk4,*)'phase fn. exp. coeff  I=2 (unscaled)'
+      WRITE(jpfunchk4,'(1P,6E12.4)')(WW2(K),K=1,MAXLAY)
 
-      WRITE(8,*)'phase fn. exp. coeff  I=3 (unscaled)'
-            WRITE(8,'(1P,6E12.4)')(WW3(K),K=1,MAXLAY)
+      WRITE(jpfunchk4,*)'phase fn. exp. coeff  I=3 (unscaled)'
+      WRITE(jpfunchk4,'(1P,6E12.4)')(WW3(K),K=1,MAXLAY)
 
-      WRITE(8,*)'phase fn. exp. coeff  I=4 (unscaled)'
-            WRITE(8,'(1P,6E12.4)')(WW4(K),K=1,MAXLAY)
+      WRITE(jpfunchk4,*)'phase fn. exp. coeff  I=4 (unscaled)'
+      WRITE(jpfunchk4,'(1P,6E12.4)')(WW4(K),K=1,MAXLAY)
 
-      WRITE(8,*)'solar cosine'
-            WRITE(8,'(1P,6E12.4)') U0
+      WRITE(jpfunchk4,*)'solar cosine'
+      WRITE(jpfunchk4,'(1P,6E12.4)') U0
 
-      WRITE(8,*)'surface albedo'
-            WRITE(8,'(1P,6E12.4)') ALB
+      WRITE(jpfunchk4,*)'surface albedo'
+      WRITE(jpfunchk4,'(1P,6E12.4)') ALB
 
-      WRITE(8,*)'extraterrestrial flux'
-            WRITE(8,'(1P,6E12.4)') FLX*PI
+      WRITE(jpfunchk4,*)'extraterrestrial flux'
+      WRITE(jpfunchk4,'(1P,6E12.4)') FLX*PI
 
-      CLOSE(8)
+      CLOSE(jpfunchk4)
 
       END SUBROUTINE CHECK_FOUR
 *************************************************************
@@ -1969,13 +2123,14 @@ c **********************************************************************
 !        - USE global_params for vertical grid parameters
 !        - removal of unused parameters and common blocks
 !        - cleaning, more DP declaration
+! 25/06/2021 jjb: all missing declarations and implicit none
 
 
       USE global_params, ONLY :
 ! Imported Parameters:
      &     nrlay
 
-      implicit double precision (a-h,o-z)
+      implicit none
 
       INTEGER MAXLAY,ndfs,mdfs
       PARAMETER (MAXLAY=nrlay)
@@ -1989,10 +2144,15 @@ c input
      1                 t(ndfs), u0a(ndfs), f0a(ndfs)
       double precision fk1(ndfs), fk2(ndfs), a4(4,4,ndfs),
      1                 z4(4,ndfs), g4(4,ndfs)
+      double precision as
 c output
       double precision ffu(mdfs), ffd(mdfs), fsd(mdfs), uav(mdfs)
 c local
       double precision x(4), fi(4)
+      integer i, ii, jj, k, n, np, nrfl, m
+      double precision asbs, f0, fourpi, fw1, fw2, fw3, fw4,
+     $     pi, u0, y, y1
+
       n = nrfl
       m = np
       asbs = as
@@ -2006,23 +2166,23 @@ c local
      O           fk1,   fk2,  a4,  z4,  g4)
 !      pi = 3.14159265   ! jjb changed:
       PI=2.*DASIN(1.0D0) !     same definition of pi as in two other places in jrate.f
-      fw1 = 0.6638961
-      fw2 = 2.4776962
+      fw1 = 0.6638961D0
+      fw2 = 2.4776962D0
       fw3 = u0 * pi * f0
-      fourpi = 4.0 * pi
+      fourpi = 4.0D0 * pi
       do 10 i = 1, m
          if ( i .eq. 1 ) then
-            x(1) = 1.0
-            x(2) = 1.0
+            x(1) = 1.0D0
+            x(2) = 1.0D0
             x(3) = exp ( - fk1(1) * t(1) )
             x(4) = exp ( - fk2(1) * t(1) )
             k = 1
-            y = 1.0
+            y = 1.0D0
          elseif ( i .eq. 2 ) then
             x(1) = exp ( - fk2(1) * t(1) )
             x(2) = exp ( - fk1(1) * t(1) )
-            x(3) = 1.0
-            x(4) = 1.0
+            x(3) = 1.0D0
+            x(4) = 1.0D0
             k = 1
             y = exp ( - t(1) / u0 )
          else
@@ -2030,8 +2190,8 @@ c local
             y1 = t(k) - t(k-1)
             x(1) = exp ( - fk2(k) * y1 )
             x(2) = exp ( - fk1(k) * y1 )
-            x(3) = 1.0
-            x(4) = 1.0
+            x(3) = 1.0D0
+            x(4) = 1.0D0
             y = exp ( - t(k) / u0 )
          endif
          do 37 jj = 1, 4
@@ -2046,7 +2206,7 @@ c local
          ffu(i)= fw1 * fi(2) + fw2 * fi(1)
          ffd(i)= fw1 * fi(3) + fw2 * fi(4)
          fsd(i)= fw3 * y
-         uav(i)= 0.25*(fi(1)+fi(2)+fi(3)+fi(4))+y*f0*pi/fourpi
+         uav(i)= 0.25D0*(fi(1)+fi(2)+fi(3)+fi(4))+y*f0*pi/fourpi
  10   continue
 
       end subroutine qfts
@@ -2092,14 +2252,14 @@ c local
 
       integer i,n
       n = nrfl
-      tt0 = 0.0
+      tt0 = 0.0D0
       do 10 i = 1, n
-         f = ww4(i) / 9.0
-         fw = 1.0 - f * ww(i)
-         w1(i) = ( ww1(i) - 3.0 * f ) / ( 1.0 - f )
-         w2(i) = ( ww2(i) - 5.0 * f ) / ( 1.0 - f )
-         w3(i) = ( ww3(i) - 7.0 * f ) / ( 1.0 - f )
-         w(i) = ( 1.0 - f ) * ww(i) / fw
+         f = ww4(i) / 9.0D0
+         fw = 1.0D0 - f * ww(i)
+         w1(i) = ( ww1(i) - 3.0D0 * f ) / ( 1.0D0 - f )
+         w2(i) = ( ww2(i) - 5.0D0 * f ) / ( 1.0D0 - f )
+         w3(i) = ( ww3(i) - 7.0D0 * f ) / ( 1.0D0 - f )
+         w(i) = ( 1.0D0 - f ) * ww(i) / fw
          dtt(i) = tt(i) - tt0
          tt0 = tt(i)
          dt(i) = dtt(i) * fw
@@ -2134,7 +2294,7 @@ c **********************************************************************
 ! Imported Parameters:
      &     nrlay
 
-      implicit double precision (a-h,o-z)
+      implicit none
 
       INTEGER MAXLAY,ndfs,ndfs4
       PARAMETER (MAXLAY=nrlay)
@@ -2158,11 +2318,16 @@ c **********************************************************************
       double precision ab(13,ndfs4), bx(ndfs4), xx(ndfs4)
 c local
       double precision fu(4,4), wu(4)
+      double precision b1, c1, f0n, fk1t, fk2t, fw1, fw2, t0n, t1n,
+     $     u0n, v1, v2, v3, w1n, w2n, w3n, wn
+      integer i, i1, i2, i3, i8, j, j1, j2, j3, k, kf,
+     $     m1, m2, m18, m28, n, n4
+
       n = nrfl
       n4 = n*4
       do 333 i = 1, n4
          do 333 j = 1, 13
-            ab(j,i) = 0.0
+            ab(j,i) = 0.0D0
  333     continue
       wn = w(1)
       w1n = w1(1)
@@ -2172,10 +2337,10 @@ c local
       t1n = t(1)
       u0n = u0(1)
       f0n = f0(1)
-      if ( wn .ge. 0.99999999999 ) then
-         wn = 0.99999999999
+      if ( wn .ge. 0.99999999999D0 ) then
+         wn = 0.99999999999D0
       endif
-      if ( wn .le. 1.0e-12 ) then
+      if ( wn .le. 1.0d-12 ) then
          call coefft0(t0n,  t1n,
      O                z1,  fk1t, fk2t,   a1,   zz,   aa)
          fk1(1) = fk1t
@@ -2218,10 +2383,10 @@ c local
          t1n = t(k)
          u0n = u0(k)
          f0n = f0(k)
-         if ( wn .ge. 0.99999999999 ) then
-            wn = 0.99999999999
+         if ( wn .ge. 0.99999999999D0 ) then
+            wn = 0.99999999999D0
          endif
-         if ( wn .le. 1.0e-12 ) then
+         if ( wn .le. 1.0d-12 ) then
             call coefft0(t0n,  t1n,
      O                   z1,  fk1t, fk2t,   a1,   zz,   aa)
             fk1(k) = fk1t
@@ -2271,8 +2436,8 @@ c local
                fu(i,j) = aa(i,j,2)
  70         continue
  40   continue
-      v1 = 0.2113247 * asbs
-      v2 = 0.7886753 * asbs
+      v1 = 0.2113247D0 * asbs
+      v2 = 0.7886753D0 * asbs
       v3 = asbs * u0(1) * f0(1) * exp ( - t(n) / u0(1) )
       m1 = n4 - 1
       m2 = n4
@@ -2304,9 +2469,10 @@ c **********************************************************************
 c Double-Gauss quadratures and weights (Sykes, 1951).
 c **********************************************************************
       block data gaus2
-      implicit double precision (a-h,o-z)
+      implicit none
       common /point/ u(4)
-      data u / -0.7886752, -0.2113247, 0.2113247, 0.7886752 /
+      double precision u
+      data u / -0.7886752D0, -0.2113247D0, 0.2113247D0, 0.7886752D0 /
       end
 
 c *********************************************************************
@@ -2334,8 +2500,9 @@ c p0d(4), p1d(4), p2d(4), and p3d(4) are Legendre polynomials p0(x),
 c p1(x), p2(x), and p3(x) when x = u(1), u(2), u(3), and u(4).
 c **********************************************************************
       block data legend
-      implicit double precision (a-h,o-z)
+      implicit none
       common /legen/ p0d(4), p1d(4), p2d(4), p3d(4)
+      double precision p0d, p1d, p2d, p3d
       data p0d /  .100000D+01,  .100000D+01,  .100000D+01, .100000D+01 /
       data p1d / -.788675D+00, -.211325D+00,  .211325D+00, .788675D+00 /
       data p2d /  .433013D+00, -.433013D+00, -.433013D+00, .433013D+00 /
@@ -2347,8 +2514,9 @@ c p11d(4,4), p22d(4,4), and p33d(4,4) are defined as 0.5*p1d(i)*p1d(j),
 c 0.5*p2d(i)*p2d(j), and 0.5*p3d(i)*p3d(j), respectively.
 c *********************************************************************
       block data legenf
-      implicit double precision (a-h,o-z)
+      implicit none
       common /legen1/ p11d(4,4), p22d(4,4), p33d(4,4)
+      double precision p11d, p22d, p33d
       data p11d / .311004D+00, .833334D-01,-.833334D-01,-.311004D+00,
      1            .833334D-01, .223291D-01,-.223291D-01,-.833334D-01,
      1           -.833334D-01,-.223291D-01, .223291D-01, .833334D-01,
@@ -2372,35 +2540,43 @@ c **********************************************************************
 !                 removal of unused parameters and common blocks
 !                 cleaning
 
-      implicit double precision (a-h,o-z)
+      implicit none
 
       common /point/ u(4)
+      double precision u
       common /legen/ p0d(4), p1d(4), p2d(4), p3d(4)
+      double precision p0d, p1d, p2d, p3d
       common /legen1/ p11d(4,4), p22d(4,4), p33d(4,4)
+      double precision p11d, p22d, p33d
+
+c input
+      double precision, intent(in) :: w, w1, w2, w3, u0
 
 c output
       double precision b(4,3)
 
 c local
+      integer i, j
       double precision c(4,5)
+      double precision fq, q1, q2, q3, fw, w0w, w1w, w2w, w3w, x
 
 c-----------------------------------------------------------------------
-      x = 0.5 * w
+      x = 0.5D0 * w
       w0w = x
       w1w = x * w1
       w2w = x * w2
       w3w = x * w3
       fw = u0 * u0
       q1 = - w1w * u0
-      q2 = w2w * ( 1.5 * fw - 0.5 )
-      q3 = - w3w * ( 2.5 * fw - 1.5 ) * u0
-      fq = 0.5 * w0w
+      q2 = w2w * ( 1.5D0 * fw - 0.5D0 )
+      q3 = - w3w * ( 2.5D0 * fw - 1.5D0 ) * u0
+      fq = 0.5D0 * w0w
       do 10 i = 3, 4
          do 20 j = 1, 4
             c(i,j) = fq + w1w * p11d(i,j) +
      1               w2w * p22d(i,j) + w3w * p33d(i,j)
             if ( i .eq. j ) then
-               c(i,j) = ( c(i,j) - 1.0 ) / u(i)
+               c(i,j) = ( c(i,j) - 1.0D0 ) / u(i)
             else
                c(i,j) = c(i,j) / u(i)
             endif
@@ -2431,11 +2607,12 @@ c coefficient calculations for second order differential equations.
 c **********************************************************************
       subroutine coeff2(u0,  b,
      O                   a,   d)
-      implicit double precision (a-h,o-z)
+      implicit none
 c input
-      double precision u0, b(4,3)
+      double precision, intent(in) :: u0, b(4,3)
 c output
-      double precision a(2,2,2), d(4)
+      double precision, intent(out) :: a(2,2,2), d(4)
+      double precision fw1, fw2, fw3, fw4
       fw1 = b(1,1) * b(1,2)
       fw2 = b(2,1) * b(3,2)
       fw3 = b(3,1) * b(2,2)
@@ -2460,11 +2637,12 @@ c coefficient calculations for fourth-order differential equations.
 c **********************************************************************
       subroutine coeff4(u0,   a,    d,
      O                  b1,  c1,    z)
-      implicit double precision (a-h,o-z)
+      implicit none
 c input
-      double precision a(2,2,2), d(4)
+      double precision, intent(in) :: u0, a(2,2,2), d(4)
 c output
-      double precision z(4)
+      double precision, intent(out) :: b1, c1, z(4)
+      double precision x
       x = u0 * u0
       b1 = a(2,2,1) + a(1,1,1)
       c1 = a(2,1,1) * a(1,2,1) - a(1,1,1) * a(2,2,1)
@@ -2487,33 +2665,37 @@ c **********************************************************************
 !                 removal of unused parameters
 !                 cleaning.
 
-      implicit double precision (a-h,o-z)
+      implicit none
 
 c input
       double precision b(4,3)
       double precision a(2,2,2)
       double precision z(4)
+      double precision b1, c1, f0, t0, t1, u0
 
 c output
-
       double precision aa(4,4,2), zz(4,2), a1(4,4), z1(4)
+      double precision fk1, fk2
 
+c local
+      integer i
+      double precision a2, b2, dt, fq0, fq1, fw, fw1, fw2, x, y, zx
 c--------------------------------------------------------------
       dt = t1 - t0
-      x = sqrt ( b1 * b1 + 4.0 * c1 )
-      fk1 = sqrt ( ( b1 + x ) * 0.5 )
-      fk2 = sqrt ( ( b1 - x ) * 0.5 )
+      x = sqrt ( b1 * b1 + 4.0D0 * c1 )
+      fk1 = sqrt ( ( b1 + x ) * 0.5D0 )
+      fk2 = sqrt ( ( b1 - x ) * 0.5D0 )
       fw = u0 * u0
-      x = 1.0 / ( fw * fw ) - b1 / fw - c1
-      fw = 0.5 * f0 / x
+      x = 1.0D0 / ( fw * fw ) - b1 / fw - c1
+      fw = 0.5D0 * f0 / x
       z(1) = fw * z(1)
       z(2) = fw * z(2)
       z(3) = fw * z(3)
       z(4) = fw * z(4)
-      z1(1) = 0.5 * ( z(1) + z(3) )
-      z1(2) = 0.5 * ( z(2) + z(4) )
-      z1(3) = 0.5 * ( z(2) - z(4) )
-      z1(4) = 0.5 * ( z(1) - z(3) )
+      z1(1) = 0.5D0 * ( z(1) + z(3) )
+      z1(2) = 0.5D0 * ( z(2) + z(4) )
+      z1(3) = 0.5D0 * ( z(2) - z(4) )
+      z1(4) = 0.5D0 * ( z(1) - z(3) )
       a2 = ( fk1 * fk1 - a(2,2,1) ) / a(2,1,1)
       b2 = ( fk2 * fk2 - a(2,2,1) ) / a(2,1,1)
       x = b(1,1) * b(4,1) - b(3,1) * b(2,1)
@@ -2521,16 +2703,16 @@ c--------------------------------------------------------------
       fw2 = fk2 / x
       y = fw2 * ( b2 * b(2,1) - b(4,1) )
       zx = fw1 * ( a2 * b(2,1) - b(4,1) )
-      a1(1,1) = 0.5 * ( 1 - y )
-      a1(1,2) = 0.5 * ( 1 - zx )
-      a1(1,3) = 0.5 * ( 1 + zx )
-      a1(1,4) = 0.5 * ( 1 + y )
+      a1(1,1) = 0.5D0 * ( 1 - y )
+      a1(1,2) = 0.5D0 * ( 1 - zx )
+      a1(1,3) = 0.5D0 * ( 1 + zx )
+      a1(1,4) = 0.5D0 * ( 1 + y )
       y = fw2 * ( b(3,1) - b2 * b(1,1) )
       zx = fw1 * ( b(3,1) - a2 * b(1,1) )
-      a1(2,1) = 0.5 * ( b2 - y )
-      a1(2,2) = 0.5 * ( a2 - zx )
-      a1(2,3) = 0.5 * ( a2 + zx )
-      a1(2,4) = 0.5 * ( b2 + y )
+      a1(2,1) = 0.5D0 * ( b2 - y )
+      a1(2,2) = 0.5D0 * ( a2 - zx )
+      a1(2,3) = 0.5D0 * ( a2 + zx )
+      a1(2,4) = 0.5D0 * ( b2 + y )
       a1(3,1) = a1(2,4)
       a1(3,2) = a1(2,3)
       a1(3,3) = a1(2,2)
@@ -2569,41 +2751,44 @@ c **********************************************************************
 !                 removal of 2 unused argument,
 !                 removal of unused parameters and common block,
 !                 cleaning
+! 25/06/2021 jjb: all missing declarations and implicit none
 
-      implicit double precision (a-h,o-z)
+      implicit none
 
+! input
+      double precision t0, t1
 ! output
       double precision z1(4), fk1, fk2, a1(4,4), zz(4,2), aa(4,4,2)
 ! Local scalars:
-      integer i, j
-      double precision dt, y
+      integer i, j, k
+      double precision dt, x, y
 
-      fk1 = 4.7320545
-      fk2 = 1.2679491
+      fk1 = 4.7320545D0
+      fk2 = 1.2679491D0
 !     y = exp ( - ( t1 - t0 ) / u0 ) ! jjb internal function not used
 !     fw = 0.5 * f0                  ! jjb unreferenced
       do 10 i = 1, 4
-         z1(i) = 0.0
-         zz(i,1) = 0.0
-         zz(i,2) = 0.0
+         z1(i) = 0.0D0
+         zz(i,1) = 0.0D0
+         zz(i,2) = 0.0D0
          do 10 j = 1, 4
-            a1(i,j) = 0.0
+            a1(i,j) = 0.0D0
             do 10 k = 1, 2
-               aa(i,j,k) = 0.0
+               aa(i,j,k) = 0.0D0
  10   continue
       do 20 i = 1, 4
          j = 5 - i
-         a1(i,j) = 1.0
+         a1(i,j) = 1.0D0
  20   continue
       dt = t1 - t0
       x = exp ( - fk1 * dt )
       y = exp ( - fk2 * dt )
       aa(1,4,1) = y
       aa(2,3,1) = x
-      aa(3,2,1) = 1.0
-      aa(4,1,1) = 1.0
-      aa(1,4,2) = 1.0
-      aa(2,3,2) = 1.0
+      aa(3,2,1) = 1.0D0
+      aa(4,1,1) = 1.0D0
+      aa(1,4,2) = 1.0D0
+      aa(2,3,2) = 1.0D0
       aa(3,2,2) = x
       aa(4,1,2) = y
       end subroutine coefft0
@@ -2644,12 +2829,13 @@ c **********************************************************************
 !        - USE global_params for vertical grid parameters
 !        - removal of unused parameters
 !        - cleaning
+! 25/06/2021 jjb: all missing declarations and implicit none
 
       USE global_params, ONLY :
 ! Imported Parameters:
      &     nrlay
 
-      implicit double precision (a-h,o-z)
+      implicit none
 
       INTEGER MAXLAY,ndfs4
       PARAMETER (MAXLAY=nrlay)
@@ -2657,13 +2843,19 @@ c **********************************************************************
 
 c input/output
       double precision ab(13,ndfs4), b(ndfs4), x(ndfs4)
+c local
+      integer i, i0, i0f, i0m1, ifq, im1, j, k, k44, l,
+     $     m, m1, m18, m1f, m2, m28, m3, m38, m4, m48,
+     $     n, n1, n2, n3, n4, n44, nrfl
+      double precision p, t, xx, yy
+
       n = nrfl
       n4 = n*4
       do 5 k = 1, n - 1
          k44 = 4 * k - 4
          do 3 l= 1, 4
             m1 = k44 + l
-            p = 0.0
+            p = 0.0D0
             do 10 i = 8, 14 - l
                if ( abs ( ab(i,m1) ) .gt. abs ( p ) ) then
                   p = ab(i,m1)
@@ -2686,7 +2878,7 @@ c input/output
             b(m1) = t
  20         continue
             yy = ab(8,m1)
-            ab(8,m1) = 1.0
+            ab(8,m1) = 1.0D0
             do 25 j = m1 + 1, m1 + 8 - l
                m1f = m18 - j
                ab(m1f,j) = ab(m1f,j) / yy
@@ -2694,7 +2886,7 @@ c input/output
             b(m1) = b(m1) / yy
             do 30 i = 9, 14 - l
                xx = ab(i,m1)
-               ab(i,m1) = 0.0
+               ab(i,m1) = 0.0D0
                im1 = i + m1
                do 35 j = m1 + 1, m1 + 8 - l
                   ifq = im1 - j
@@ -2709,7 +2901,7 @@ c input/output
       n44 = n4 - 4
       do 40 l = 1, 3
          m1 = n44 + l
-         p = 0.0
+         p = 0.0D0
          do 45 i = 8, 12 - l
             if ( abs ( ab(i,m1) ) .gt. abs ( p ) ) then
                p = ab(i,m1)
@@ -2732,7 +2924,7 @@ c input/output
          b(m1) = t
  55      continue
          yy = ab(8,m1)
-         ab(8,m1) = 1.0
+         ab(8,m1) = 1.0D0
          do 60 j = m1 + 1, m1 + 4 - l
             m1f = m18 - j
             ab(m1f,j) = ab(m1f,j) / yy
@@ -2740,7 +2932,7 @@ c input/output
          b(m1) = b(m1) / yy
          do 65 i = 9, 12 - l
             xx = ab(i,m1)
-            ab(i,m1) = 0.0
+            ab(i,m1) = 0.0D0
             im1 = i + m1
             do 70 j = m1 + 1, m1 + 4 - l
                ifq = im1 - j
@@ -2752,7 +2944,7 @@ c input/output
  65      continue
  40   continue
       yy = ab(8,n4)
-      ab(8,n4) = 1.0
+      ab(8,n4) = 1.0D0
       b(n4) = b(n4) / yy
       n3 = n4 - 1
       n2 = n3 - 1
@@ -2803,6 +2995,9 @@ c input/output
 !        - little cleaning
 !        - implicit none
 
+      USE file_unit, ONLY :
+! Imported Parameters:
+     &     jpfunf4st
 
       USE global_params, ONLY :
 ! Imported Parameters:
@@ -2823,7 +3018,7 @@ c input/output
      $          DWAVE(MAXWAV)  !width of the wavelength intervals [cm]
       DOUBLE PRECISION WAVE,DWAVE
 
-      CHARACTER FILEN*4
+      CHARACTER (LEN=4) FILEN
 
       INTEGER
      $     NWS(NW)             !specification of interval: 1 < NWS(L) < MAXWAV
@@ -2833,23 +3028,23 @@ c input/output
 c-------------------------------------------------------------------
 
 
-      OPEN(9,FILE=FILEN//'.out',STATUS='UNKNOWN')
+      OPEN(jpfunf4st,FILE=FILEN//'.out',STATUS='UNKNOWN')
 
       DO L  = 1,NW
          DO K=0,MAXLAY
             IF (FACT(K,L).lt.1.D-25) THEN
-               TP(K)=0
+               TP(K)=0D0
             ELSE
-               TP(K)=FACT(K,L)/(DWAVE(NWS(L))*1.E7) !-> [photons/(cm^2 s nm)]
+               TP(K)=FACT(K,L)/(DWAVE(NWS(L))*1.D7) !-> [photons/(cm^2 s nm)]
             ENDIF
          ENDDO
-         WRITE(9,'(1p,6E12.4)')TP
+         WRITE(jpfunf4st,'(1p,6E12.4)')TP
       ENDDO
-      WRITE(9,'(1p,6E12.4)')(FLX(L)/(DWAVE(NWS(L))*1.E7),L=1,NW)
+      WRITE(jpfunf4st,'(1p,6E12.4)')(FLX(L)/(DWAVE(NWS(L))*1.D7),L=1,NW)
 
-      CLOSE(9)
+      CLOSE(jpfunf4st)
 
-      END
+      END SUBROUTINE FLUX_OUT
 ********************************************************************
 
 
@@ -2869,16 +3064,14 @@ c-------------------------------------------------------------------
 !                 cleaning
 ! 05/11/2017 jjb: replaced directories by config
 
-      USE config, ONLY : cinpdir_phot ! input directory for photolysis data files
+      USE config, ONLY : cinpdir_phot     ! input directory for photolysis data files
+      USE file_unit, ONLY : nlt=>jpfunnlt ! unit to open and read lookup table ('lookt0900.dat')
+      USE precision, ONLY : dp
 
-      IMPLICIT DOUBLE PRECISION(A-H,O-Z)
-
-! Local parameter:
-      integer nlt
-      parameter ( nlt = 4 ) ! unit to open and read lookup table ('lookt0900.dat')
+      IMPLICIT NONE
 
 ! Local scalar:
-      integer i, j, k
+      INTEGER i, j, k
 
 *--------------------------------------------------------------------*
 *     LOOK-UP TABLE                                                  *
@@ -2909,7 +3102,15 @@ c-------------------------------------------------------------------
      $              CS_dumm24(58,2,2),
      $              CS_dumm25(58,2,2),
      $              CS_dumm26(58,2,2)
-
+      REAL (KIND=DP) ::
+     $     CS_O2, FS_O2, CS_O3, FS_O3, CS_N2O, FS_N2O,
+     $     CS_CFC11, FS_CFC11, CS_CFC12, FS_CFC12,
+     $     CS_H2O2, FS_H2O2, CS_HNO3, FS_HNO3, CS_HNO4, FS_HNO4,
+     $     CS_ClONO2, FS_ClONO2, CS_BrNO3, CS_Cl2O2, CS_HOCl,
+     $     CS_N2O5, FS_N2O5, CS_HO2, FS_HO2, CS_HO3, FS_HO3,
+     $     CS_BrCl_noT, CS_ClNO2, CS_BrNO2, CS_Br2, CS_CH3I,
+     $     CS_NO3n, FS_NO3n, CS_dumm23, CS_dumm24, CS_dumm25, CS_dumm26
+      
       COMMON/LOOK/
      $          TAUA1(55,3),     TAUB1(55,3),
      $          A1_O3(55,3),     B1_O3(55,3),
@@ -3022,6 +3223,50 @@ c-------------------------------------------------------------------
      $          A3_dumm24(55),   B3_dumm24(55),
      $          A3_dumm25(55),   B3_dumm25(55),
      $          A3_dumm26(55),   B3_dumm26(55)
+      REAL (KIND=DP) ::
+     $     TAUA1, TAUB1, A1_O3, B1_O3, A1_O2, B1_O2, A1_H2O2, B1_H2O2,
+     $     A1_HNO3, B1_HNO3, A1_HNO4, B1_HNO4, A1_N2O5, B1_N2O5,
+     $     A1_CH3OOH, B1_CH3OOH, A1_N2O, B1_N2O, A1_CFC11, B1_CFC11,
+     $     A1_CFC12, B1_CFC12, A1_ClONO2, B1_ClONO2, A1_BrNO3, B1_BrNO3,
+     $     A1_Cl2O2, B1_Cl2O2, A1_HOCl, B1_HOCl, A1_H_O2, B1_H_O2,
+     $     A1_H_O3, B1_H_O3, A1_BrCl_noT, B1_BrCl_noT,
+     $     A1_ClNO2, B1_ClNO2, A1_BrNO2, B1_BrNO2, A1_Br2, B1_Br2,
+     $     A1_CH3I, B1_CH3I, A1_ICl, B1_ICl, A1_IBr, B1_IBr,
+     $     A1_C3H7I, B1_C3H7I, A1_CH2ClI, B1_CH2ClI, A1_CH2I2, B1_CH2I2,
+     $     A1_INO2, B1_INO2, A1_Cl2_noT, B1_Cl2_noT, A1_NO3n, B1_NO3n,
+     $     A1_dumm23, B1_dumm23, A1_dumm24, B1_dumm24,
+     $     A1_dumm25, B1_dumm25, A1_dumm26, B1_dumm26,
+     $     TAUA2, TAUB2,
+     $     A2_TO3, B2_TO3, A2_O1D, B2_O1D, A2_O3P, B2_O3P,
+     $     A2_H2O2, B2_H2O2, A2_HNO3, B2_HNO3, A2_HNO4, B2_HNO4,
+     $     A2_N2O5, B2_N2O5, A2_CH3OOH, B2_CH3OOH, A2_NO2, B2_NO2,
+     $     A2_ClONO2, B2_ClONO2, A2_BrNO3, B2_BrNO3, A2_Cl2O2, B2_Cl2O2,
+     $     A2_HOCl, B2_HOCl, A2_H_O3, B2_H_O3, A2_H_NO2, B2_H_NO2,
+     $     A2_BrCl_noT, B2_BrCl_noT, A2_ClNO2, B2_ClNO2,
+     $     A2_BrNO2, B2_BrNO2, A2_Br2, B2_Br2, A2_INO3, B2_INO3,
+     $     A2_CH3I, B2_CH3I, A2_ICl, B2_ICl, A2_IBr, B2_IBr,
+     $     A2_C3H7I, B2_C3H7I, A2_CH2ClI, B2_CH2ClI, A2_CH2I2, B2_CH2I2,
+     $     A2_INO2, B2_INO2, A2_OClO_noT, B2_OClO_noT,
+     $     A2_Cl2_noT, B2_Cl2_noT, A2_HOBr, B2_HOBr, A2_NO3n, B2_NO3n,
+     $     A2_dumm23, B2_dumm23, A2_dumm24, B2_dumm24,
+     $     A2_dumm25, B2_dumm25, A2_dumm26, B2_dumm26,
+     $     TAUA3, TAUB3,
+     $     A3_TO3, B3_TO3, A3_O1D, B3_O1D, A3_O3P, B3_O3P,
+     $     A3_H2O2, B3_H2O2, A3_HNO3, B3_HNO3, A3_HNO4, B3_HNO4,
+     $     A3_N2O5, B3_N2O5, A3_CH3OOH, B3_CH3OOH, A3_NO2, B3_NO2,
+     $     A3_COH2, B3_COH2, A3_CHOH, B3_CHOH, A3_ClONO2, B3_ClONO2,
+     $     A3_BrNO3, B3_BrNO3, A3_Cl2O2, B3_Cl2O2, A3_HOCl, B3_HOCl,
+     $     A3_H_O3, B3_H_O3, A3_H_NO2, B3_H_NO2,
+     $     A3_BrCl_noT, B3_BrCl_noT, A3_ClNO2, B3_ClNO2,
+     $     A3_BrNO2, B3_BrNO2, A3_Br2, B3_Br2, A3_INO3, B3_INO3,
+     $     A3_CH3I, B3_CH3I, A3_ICl, B3_ICl, A3_IBr, B3_IBr,
+     $     A3_C3H7I, B3_C3H7I, A3_CH2ClI, B3_CH2ClI, A3_CH2I2, B3_CH2I2,
+     $     A3_INO2, B3_INO2, A3_BrO_noT, B3_BrO_noT,
+     $     A3_OClO_noT, B3_OClO_noT, A3_Cl2_noT, B3_Cl2_noT,
+     $     A3_HOI_jen91, B3_HOI_jen91,
+     $     A3_HOBr, B3_HOBr, A3_NO2m, B3_NO2m, A3_NO3n, B3_NO3n,
+     $     A3_dumm23, B3_dumm23, A3_dumm24, B3_dumm24,
+     $     A3_dumm25, B3_dumm25, A3_dumm26, B3_dumm26
 
       COMMON/C_POLY/
      $   C4_TAU(4),     C5_TAU(3),                    C7_TAU(2),
@@ -3073,7 +3318,55 @@ c-------------------------------------------------------------------
      $   C4_dumm24(2),   C5_dumm24(2),   C6_dumm24(1),   C7_dumm24(2),
      $   C4_dumm25(2),   C5_dumm25(2),   C6_dumm25(1),   C7_dumm25(2),
      $   C4_dumm26(2),   C5_dumm26(2),   C6_dumm26(1),   C7_dumm26(2)
-
+      REAL (KIND=DP)
+     $   C4_TAU,     C5_TAU,                 C7_TAU,
+     $   C4_T_O3,    C5_T_O3,                C7_T_O3,
+     $   C4_O1D,     C5_O1D,
+     $   C4_O3P,     C5_O3P,     C6_O3P,     C7_O3P,
+     $   C4_H2O2,    C5_H2O2,    C6_H2O2,
+     $   C4_HNO3,    C5_HNO3,    C6_HNO3,
+     $   C4_HNO4,    C5_HNO4,
+     $   C4_N2O5,    C5_N2O5,    C6_N2O5,
+     $   C4_CH3OOH,  C5_CH3OOH,  C6_CH3OOH,
+     $   C4_NO2,     C5_NO2,     C6_NO2,
+     $   C4_COH2,    C5_COH2,    C6_COH2,
+     $   C4_CHOH,    C5_CHOH,    C6_CHOH,
+     $                           C6_NO2O,    C7_NO2O,
+     $                                       C7_NOO2,
+     $   C4_ClONO2,  C5_ClONO2,  C6_ClONO2,
+     $   C4_BrNO3,   C5_BrNO3,   C6_BrNO3,   C7_BrNO3,
+     $   C4_Cl2O2,   C5_Cl2O2,   C6_Cl2O2,
+     $   C4_HOCl,    C5_HOCl,    C6_HOCl,
+     $   C4_H_O3,    C5_H_O3,    C6_H_O3,    C7_H_O3,
+     $                                       C7_H_O2,
+     $   C4_H_NO2,   C5_H_NO2,   C6_H_NO2,   C7_H_NO2,
+     $                           C6_H_O4,    C7_H_O4,
+     $   C4_BrCl_noT,C5_BrCl_noT,C6_BrCl_noT,C7_BrCl_noT,
+     $   C4_ClNO2,   C5_ClNO2,   C6_ClNO2,
+     $   C4_BrNO2,   C5_BrNO2,   C6_BrNO2,   C7_BrNO2,
+     $   C4_Br2,     C5_Br2,     C6_Br2,     C7_Br2,
+     $                           C6_IO,      C7_IO,
+     $   C4_INO3,    C5_INO3,    C6_INO3,    C7_INO3,
+     $   C4_CH3I,    C5_CH3I,    C6_CH3I,
+     $                           C6_I2,      C7_I2,
+     $   C4_ICl,     C5_ICl,     C6_ICl,     C7_ICl,
+     $   C4_IBr,     C5_IBr,     C6_IBr,     C7_IBr,
+     $   C4_C3H7I,   C5_C3H7I,   C6_C3H7I,
+     $   C4_CH2ClI,  C5_CH2ClI,  C6_CH2ClI,
+     $   C4_CH2I2,   C5_CH2I2,   C6_CH2I2,
+     $   C4_INO2,    C5_INO2,    C6_INO2,
+     $   C4_BrO_noT, C5_BrO_noT, C6_BrO_noT,
+     $   C4_OClO_noT,C5_OClO_noT,C6_OClO_noT,C7_OClO_noT,
+     $   C4_Cl2_noT, C5_Cl2_noT, C6_Cl2_noT, C7_Cl2_noT,
+     $   C4_HOI_jen91,C5_HOI_jen91,C6_HOI_jen91,C7_HOI_jen91,
+     $   C4_HOBr,    C5_HOBr,    C6_HOBr,   C7_HOBr,
+     $   C4_HONO,    C5_HONO,    C6_HONO,
+     $   C4_NO2m,    C5_NO2m,    C6_NO2m,
+     $   C4_NO3n,    C5_NO3n,    C6_NO3n,
+     $   C4_dumm23,  C5_dumm23,  C6_dumm23,  C7_dumm23,
+     $   C4_dumm24,  C5_dumm24,  C6_dumm24,  C7_dumm24,
+     $   C4_dumm25,  C5_dumm25,  C6_dumm25,  C7_dumm25,
+     $   C4_dumm26,  C5_dumm26,  C6_dumm26,  C7_dumm26
 
 c-------------------------------------------------------------------
 
@@ -4057,142 +4350,142 @@ c-------------------------------------------------------------------
      $     TJ_NOO2, TJ_NO2O, TJ_N2O,  TJ_CFC12, TJ_CFC11, TJ_ClONO2,
      $     TJ_CHOH, TJ_COH2, TJ_NO3n, TH_O3,    TH_O4,    TH_NO2
 
-      DATA TJ_O1D /1.00,  0.00,  0.00,  0.00,
-     $             1.00,  0.08,  0.00,  0.00,
-     $             1.00, -0.03,  0.00,  0.00,
-     $             1.00,  0.88,  0.10, -0.58,
-     $             1.00,  5.14,  7.92,  0.91,
-     $             0.00,  0.00,  0.00,  0.00,
-     $             0.00,  0.00,  0.00,  0.00/
+      DATA TJ_O1D /1.00D0,  0.00D0,  0.00D0,  0.00D0,
+     $             1.00D0,  0.08D0,  0.00D0,  0.00D0,
+     $             1.00D0, -0.03D0,  0.00D0,  0.00D0,
+     $             1.00D0,  0.88D0,  0.10D0, -0.58D0,
+     $             1.00D0,  5.14D0,  7.92D0,  0.91D0,
+     $             0.00D0,  0.00D0,  0.00D0,  0.00D0,
+     $             0.00D0,  0.00D0,  0.00D0,  0.00D0/
 
-      DATA TJ_HNO3/1.00,  0.42,  0.07,  0.00,
-     $             1.00,  0.51,  0.16,  0.00,
-     $             1.00,  0.80,  0.30,  0.00,
-     $             1.00,  1.05,  0.56,  0.20,
-     $             1.00,  1.62,  1.40,  0.82,
-     $             1.00,  2.72,  3.88,  3.50,
-     $             0.00,  0.00,  0.00,  0.00/
+      DATA TJ_HNO3/1.00D0,  0.42D0,  0.07D0,  0.00D0,
+     $             1.00D0,  0.51D0,  0.16D0,  0.00D0,
+     $             1.00D0,  0.80D0,  0.30D0,  0.00D0,
+     $             1.00D0,  1.05D0,  0.56D0,  0.20D0,
+     $             1.00D0,  1.62D0,  1.40D0,  0.82D0,
+     $             1.00D0,  2.72D0,  3.88D0,  3.50D0,
+     $             0.00D0,  0.00D0,  0.00D0,  0.00D0/
 
-      DATA TJ_N2O5/1.00,  0.00,  0.00,  0.00,
-     $             1.00,  0.47, -0.21,  0.00,
-     $             1.00,  1.79, -0.14, -0.49,
-     $             1.00,  2.31,  0.42, -0.99,
-     $             1.00,  3.29,  2.22, -1.37,
-     $             1.00,  5.13,  8.01,  2.30,
-     $             0.00,  0.00,  0.00,  0.00/
-
-
-      DATA TJ_CFC12/1.0,  2.10, 2.31,  1.68,
-     $             0.00,  0.00, 0.00,  0.00,
-     $             0.00,  0.00, 0.00,  0.00,
-     $             0.00,  0.00, 0.00,  0.00,
-     $             0.00,  0.00, 0.00,  0.00,
-     $             0.00,  0.00, 0.00,  0.00,
-     $             0.00,  0.00, 0.00,  0.00/
-
-      DATA TJ_CFC11/1.0,  0.52, 0.13,
-     $             0.00,  0.00, 0.00,
-     $             0.00,  0.00, 0.00,
-     $             0.00,  0.00, 0.00,
-     $             0.00,  0.00, 0.00,
-     $             0.00,  0.00, 0.00,
-     $             0.00,  0.00, 0.00/
-
-      DATA TJ_ClONO2/1.0, 0.04,-0.53,
-     $             1.00,  0.67, 0.23,
-     $             1.00,  0.89, 0.63,
-     $             1.00,  1.06, 0.85,
-     $             1.00,  1.12, 1.73,
-     $             1.00,  0.68, 0.32,
-     $             0.00,  0.00, 0.00/
-
-      DATA TJ_O3P /1.00,  0.00,  0.00,
-     $             1.00,  0.07,  0.00,
-     $             1.00, -0.40,  0.11,
-     $             1.00, -0.93, -0.11,
-     $             1.00, -0.36, -0.55,
-     $             1.00,  0.00,  0.00,
-     $             1.00,  0.00,  0.00/
-
-      DATA TJ_H2O2/1.00,  0.00,  0.00,
-     $             1.00,  0.21,  0.36,
-     $             1.00,  0.32,  0.53,
-     $             1.00,  0.42,  0.68,
-     $             1.00,  0.63,  1.03,
-     $             1.00,  0.78,  1.28,
-     $             0.00,  0.00,  0.00/
-
-      DATA TJ_N2O/ 1.00,  1.33,  0.91,
-     $             0.00,  0.00,  0.00,
-     $             0.00,  0.00,  0.00,
-     $             0.00,  0.00,  0.00,
-     $             0.00,  0.00,  0.00,
-     $             0.00,  0.00,  0.00,
-     $             0.00,  0.00,  0.00/
-
-      DATA TJ_CHOH/1.00,  0.00,
-     $             1.00,  0.00,
-     $             1.00, -0.17,
-     $             1.00,  0.00,
-     $             1.00, -0.25,
-     $             1.00, -0.37,
-     $             1.00,  0.00/
-
-      DATA TJ_COH2/1.00,  0.00,
-     $             1.00,  0.00,
-     $             1.00, -0.17,
-     $             1.00,  0.00,
-     $             1.00, -0.31,
-     $             1.00, -0.32,
-     $             1.00,  0.00/
-
-      DATA TJ_NO2 /1.00,  0.00,
-     $             1.00,  0.00,
-     $             1.00,  0.00,
-     $             1.00,  0.00,
-     $             1.00,  0.00,
-     $             1.00,  0.00,
-     $             1.00,  0.00/
-
-      DATA TJ_NO2O/0.00,  0.00,
-     $             0.00,  0.00,
-     $             0.00,  0.00,
-     $             0.00,  0.00,
-     $             0.00,  0.00,
-     $             1.00,  0.00,
-     $             1.00, -0.22/
-
-      DATA TJ_NOO2/0.00,  0.00,
-     $             0.00,  0.00,
-     $             0.00,  0.00,
-     $             0.00,  0.00,
-     $             0.00,  0.00,
-     $             0.00,  0.00,
-     $             1.00, -0.32/
-
-      DATA TJ_NO3n/1.00, -0.01, -0.01,
-     $             1.00,  0.00, -0.03,
-     $             1.00,  0.00,  0.00,
-     $             1.00,  0.00, -0.00,
-     $             1.00,  0.00, -0.00,
-     $             1.00,  0.00, -0.00/
+      DATA TJ_N2O5/1.00D0,  0.00D0,  0.00D0,  0.00D0,
+     $             1.00D0,  0.47D0, -0.21D0,  0.00D0,
+     $             1.00D0,  1.79D0, -0.14D0, -0.49D0,
+     $             1.00D0,  2.31D0,  0.42D0, -0.99D0,
+     $             1.00D0,  3.29D0,  2.22D0, -1.37D0,
+     $             1.00D0,  5.13D0,  8.01D0,  2.30D0,
+     $             0.00D0,  0.00D0,  0.00D0,  0.00D0/
 
 
-      DATA TH_O3/  1.00,  0.00,
-     $             1.00,  0.08,
-     $             1.00, -0.04,
-     $             1.00,  0.00,
-     $             1.00,  0.00,
-     $             1.00,  0.00,
-     $             1.00,  0.00/
+      DATA TJ_CFC12/1.0D0,  2.10D0, 2.31D0,  1.68D0,
+     $             0.00D0,  0.00D0, 0.00D0,  0.00D0,
+     $             0.00D0,  0.00D0, 0.00D0,  0.00D0,
+     $             0.00D0,  0.00D0, 0.00D0,  0.00D0,
+     $             0.00D0,  0.00D0, 0.00D0,  0.00D0,
+     $             0.00D0,  0.00D0, 0.00D0,  0.00D0,
+     $             0.00D0,  0.00D0, 0.00D0,  0.00D0/
 
-      DATA TH_NO2/ 1.00,  0.00,
-     $             1.00, -0.01,
-     $             1.00, -0.05,
-     $             1.00, -0.04,
-     $             1.00, -0.07,
-     $             1.00, -0.05,
-     $             1.00,  0.00/
+      DATA TJ_CFC11/1.0D0,  0.52D0, 0.13D0,
+     $             0.00D0,  0.00D0, 0.00D0,
+     $             0.00D0,  0.00D0, 0.00D0,
+     $             0.00D0,  0.00D0, 0.00D0,
+     $             0.00D0,  0.00D0, 0.00D0,
+     $             0.00D0,  0.00D0, 0.00D0,
+     $             0.00D0,  0.00D0, 0.00D0/
+
+      DATA TJ_ClONO2/1.0D0, 0.04D0,-0.53D0,
+     $             1.00D0,  0.67D0, 0.23D0,
+     $             1.00D0,  0.89D0, 0.63D0,
+     $             1.00D0,  1.06D0, 0.85D0,
+     $             1.00D0,  1.12D0, 1.73D0,
+     $             1.00D0,  0.68D0, 0.32D0,
+     $             0.00D0,  0.00D0, 0.00D0/
+
+      DATA TJ_O3P /1.00D0,  0.00D0,  0.00D0,
+     $             1.00D0,  0.07D0,  0.00D0,
+     $             1.00D0, -0.40D0,  0.11D0,
+     $             1.00D0, -0.93D0, -0.11D0,
+     $             1.00D0, -0.36D0, -0.55D0,
+     $             1.00D0,  0.00D0,  0.00D0,
+     $             1.00D0,  0.00D0,  0.00D0/
+
+      DATA TJ_H2O2/1.00D0,  0.00D0,  0.00D0,
+     $             1.00D0,  0.21D0,  0.36D0,
+     $             1.00D0,  0.32D0,  0.53D0,
+     $             1.00D0,  0.42D0,  0.68D0,
+     $             1.00D0,  0.63D0,  1.03D0,
+     $             1.00D0,  0.78D0,  1.28D0,
+     $             0.00D0,  0.00D0,  0.00D0/
+
+      DATA TJ_N2O/ 1.00D0,  1.33D0,  0.91D0,
+     $             0.00D0,  0.00D0,  0.00D0,
+     $             0.00D0,  0.00D0,  0.00D0,
+     $             0.00D0,  0.00D0,  0.00D0,
+     $             0.00D0,  0.00D0,  0.00D0,
+     $             0.00D0,  0.00D0,  0.00D0,
+     $             0.00D0,  0.00D0,  0.00D0/
+
+      DATA TJ_CHOH/1.00D0,  0.00D0,
+     $             1.00D0,  0.00D0,
+     $             1.00D0, -0.17D0,
+     $             1.00D0,  0.00D0,
+     $             1.00D0, -0.25D0,
+     $             1.00D0, -0.37D0,
+     $             1.00D0,  0.00D0/
+
+      DATA TJ_COH2/1.00D0,  0.00D0,
+     $             1.00D0,  0.00D0,
+     $             1.00D0, -0.17D0,
+     $             1.00D0,  0.00D0,
+     $             1.00D0, -0.31D0,
+     $             1.00D0, -0.32D0,
+     $             1.00D0,  0.00D0/
+
+      DATA TJ_NO2 /1.00D0,  0.00D0,
+     $             1.00D0,  0.00D0,
+     $             1.00D0,  0.00D0,
+     $             1.00D0,  0.00D0,
+     $             1.00D0,  0.00D0,
+     $             1.00D0,  0.00D0,
+     $             1.00D0,  0.00D0/
+
+      DATA TJ_NO2O/0.00D0,  0.00D0,
+     $             0.00D0,  0.00D0,
+     $             0.00D0,  0.00D0,
+     $             0.00D0,  0.00D0,
+     $             0.00D0,  0.00D0,
+     $             1.00D0,  0.00D0,
+     $             1.00D0, -0.22D0/
+
+      DATA TJ_NOO2/0.00D0,  0.00D0,
+     $             0.00D0,  0.00D0,
+     $             0.00D0,  0.00D0,
+     $             0.00D0,  0.00D0,
+     $             0.00D0,  0.00D0,
+     $             0.00D0,  0.00D0,
+     $             1.00D0, -0.32D0/
+
+      DATA TJ_NO3n/1.00D0, -0.01D0, -0.01D0,
+     $             1.00D0,  0.00D0, -0.03D0,
+     $             1.00D0,  0.00D0,  0.00D0,
+     $             1.00D0,  0.00D0, -0.00D0,
+     $             1.00D0,  0.00D0, -0.00D0,
+     $             1.00D0,  0.00D0, -0.00D0/
+
+
+      DATA TH_O3/  1.00D0,  0.00D0,
+     $             1.00D0,  0.08D0,
+     $             1.00D0, -0.04D0,
+     $             1.00D0,  0.00D0,
+     $             1.00D0,  0.00D0,
+     $             1.00D0,  0.00D0,
+     $             1.00D0,  0.00D0/
+
+      DATA TH_NO2/ 1.00D0,  0.00D0,
+     $             1.00D0, -0.01D0,
+     $             1.00D0, -0.05D0,
+     $             1.00D0, -0.04D0,
+     $             1.00D0, -0.07D0,
+     $             1.00D0, -0.05D0,
+     $             1.00D0,  0.00D0/
 
       end block data lookup_data
 ***************************************************************************
@@ -4231,8 +4524,11 @@ c-------------------------------------------------------------------
 ! Imported Parameters:
      &     nrlay
 
+      USE precision, ONLY :
+! Imported Parameters:
+     &     dp
 
-      IMPLICIT DOUBLE PRECISION(A-H,O-Z)
+      IMPLICIT NONE
 
       INTEGER MAXLAY,NW
       PARAMETER(MAXLAY=nrlay, NW=7)
@@ -4268,6 +4564,14 @@ c-------------------------------------------------------------------
      $              CS_dumm24(58,2,2),
      $              CS_dumm25(58,2,2),
      $              CS_dumm26(58,2,2)
+      REAL (KIND=DP) ::
+     $     CS_O2, FS_O2, CS_O3, FS_O3, CS_N2O, FS_N2O,
+     $     CS_CFC11, FS_CFC11, CS_CFC12, FS_CFC12,
+     $     CS_H2O2, FS_H2O2, CS_HNO3, FS_HNO3, CS_HNO4, FS_HNO4,
+     $     CS_ClONO2, FS_ClONO2, CS_BrNO3, CS_Cl2O2, CS_HOCl,
+     $     CS_N2O5, FS_N2O5, CS_HO2, FS_HO2, CS_HO3, FS_HO3,
+     $     CS_BrCl_noT, CS_ClNO2, CS_BrNO2, CS_Br2, CS_CH3I,
+     $     CS_NO3n, FS_NO3n, CS_dumm23, CS_dumm24, CS_dumm25, CS_dumm26
 
       COMMON/LOOK/
      $          TAUA1(55,3),     TAUB1(55,3),
@@ -4381,6 +4685,50 @@ c-------------------------------------------------------------------
      $          A3_dumm24(55),   B3_dumm24(55),
      $          A3_dumm25(55),   B3_dumm25(55),
      $          A3_dumm26(55),    B3_dumm26(55)
+      REAL (KIND=DP) ::
+     $     TAUA1, TAUB1, A1_O3, B1_O3, A1_O2, B1_O2, A1_H2O2, B1_H2O2,
+     $     A1_HNO3, B1_HNO3, A1_HNO4, B1_HNO4, A1_N2O5, B1_N2O5,
+     $     A1_CH3OOH, B1_CH3OOH, A1_N2O, B1_N2O, A1_CFC11, B1_CFC11,
+     $     A1_CFC12, B1_CFC12, A1_ClONO2, B1_ClONO2, A1_BrNO3, B1_BrNO3,
+     $     A1_Cl2O2, B1_Cl2O2, A1_HOCl, B1_HOCl, A1_H_O2, B1_H_O2,
+     $     A1_H_O3, B1_H_O3, A1_BrCl_noT, B1_BrCl_noT,
+     $     A1_ClNO2, B1_ClNO2, A1_BrNO2, B1_BrNO2, A1_Br2, B1_Br2,
+     $     A1_CH3I, B1_CH3I, A1_ICl, B1_ICl, A1_IBr, B1_IBr,
+     $     A1_C3H7I, B1_C3H7I, A1_CH2ClI, B1_CH2ClI, A1_CH2I2, B1_CH2I2,
+     $     A1_INO2, B1_INO2, A1_Cl2_noT, B1_Cl2_noT, A1_NO3n, B1_NO3n,
+     $     A1_dumm23, B1_dumm23, A1_dumm24, B1_dumm24,
+     $     A1_dumm25, B1_dumm25, A1_dumm26, B1_dumm26,
+     $     TAUA2, TAUB2,
+     $     A2_TO3, B2_TO3, A2_O1D, B2_O1D, A2_O3P, B2_O3P,
+     $     A2_H2O2, B2_H2O2, A2_HNO3, B2_HNO3, A2_HNO4, B2_HNO4,
+     $     A2_N2O5, B2_N2O5, A2_CH3OOH, B2_CH3OOH, A2_NO2, B2_NO2,
+     $     A2_ClONO2, B2_ClONO2, A2_BrNO3, B2_BrNO3, A2_Cl2O2, B2_Cl2O2,
+     $     A2_HOCl, B2_HOCl, A2_H_O3, B2_H_O3, A2_H_NO2, B2_H_NO2,
+     $     A2_BrCl_noT, B2_BrCl_noT, A2_ClNO2, B2_ClNO2,
+     $     A2_BrNO2, B2_BrNO2, A2_Br2, B2_Br2, A2_INO3, B2_INO3,
+     $     A2_CH3I, B2_CH3I, A2_ICl, B2_ICl, A2_IBr, B2_IBr,
+     $     A2_C3H7I, B2_C3H7I, A2_CH2ClI, B2_CH2ClI, A2_CH2I2, B2_CH2I2,
+     $     A2_INO2, B2_INO2, A2_OClO_noT, B2_OClO_noT,
+     $     A2_Cl2_noT, B2_Cl2_noT, A2_HOBr, B2_HOBr, A2_NO3n, B2_NO3n,
+     $     A2_dumm23, B2_dumm23, A2_dumm24, B2_dumm24,
+     $     A2_dumm25, B2_dumm25, A2_dumm26, B2_dumm26,
+     $     TAUA3, TAUB3,
+     $     A3_TO3, B3_TO3, A3_O1D, B3_O1D, A3_O3P, B3_O3P,
+     $     A3_H2O2, B3_H2O2, A3_HNO3, B3_HNO3, A3_HNO4, B3_HNO4,
+     $     A3_N2O5, B3_N2O5, A3_CH3OOH, B3_CH3OOH, A3_NO2, B3_NO2,
+     $     A3_COH2, B3_COH2, A3_CHOH, B3_CHOH, A3_ClONO2, B3_ClONO2,
+     $     A3_BrNO3, B3_BrNO3, A3_Cl2O2, B3_Cl2O2, A3_HOCl, B3_HOCl,
+     $     A3_H_O3, B3_H_O3, A3_H_NO2, B3_H_NO2,
+     $     A3_BrCl_noT, B3_BrCl_noT, A3_ClNO2, B3_ClNO2,
+     $     A3_BrNO2, B3_BrNO2, A3_Br2, B3_Br2, A3_INO3, B3_INO3,
+     $     A3_CH3I, B3_CH3I, A3_ICl, B3_ICl, A3_IBr, B3_IBr,
+     $     A3_C3H7I, B3_C3H7I, A3_CH2ClI, B3_CH2ClI, A3_CH2I2, B3_CH2I2,
+     $     A3_INO2, B3_INO2, A3_BrO_noT, B3_BrO_noT,
+     $     A3_OClO_noT, B3_OClO_noT, A3_Cl2_noT, B3_Cl2_noT,
+     $     A3_HOI_jen91, B3_HOI_jen91,
+     $     A3_HOBr, B3_HOBr, A3_NO2m, B3_NO2m, A3_NO3n, B3_NO3n,
+     $     A3_dumm23, B3_dumm23, A3_dumm24, B3_dumm24,
+     $     A3_dumm25, B3_dumm25, A3_dumm26, B3_dumm26
 
       COMMON/C_POLY/
      $   C4_TAU(4),     C5_TAU(3),                    C7_TAU(2),
@@ -4432,6 +4780,55 @@ c-------------------------------------------------------------------
      $   C4_dumm24(2),   C5_dumm24(2),   C6_dumm24(1),   C7_dumm24(2),
      $   C4_dumm25(2),   C5_dumm25(2),   C6_dumm25(1),   C7_dumm25(2),
      $   C4_dumm26(2),   C5_dumm26(2),   C6_dumm26(1),   C7_dumm26(2)
+      REAL (KIND=DP)
+     $   C4_TAU,     C5_TAU,                 C7_TAU,
+     $   C4_T_O3,    C5_T_O3,                C7_T_O3,
+     $   C4_O1D,     C5_O1D,
+     $   C4_O3P,     C5_O3P,     C6_O3P,     C7_O3P,
+     $   C4_H2O2,    C5_H2O2,    C6_H2O2,
+     $   C4_HNO3,    C5_HNO3,    C6_HNO3,
+     $   C4_HNO4,    C5_HNO4,
+     $   C4_N2O5,    C5_N2O5,    C6_N2O5,
+     $   C4_CH3OOH,  C5_CH3OOH,  C6_CH3OOH,
+     $   C4_NO2,     C5_NO2,     C6_NO2,
+     $   C4_COH2,    C5_COH2,    C6_COH2,
+     $   C4_CHOH,    C5_CHOH,    C6_CHOH,
+     $                           C6_NO2O,    C7_NO2O,
+     $                                       C7_NOO2,
+     $   C4_ClONO2,  C5_ClONO2,  C6_ClONO2,
+     $   C4_BrNO3,   C5_BrNO3,   C6_BrNO3,   C7_BrNO3,
+     $   C4_Cl2O2,   C5_Cl2O2,   C6_Cl2O2,
+     $   C4_HOCl,    C5_HOCl,    C6_HOCl,
+     $   C4_H_O3,    C5_H_O3,    C6_H_O3,    C7_H_O3,
+     $                                       C7_H_O2,
+     $   C4_H_NO2,   C5_H_NO2,   C6_H_NO2,   C7_H_NO2,
+     $                           C6_H_O4,    C7_H_O4,
+     $   C4_BrCl_noT,C5_BrCl_noT,C6_BrCl_noT,C7_BrCl_noT,
+     $   C4_ClNO2,   C5_ClNO2,   C6_ClNO2,
+     $   C4_BrNO2,   C5_BrNO2,   C6_BrNO2,   C7_BrNO2,
+     $   C4_Br2,     C5_Br2,     C6_Br2,     C7_Br2,
+     $                           C6_IO,      C7_IO,
+     $   C4_INO3,    C5_INO3,    C6_INO3,    C7_INO3,
+     $   C4_CH3I,    C5_CH3I,    C6_CH3I,
+     $                           C6_I2,      C7_I2,
+     $   C4_ICl,     C5_ICl,     C6_ICl,     C7_ICl,
+     $   C4_IBr,     C5_IBr,     C6_IBr,     C7_IBr,
+     $   C4_C3H7I,   C5_C3H7I,   C6_C3H7I,
+     $   C4_CH2ClI,  C5_CH2ClI,  C6_CH2ClI,
+     $   C4_CH2I2,   C5_CH2I2,   C6_CH2I2,
+     $   C4_INO2,    C5_INO2,    C6_INO2,
+     $   C4_BrO_noT, C5_BrO_noT, C6_BrO_noT,
+     $   C4_OClO_noT,C5_OClO_noT,C6_OClO_noT,C7_OClO_noT,
+     $   C4_Cl2_noT, C5_Cl2_noT, C6_Cl2_noT, C7_Cl2_noT,
+     $   C4_HOI_jen91,C5_HOI_jen91,C6_HOI_jen91,C7_HOI_jen91,
+     $   C4_HOBr,    C5_HOBr,    C6_HOBr,   C7_HOBr,
+     $   C4_HONO,    C5_HONO,    C6_HONO,
+     $   C4_NO2m,    C5_NO2m,    C6_NO2m,
+     $   C4_NO3n,    C5_NO3n,    C6_NO3n,
+     $   C4_dumm23,  C5_dumm23,  C6_dumm23,  C7_dumm23,
+     $   C4_dumm24,  C5_dumm24,  C6_dumm24,  C7_dumm24,
+     $   C4_dumm25,  C5_dumm25,  C6_dumm25,  C7_dumm25,
+     $   C4_dumm26,  C5_dumm26,  C6_dumm26,  C7_dumm26
 
 
       COMMON /T_COEFF/   TJ_O1D(4,7),   TJ_O3P(3,7),  TJ_NO2(2,7),
@@ -4565,7 +4962,7 @@ c     polynomial coeff. to calculate TAU_O above 0.1 hPa
       DOUBLE PRECISION
      $     CT(3)
 
-      DATA CT /0.168306, 2.236551, 42.78577 /
+      DATA CT /0.168306D0, 2.236551D0, 42.78577D0 /
 
       DOUBLE PRECISION
      $     F0(7)         ! integrated extraterrestric flux /
@@ -4578,18 +4975,28 @@ C     change the units (Part./cm^2 -> Dobson Units)
 C     Boltzmann constant K=1.38D-23 [J/K], normal conditions T0=273 [K],
 C     P0=1000 [mbar], so CONST=K*T0/P0=3.767e-20 cm^3
 
-      DATA CONSTANT / 3.767D-20 /
+      REAL (KIND=DP), PARAMETER :: CONSTANT = 3.767E-20_dp
+      REAL (KIND=DP), PARAMETER :: BOLTZ = 1.381D-23
+      REAL (KIND=DP), PARAMETER :: RELO2 = 0.2095D0
 
 C     arrays to calculate TAU_0
 
       DOUBLE PRECISION
+     $     P1, P2, P3, C0, C1, C2, C3, X, ! internal functions
      $     SIGI_O2,
      $     SIGI_O3,
      $     TEMP1(MAXLAY),
      $     TEMP2(MAXLAY)
 
+      REAL (KIND=DP)
+     $     DENS, DLV2I, DTAU_0,
+     $     P2_O1D, P3_O1D, P4_O1D, P5_O1D,
+     $     P2_O3P, P3_O3P, P4_O3P, P5_O3P, P6_O3P, P7_O3P,
+     $     SO2, SO3, TAU3_LIM, TAU4_LIM,
+     $     V3DU_3L, V3DU_4L, V3S_DU, V3_3L, V3_DU
+
       INTEGER
-     $     II
+     $     I, II, K
 
 c-------------------------------------------------------------------
 
@@ -4602,8 +5009,6 @@ C     internal functions
 
 **********************************************************************
 
-      BOLTZ=1.381D-23
-      RELO2 = 0.2095
 
 c      Do first the calculation of the optical depth TAU_0
 
@@ -4611,8 +5016,8 @@ C==================================================================
 C         SCALING OF TEMPERATURE VARIABLE
 C==================================================================
       DO K=1,MAXLAY
-         TEMP1(K) = (TEMP(K)-240.)/240. !for interval 0
-         TEMP2(K) = (TEMP(K)-250.)/250. !for interval 1-7
+         TEMP1(K) = (TEMP(K)-240.D0)/240.D0 !for interval 0
+         TEMP2(K) = (TEMP(K)-250.D0)/250.D0 !for interval 1-7
       ENDDO
 
 c     ii.) first layer
@@ -4620,7 +5025,7 @@ c     ii.) first layer
 
          DLV2I   = MIN(56.D0,DLOG(V2S(1)))
          V3S_DU = MIN(300.D0, V3S(1)* CONSTANT * 1.D+3)
-         II      = MIN(58,INT(AINT((DLV2I-44.5)/0.2) + 1.00001))
+         II      = MIN(58,INT(AINT((DLV2I-44.5D0)/0.2D0) + 1.00001D0))
 
          SIGI_O2=  P2(CS_O2(II,1,1)*DLV2I + CS_O2(II,1,2),
      $                   CS_O2(II,2,1)*DLV2I + CS_O2(II,2,2),
@@ -4636,7 +5041,7 @@ c     ii.) first layer
      $                       FS_O3(II,2,1)*DLV2I+FS_O3(II,2,2),
      $                       TEMP1(1))
 
-         TAU_0(1) = P2(CT(1),CT(2),CT(3),(DLV2I-47.)/47.)
+         TAU_0(1) = P2(CT(1),CT(2),CT(3),(DLV2I-47.D0)/47.D0)
       ENDIF
 
 c     iii.) layers with pressure < 100 hPa
@@ -4646,7 +5051,7 @@ c     iii.) layers with pressure < 100 hPa
 
                DLV2I   = MIN(56.D0,DLOG(V2S(K)))
                V3S_DU = MIN(300.D0, V3S(K)* CONSTANT * 1.D+3)
-               II      = MIN(58,INT(AINT((DLV2I-44.5)/0.2) + 1.00001))
+               II  = MIN(58,INT(AINT((DLV2I-44.5D0)/0.2D0) + 1.00001D0))
 
                SO2 =  P2(CS_O2(II,1,1)*DLV2I + CS_O2(II,1,2),
      $                   CS_O2(II,2,1)*DLV2I + CS_O2(II,2,2),
@@ -4662,9 +5067,9 @@ c     iii.) layers with pressure < 100 hPa
      $                    FS_O3(II,2,1)*DLV2I+FS_O3(II,2,2),
      $                    TEMP1(K))
 
-               DTAU_0  = 0.5*(SIGI_O2 + SO2) *
+               DTAU_0  = 0.5D0*(SIGI_O2 + SO2) *
      $                       (V2S(K)-V2S(K-1)) +
-     $                   0.5*(SIGI_O3 + SO3) *
+     $                   0.5D0*(SIGI_O3 + SO3) *
      $                       (V3S(K)-V3S(K-1))
 
                TAU_0(K) = TAU_0(K-1) + DTAU_0
@@ -4680,21 +5085,21 @@ c------------------------------------------------------
 
 c      BOUNDARIES FOR INTERVAL 3 and 4
 
-      V3DU_3L = 1000.
+      V3DU_3L = 1000.D0
 
-      I  = MIN(INT((V3DU_3L-5)/25) +1,115)
+      I  = MIN(INT((V3DU_3L-5D0)/25D0) +1,115)
 
       TAU3_LIM = P1(TAUB3(I),TAUA3(I),V3DU_3L)
       V3_3L =  V3DU_3L * 1.D-3 / CONSTANT
 
-      V3DU_4L = 2500.
+      V3DU_4L = 2500.D0
       TAU4_LIM = P2(C4_TAU(1),C4_TAU(2),C4_TAU(3),V3DU_4L)
 
 c------------------------------------------------------
 
       DO 1111 K = 1,MAXLAY                ! altitude loop
 
-      IF (U0.gt.0.) THEN
+      IF (U0.gt.0.D0) THEN
 
 C        chance of units [V2S_m]=meter, [V3_DU]=DU
 
@@ -4706,21 +5111,21 @@ C=================================================================
 c         allowed ranges for columns
 C=================================================================
 c        interval: 0
-         IF (DLV2.ge.56.) THEN
-            DLV2  = 56.
+         IF (DLV2.ge.56.D0) THEN
+            DLV2  = 56.D0
          ENDIF
 
 c        interval: 1
-         IF (V2S_m.ge.500.) THEN
-            V2S_m = 500.
+         IF (V2S_m.ge.500.D0) THEN
+            V2S_m = 500.D0
             V2S2  = 1.3602D+24
          ELSE
             V2S2  = V2S(K)
          ENDIF
 
 c        interval: 0 - 2
-         IF (V3_DU.ge.300.) THEN
-            V3_DU1= 300.
+         IF (V3_DU.ge.300.D0) THEN
+            V3_DU1= 300.D0
             V3S1  = 8.161D+18
          ELSE
             V3_DU1= V3_DU
@@ -4728,8 +5133,8 @@ c        interval: 0 - 2
          ENDIF
 
 c        interval: 3 - 7
-         IF (V3_DU.ge.3000.) THEN
-            V3_DU2= 3000.
+         IF (V3_DU.ge.3000.D0) THEN
+            V3_DU2= 3000.D0
             V3S2  = 8.161D+19
          ELSE
             V3_DU2= V3_DU
@@ -4740,16 +5145,16 @@ C==================================================================
 c         Indices for lookup table
 C==================================================================
 
-         I0  = MIN(58,INT(AINT((DLV2-44.5)/0.2) + 1.00001))
-         I1  = MIN(INT((V3_DU-0.5)/2.5) +1,115)
+         I0  = MIN(58,INT(AINT((DLV2-44.5D0)/0.2D0) + 1.00001D0))
+         I1  = MIN(INT((V3_DU-0.5D0)/2.5D0) +1,115)
          I1  = IFIL(I1)
-         I2  = MIN(INT((V3_DU-0.5)/2.5) +1,115)
+         I2  = MIN(INT((V3_DU-0.5D0)/2.5D0) +1,115)
          I2  = IFIL(I2)
-         I3  = MIN(INT((V3_DU-5)/25) +1,115)
+         I3  = MIN(INT((V3_DU-5D0)/25D0) +1,115)
          I3  = IFIL(I3)
       ENDIF
 
-      IF (U0.gt.0.) THEN
+      IF (U0.gt.0.D0) THEN
 
 C==================================================================
 C CALCULATION OF EFFECTIVE CROSS SECTIONS FOR OPTICAL DEPTH
@@ -4788,7 +5193,7 @@ C--------------------
 
       ENDIF
 
-      IF (U0.gt.0.) THEN
+      IF (U0.gt.0.D0) THEN
 
 c           calculation of optical depths above model atmosphere,
 c           yields only in the range of the HALOE data
@@ -4836,7 +5241,7 @@ c        here 8.7990D+12 is the integrated flux over the SR bands at TOA
 
       ENDIF
 
-      IF (U0.gt.0.) THEN
+      IF (U0.gt.0.D0) THEN
 
 C==================================================================
 C CALCULATION OF EFFECTIVE CROSS SECTIONS AND PHOTOLYSIS AND
@@ -4865,7 +5270,7 @@ C--------------------
 
 C         0.87 = fixed quantum yield for O3 -> O2 + O(1D)
 
-          RJ_O1D(K) = 0.87*(SIG_O3(0,K) * FINT(0) +
+          RJ_O1D(K) = 0.87D0*(SIG_O3(0,K) * FINT(0) +
      $                          SIG_O3(1,K) * FINT(1))+
      $                          SIG_O1D(2)          * FINT(2) +
      $                          SIG_O1D(3)          * FINT(3) +
@@ -4895,7 +5300,7 @@ C--------------------
           SIG_O3P(7) = P2(TJ_O3P(1,7),TJ_O3P(2,7),TJ_O3P(3,7),
      $                    TEMP2(K)) * P7_O3P
 
-          RJ_O3P(K) = 0.13*(SIG_O3(0,K) * FINT(0) +
+          RJ_O3P(K) = 0.13D0*(SIG_O3(0,K) * FINT(0) +
      $                          SIG_O3(1,K) * FINT(1))+
      $                          SIG_O3P(2)          * FINT(2) +
      $                          SIG_O3P(3)          * FINT(3) +
@@ -4995,7 +5400,7 @@ C--------------------
      $                  SIG_CFC12(1)    * FINT(1)
       ENDIF
 
-      IF (U0.gt.0.) THEN
+      IF (U0.gt.0.D0) THEN
 
 C--------------------
 C H2O2

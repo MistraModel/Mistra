@@ -29,7 +29,12 @@ subroutine mk_interface
 
 
 USE config, ONLY : &
+     cgaslistfile, &
+     cradlistfile, &
      coutdir
+
+USE file_unit, ONLY : &
+     jpfunint
 
 USE gas_common, ONLY :    &
      j1,                  &
@@ -45,9 +50,9 @@ USE gas_common, ONLY :    &
      rad_m2k_a,rad_k2m_a, &
      rad_m2k_t,rad_k2m_t
 
-USE global_params, ONLY : &
-     j2,                  &
-     j3
+!USE global_params, ONLY : &
+!     j2,                  &
+!     j3
 
 USE kpp_gas_Global, ONLY : &
      nspec_g=>NSPEC,       &
@@ -67,14 +72,14 @@ implicit none
 ! =======================================================
 ! -- 1. -- Output file to write initialisation information
 ! =======================================================
-open(13,file=trim(coutdir)//'interface.out')
+open(jpfunint,file=trim(coutdir)//'interface.out')
 
 call global_parameters_check
 
 ! =======================================================
 ! -- 2.1 -- Non radical gas species
 ! =======================================================
-call read_mistra_gas_data
+call read_mistra_gas_data (trim(cgaslistfile))
 
 ! Allocate KPP to Mistra tables (in Mistra order) and match indexes
 allocate ( gas_k2m_g(j1), gas_k2m_a(j1), gas_k2m_t(j1) )
@@ -94,22 +99,22 @@ call sort_2D_array (j1,gas_k2m_t,gas_m2k_t)
 allocate ( ind_gas_rev(ind_gas(j1)) )
 call revert_index (j1,ind_gas(j1),ind_gas,ind_gas_rev)
 
-write(13,*)"Exchange lists for non radical gas species"
-write(13,*)"For gas mechanism"
-write(13,*)"list in Mistra order"
-write(13,*)gas_k2m_g(:)
-write(13,*)"list in KPP order"
-write(13,*)gas_m2k_g(:,:)
-write(13,*)"For aer mechanism"
-write(13,*)"list in Mistra order"
-write(13,*)gas_k2m_a(:)
-write(13,*)"list in KPP order"
-write(13,*)gas_m2k_a(:,:)
-write(13,*)"For tot mechanism"
-write(13,*)"list in Mistra order"
-write(13,*)gas_k2m_t(:)
-write(13,*)"list in KPP order"
-write(13,*)gas_m2k_t(:,:)
+write(jpfunint,*)"Exchange lists for non radical gas species"
+write(jpfunint,*)"For gas mechanism"
+write(jpfunint,*)"list in Mistra order"
+write(jpfunint,*)gas_k2m_g(:)
+write(jpfunint,*)"list in KPP order"
+write(jpfunint,*)gas_m2k_g(:,:)
+write(jpfunint,*)"For aer mechanism"
+write(jpfunint,*)"list in Mistra order"
+write(jpfunint,*)gas_k2m_a(:)
+write(jpfunint,*)"list in KPP order"
+write(jpfunint,*)gas_m2k_a(:,:)
+write(jpfunint,*)"For tot mechanism"
+write(jpfunint,*)"list in Mistra order"
+write(jpfunint,*)gas_k2m_t(:)
+write(jpfunint,*)"list in KPP order"
+write(jpfunint,*)gas_m2k_t(:,:)
 
 ! Define j2
 !j2 = j1 + j3
@@ -118,7 +123,7 @@ write(13,*)gas_m2k_t(:,:)
 ! =======================================================
 ! -- 2.2 -- Radical gas species
 ! =======================================================
-call read_mistra_rad_data
+call read_mistra_rad_data (trim(cradlistfile))
 
 ! Allocate KPP to Mistra tables (in Mistra order) and match indexes
 allocate ( rad_k2m_g(j5), rad_k2m_a(j5), rad_k2m_t(j5) )
@@ -134,25 +139,25 @@ call sort_2D_array (j5,rad_k2m_g,rad_m2k_g)
 call sort_2D_array (j5,rad_k2m_a,rad_m2k_a)
 call sort_2D_array (j5,rad_k2m_t,rad_m2k_t)
 
-write(13,*)"Exchange lists for radical gas species"
-write(13,*)"For gas mechanism"
-write(13,*)"list in Mistra order"
-write(13,*)rad_k2m_g(:)
-write(13,*)"list in KPP order"
-write(13,*)rad_m2k_g(:,:)
-write(13,*)"For aer mechanism"
-write(13,*)"list in Mistra order"
-write(13,*)rad_k2m_a(:)
-write(13,*)"list in KPP order"
-write(13,*)rad_m2k_a(:,:)
-write(13,*)"For tot mechanism"
-write(13,*)"list in Mistra order"
-write(13,*)rad_k2m_t(:)
-write(13,*)"list in KPP order"
-write(13,*)rad_m2k_t(:,:)
+write(jpfunint,*)"Exchange lists for radical gas species"
+write(jpfunint,*)"For gas mechanism"
+write(jpfunint,*)"list in Mistra order"
+write(jpfunint,*)rad_k2m_g(:)
+write(jpfunint,*)"list in KPP order"
+write(jpfunint,*)rad_m2k_g(:,:)
+write(jpfunint,*)"For aer mechanism"
+write(jpfunint,*)"list in Mistra order"
+write(jpfunint,*)rad_k2m_a(:)
+write(jpfunint,*)"list in KPP order"
+write(jpfunint,*)rad_m2k_a(:,:)
+write(jpfunint,*)"For tot mechanism"
+write(jpfunint,*)"list in Mistra order"
+write(jpfunint,*)rad_k2m_t(:)
+write(jpfunint,*)"list in KPP order"
+write(jpfunint,*)rad_m2k_t(:,:)
 
 
-close(13)
+close(jpfunint)
 
 end subroutine mk_interface
 ! ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -175,7 +180,7 @@ USE config, ONLY : &
      abortM
 
 USE file_unit, ONLY : &
-     jpfunerr
+     jpfunerr, jpfunint
 
 USE kpp_tot_Global, ONLY : &
      nreact_t=>NREACT
@@ -191,16 +196,16 @@ if(nrxn.lt.nreact_t) then
    write(jpfunerr,*)"  nrxn should be set to: ",nreact_t
    call abortM('Error in SR global_parameters_check')
 else if(nrxn.gt.nreact_t) then
-   write(13,*)"Warning: in global_params.f90"
-   write(13,*)"  nrxn > NREACT (tot mechanism)"
-   write(13,*)"  nrxn can be set to: ",nreact_t
+   write(jpfunint,*)"Warning: in global_params.f90"
+   write(jpfunint,*)"  nrxn > NREACT (tot mechanism)"
+   write(jpfunint,*)"  nrxn can be set to: ",nreact_t
 end if
 end subroutine global_parameters_check
 ! ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 
 ! ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-subroutine read_mistra_gas_data
+subroutine read_mistra_gas_data (file_name)
 
 !     Imports and checks user defined gas data file,
 !     and creates conversion tables between Mistra and KPP indexes
@@ -220,7 +225,7 @@ USE config, ONLY : &
 
 USE file_unit, ONLY : &
 ! Imported Parameters:
-     jpfunerr
+     jpfunerr, jpfungas, jpfunint
 
 USE global_params, ONLY : &
      n
@@ -259,7 +264,7 @@ USE precision, ONLY : &
 implicit none
 
 ! Local parameters:
-character (len=*), parameter :: file_name = 'gas_species.csv'
+character (len=*), intent(in) :: file_name
 
 ! Local scalars:
 integer :: nb_gas      ! The total number of gas species actually used
@@ -337,12 +342,12 @@ j1_iod = 0   ! Total number of iodinated non radical gases
 j1_halo = 0  ! Total number of halogenated non radical gases
 
 
-open(unit=10,file=trim(cmechdir)//file_name,status='old',err=100)
+open(unit=jpfungas,file=trim(cmechdir)//file_name,status='old',err=100)
 
 
 do
    ! Read a line as a string
-   read(10,'(a300)',err=101,end=102)line
+   read(jpfungas,'(a300)',err=101,end=102)line
 
    ! Eliminates the leading and trailing blanks
    line = trim(adjustl(line))
@@ -389,7 +394,7 @@ do
       write(jpfunerr,*)"  All indexes must be strictly positive"
       write(jpfunerr,*)"  See after index ",ind_gas_tmp(max(1,nb_gas-1))
       write(jpfunerr,*)"  Index read is: ",ind_tmp
-      close(10)
+      close(jpfungas)
       call abortM("Error 1 in SR read_mistra_gas_data")
    end if
 
@@ -399,7 +404,7 @@ do
       write(jpfunerr,*)"  All molar masses must be strictly positive"
       write(jpfunerr,*)"  See after index ",ind_gas_tmp(max(1,nb_gas-1))
       write(jpfunerr,*)"  Index read is: ",ind_tmp
-      close(10)
+      close(jpfungas)
       call abortM("Error 2 in SR read_mistra_gas_data")
    end if
 
@@ -409,7 +414,7 @@ do
       write(jpfunerr,*)"  All concentrations must be positive"
       write(jpfunerr,*)"  See after index ",ind_gas_tmp(max(1,nb_gas-1))
       write(jpfunerr,*)"  Index read is: ",ind_tmp
-      close(10)
+      close(jpfungas)
       call abortM("Error 3 in SR read_mistra_gas_data")
    end if
 
@@ -419,7 +424,7 @@ do
       write(jpfunerr,*)"  All emissions must be positive"
       write(jpfunerr,*)"  See after index ",ind_gas_tmp(max(1,nb_gas-1))
       write(jpfunerr,*)"  Index read is: ",ind_tmp
-      close(10)
+      close(jpfungas)
       call abortM("Error 4 in SR read_mistra_gas_data")
    end if
 
@@ -429,7 +434,7 @@ do
       if(ind_tmp.le.ind_gas_tmp(nb_gas-1)) then
          write(jpfunerr,*)"Error in "//file_name//", sort out gas indexes"
          write(jpfunerr,*)"  Gas nb: ",ind_tmp
-         close(10)
+         close(jpfungas)
          call abortM("Error 5 in SR read_mistra_gas_data")
       end if
 
@@ -439,7 +444,7 @@ do
             write(jpfunerr,*)"Error in "//file_name//", two identical names"
             write(jpfunerr,*)"  Gas numbers: ",ind_gas_tmp(i),ind_tmp
             write(jpfunerr,*)"  Gas name: ",name_tmp
-            close(10)
+            close(jpfungas)
             call abortM("Error 6 in SR read_mistra_gas_data")
          end if
       end do
@@ -509,11 +514,11 @@ end do ! read all lines
       write(jpfunerr,*)"  Check if numbers are correctly written,"
       write(jpfunerr,*)"  and if line breaks are unix-like."
       write(jpfunerr,*)line
-      close(10)
+      close(jpfungas)
       call abortM("Error 101 in SR read_mistra_gas_data")
 
 ! End of file
- 102  close(10)
+ 102  close(jpfungas)
 
 j1 = nb_gas
 
@@ -565,10 +570,10 @@ es1(:) = es1_tmp(:j1)
 ! -- 3.3 --  Write non radical gas species list, to check that retrieval went well
 ! ==============================================================================
 
-write(13,*)"Information: the number of gases read in ",file_name," is ",j1
-write(13,*)"j1_br= ",j1_br," j1_cl= ",j1_cl," j1_iod= ",j1_iod
-write(13,*)"j1_halo= ",j1_halo
-write(13,*)"Index  Name      halo? iod ? n_Br n_Cl mass"
+write(jpfunint,*)"Information: the number of gases read in ",file_name," is ",j1
+write(jpfunint,*)"j1_br= ",j1_br," j1_cl= ",j1_cl," j1_iod= ",j1_iod
+write(jpfunint,*)"j1_halo= ",j1_halo
+write(jpfunint,*)"Index  Name      halo? iod ? n_Br n_Cl mass"
 do j=1,j1
    igj = ind_gas(j)
    ind_br_start = 1
@@ -606,7 +611,7 @@ do j=1,j1
       iod_txt = 'no'
    end if
          
-   write(13,110)j,igj,gas_name(j),halo_txt,iod_txt,nb_br,nb_cl,gas_mass(j)
+   write(jpfunint,110)j,igj,gas_name(j),halo_txt,iod_txt,nb_br,nb_cl,gas_mass(j)
 110 format(2i4,1x,a12,1x,2(a4,1x),2(i4,1x),f6.3)
 end do
 
@@ -632,7 +637,7 @@ end subroutine read_mistra_gas_data
 
 
 ! ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-subroutine read_mistra_rad_data
+subroutine read_mistra_rad_data (file_name)
 
 !     Imports and checks user defined radical (gas phase) data file,
 !     and creates conversion tables between Mistra and KPP indexes
@@ -652,7 +657,7 @@ USE config, ONLY : &
 
 USE file_unit, ONLY : &
 ! Imported Parameters:
-     jpfunerr
+     jpfunerr, jpfunint, jpfunrad
 
 USE global_params, ONLY : &
      n
@@ -687,7 +692,7 @@ USE precision, ONLY : &
 implicit none
 
 ! Local parameters:
-character (len=*), parameter :: file_name = 'gas_radical_species.csv'
+character (len=*), intent(in) :: file_name
 
 ! Local scalars:
 integer :: nb_rad      ! The total number of rad species actually used
@@ -755,11 +760,11 @@ j5_iod = 0   ! Total number of iodinated radicals
 j5_halo = 0  ! Total number of halogenated radicals
 
 
-open(unit=12,file=trim(cmechdir)//file_name,status='old',err=100)
+open(unit=jpfunrad,file=trim(cmechdir)//file_name,status='old',err=100)
 
 do
    ! Read a line as a string
-   read(12,'(a300)',err=101,end=102)line
+   read(jpfunrad,'(a300)',err=101,end=102)line
 
    ! Eliminates the leading and trailing blanks
    line = trim(adjustl(line))
@@ -803,7 +808,7 @@ do
       write(jpfunerr,*)"  All indexes must be strictly positive"
       write(jpfunerr,*)"  See after index ",ind_rad_tmp(max(1,nb_rad-1))
       write(jpfunerr,*)"  Index read is: ",ind_tmp
-      close(12)
+      close(jpfunrad)
       call abortM("Error 1 in SR read_mistra_rad_data")
    end if
 
@@ -812,7 +817,7 @@ do
       if(ind_tmp.le.ind_rad_tmp(nb_rad-1)) then
          write(jpfunerr,*)"Error in "//file_name//", indexes have to be sorted out"
          write(jpfunerr,*)"  Rad nb: ",ind_tmp
-         close(12)
+         close(jpfunrad)
          call abortM("Error 2 in SR read_mistra_rad_data")
       end if
 
@@ -822,7 +827,7 @@ do
             write(jpfunerr,*)"Error in "//file_name//", two identical names"
             write(jpfunerr,*)"  Radical numbers: ",ind_rad_tmp(i),ind_tmp
             write(jpfunerr,*)"  Radical name: ",name_tmp
-            close(12)
+            close(jpfunrad)
             call abortM("Error 3 in SR read_mistra_rad_data")
          end if
       end do
@@ -887,11 +892,11 @@ end do ! read all lines
       write(jpfunerr,*)"  Check if numbers are correctly written,"
       write(jpfunerr,*)"  and if line breaks are unix-like."
       write(jpfunerr,*)line
-      close(12)
+      close(jpfunrad)
       call abortM("Error 101 in SR read_mistra_rad_data")
 
 ! End of file
- 102  close(12)
+ 102  close(jpfunrad)
 
 j5 = nb_rad
 
@@ -933,10 +938,10 @@ rad_mass(:) = rad_mass_tmp(:j5)
 ! ==============================================================================
 ! -- 3.3 --  Write radical gas species list, to check that retrieval went well
 ! ==============================================================================
-write(13,*)"Information: the number of radicals read in ",trim(file_name)," is: j5 = ",j5
-write(13,*)"j5_br= ",j5_br," j5_cl= ",j5_cl," j5_iod= ",j5_iod
-write(13,*)"j5_halo = ",j5_halo
-write(13,*)"Index  Name      halo ? iod ? n_Br n_Cl mass"
+write(jpfunint,*)"Information: the number of radicals read in ",trim(file_name)," is: j5 = ",j5
+write(jpfunint,*)"j5_br= ",j5_br," j5_cl= ",j5_cl," j5_iod= ",j5_iod
+write(jpfunint,*)"j5_halo = ",j5_halo
+write(jpfunint,*)"Index  Name      halo ? iod ? n_Br n_Cl mass"
 do j=1,j5
    irj = ind_rad(j)
    ind_br_start = 1
@@ -974,7 +979,7 @@ do j=1,j5
       iod_txt = 'no'
    end if
 
-   write(13,110)j,irj,rad_name(j),halo_txt,iod_txt,nb_br,nb_cl,rad_mass(j)
+   write(jpfunint,110)j,irj,rad_name(j),halo_txt,iod_txt,nb_br,nb_cl,rad_mass(j)
 110 format(2i4,1x,a12,1x,2(a4,1x),2(i4,1x),f6.3)
 end do
 
@@ -1028,8 +1033,8 @@ integer, intent(in) :: nm ! Size for Mistra arrays
 integer, intent(in) :: nk ! Size for KPP names array
 
 ! Array arguments with intent(in):
-character(len=12), intent(in) :: m_name (nm)
-character(len=12), intent(in) :: k_name (nk)
+character(len=*), intent(in) :: m_name (nm)
+character(len=*), intent(in) :: k_name (nk)
 
 ! Array arguments with intent(out):
 integer, intent(out) :: k2m_table (nm)
@@ -1166,6 +1171,10 @@ function get_atom_nb (spec_name,atom_name)
 !
 ! Declarations:
 
+USE file_unit, ONLY : &
+! Imported Parameters:
+     jpfunint
+
 implicit none
 
 ! Function declaration:
@@ -1173,8 +1182,8 @@ integer :: get_atom_nb
 
 ! Function arguments
 ! Scalar arguments with intent(in):
-character (len=*) :: spec_name
-character (len=*) :: atom_name
+character (len=*), intent(in) :: spec_name
+character (len=*), intent(in) :: atom_name
 
 ! Local scalars:
 character (len=len_trim(spec_name)) :: s_name
@@ -1193,20 +1202,20 @@ a_name = trim(atom_name)
 lta = len_trim(atom_name)
 
 i = index(s_name,a_name)
-if(i.eq.0) then
-   return ! atom not found. Return with value 0
-else
+
+!if(i.eq.0) then ! atom not found. Return with value 0
+if(i.ne.0) then
    do while (len_trim(s_name)-lta.ge.0 .and. i.gt.0)
       if(len_trim(s_name).eq.lta) then ! The (remaining) species name is exactly the length of the atom name
          get_atom_nb = get_atom_nb + 1
-         return
+         exit ! exit do while and return
       end if
       s_name = s_name(i+lta:len_trim(s_name))
       ascii = iachar(s_name(1:1))
       if(ascii.eq.48 .or. ascii.eq.49) then
-         write(13,*)"Warning in function get_atom_nb:"
-         write(13,*)"  numerical character 0 or 1 following atom"
-         write(13,*)"  atom: ",atom_name," species: ",spec_name
+         write(jpfunint,*)"Warning in function get_atom_nb:"
+         write(jpfunint,*)"  numerical character 0 or 1 following atom"
+         write(jpfunint,*)"  atom: ",atom_name," species: ",spec_name
          get_atom_nb = get_atom_nb + 1 ! suppose only one atom in this (unexpected) case
       else if(ascii.ge.50 .and. ascii.le.57) then
          get_atom_nb = get_atom_nb + ascii -48

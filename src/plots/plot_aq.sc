@@ -19,7 +19,7 @@ set m_runs = ("1")
 # set m_runs = ("1" "2" "3" "4")
 # set n_runs = ("5")
 # set m_runs = ("1" "2" "3" "4" "5")
-set runs = ("/data/Elise/Mistra_Elise_v008.4/") 
+set runs = ("/local/josue/Mistra_2019/out/Joyce2014bc/") 
 
 
 
@@ -88,8 +88,8 @@ set pl_bin = ("2")
 #set species = ("NO2" "HNO3" "NO3m" "HNO4" "NO4m" "NO3" "HONO" "NO2m" "NH3" "NH4p" "Hp" "OHm" "O3" "O2" "O2m" "OH" "HO2" "H2O2" "CH3OO" "HCOOH" "HCOOm" "HCHO" "CH3OH" "CH3OOH" "CO2" "HCO3m" "CO3m" "SO2" "HSO3m" "SO32m" "H2SO4" "HSO4m" "SO42m" "SO3m" "SO4m" "HSO5m" "SO5m" "DMS" "DMSO" "DMSO2" "CH3SO2m" "CH3SO3m" "CH2OHSO3m" "HCl" "Clm" "HOCl" "ClOm" "Cl2" "Cl" "Cl2m" "ClOHm" "HBr" "Brm" "HOBr" "BrOm" "Br2" "BrCl" "Br" "Br2m" "BrOHm" "BrCl2m" "Br2Clm"  "Nap" "DOM" "SIV" "SVI"  "pH" "cw" "rc" "totNO3m" "Brm_Nap" "Clm_Nap") 
 #set n_spec = ("1" "2" "3" "4" "5" "6" "7" "8" "9" "10" "11" "12" "13" "14" "15" "16" "17" "18" "19" "20" "21" "22" "23" "24" "25" "26" "27" "28" "29" "30" "31" "32" "33" "34" "35" "36" "37" "38" "39" "40" "41" "42" "43" "44" "45" "46" "47" "48" "49" "50" "51" "52" "53" "54" "55" "56" "57" "58" "59" "60" "61" "62" "63" "64" "65" "66" "67" "68" "69" "70" "71" "72")
 # the useful ones in useful order (w/ iodine):
-  set species = ("NO2" "HNO3" "NO3m" "HNO4" "NO4m" "NO3" "HONO" "NO2m" "NH3" "NH4p" "Hp" "OHm" "O3" "O2" "O2m" "OH" "HO2" "H2O2" "CH3OO" "HCOOH" "HCOOm" "HCHO" "CH3OH" "CH3OOH" "CO2" "HCO3m" "CO3m" "SO2" "HSO3m" "SO32m" "H2SO4" "HSO4m" "SO42m" "SO3m" "SO4m" "HSO5m" "SO5m" "DMS" "DMSO" "DMSO2" "CH3SO2m" "CH3SO3m" "CH2OHSO3m" "HCl" "Clm" "HOCl" "ClOm" "Cl2" "Cl" "Cl2m" "ClOHm" "HBr" "Brm" "HOBr" "BrOm" "Br2" "BrCl" "Br" "Br2m" "BrOHm" "BrCl2m" "Br2Clm" "HOI" "ICl" "IBr" "I2" "IO" "Im" "IO2m" "IO3m" "ICl2m" "IBr2m" "ICl2m" "IBr2m" "Nap" "DOM" "SIV" "SVI"  "pH" "cw" "rc" "totNO3m" "Brm_Nap" "Clm_Nap") 
- set n_spec = ("1" "2" "3" "4" "5" "6" "7" "8" "9" "10" "11" "12" "13" "14" "15" "16" "17" "18" "19" "20" "21" "22" "23" "24" "25" "26" "27" "28" "29" "30" "31" "32" "33" "34" "35" "36" "37" "38" "39" "40" "41" "42" "43" "44" "45" "46" "47" "48" "49" "50" "51" "52" "53" "54" "55" "56" "57" "58" "59" "60" "61" "62" "63" "64" "65" "66" "67" "68" "69" "70" "71" "72" "73" "74" "75" "76" "77" "78" "79" "80" "81" "82" "83" "84")
+  set species = ("NO2" "HNO3" "NO3m" "HNO4" "NO4m" "NO3" "HONO" "NO2m" "NH3" "NH4p" "Hp" "OHm" "O3" "O2" "O2m" "OH" "HO2" "H2O2" "CH3OO" "HCOOH" "HCOOm" "HCHO" "CH3OH" "CH3OOH" "CO2" "HCO3m" "CO3m" "SO2" "HSO3m" "SO32m" "H2SO4" "HSO4m" "SO42m" "SO3m" "SO4m" "HSO5m" "SO5m" "DMS" "DMSO" "DMSO2" "CH3SO2m" "CH3SO3m" "CH2OHSO3m" "HCl" "Clm" "HOCl" "ClOm" "Cl2" "Cl" "Cl2m" "ClOHm" "HBr" "Brm" "HOBr" "BrOm" "Br2" "BrCl" "Br" "Br2m" "BrOHm" "BrCl2m" "Br2Clm" "HOI" "ICl" "IBr" "I2" "IO" "Im" "IO2m" "IO3m" "ICl2m" "IBr2m" "ICl2m" "IBr2m" "Nap" "DOM" "SIV" "SVI"  "pH" "cw" "rc" "totNO3m" "Brm_Nap" "Clm_Nap" "nospec") 
+ set n_spec = ("1" "2" "3" "4" "5" "6" "7" "8" "9" "10" "11" "12" "13" "14" "15" "16" "17" "18" "19" "20" "21" "22" "23" "24" "25" "26" "27" "28" "29" "30" "31" "32" "33" "34" "35" "36" "37" "38" "39" "40" "41" "42" "43" "44" "45" "46" "47" "48" "49" "50" "51" "52" "53" "54" "55" "56" "57" "58" "59" "60" "61" "62" "63" "64" "65" "66" "67" "68" "69" "70" "71" "72" "73" "74" "75" "76" "77" "78" "79" "80" "81" "82" "83" "84" "85")
 
 # set species = ("totNO3m" "Hp" "HCO3m" "HCl" "SVI" "Clm" "Brm" "Nap" "cw" "pH") 
 # set n_spec = ("1" "2" "3" "4" "5" "6" "7" "8" "9" "10")
@@ -140,6 +140,9 @@ foreach i ($m_runs)
     echo "use" ' "'  "$runs[$i]"'aq.nc"' '; use "'  "$runs[$i]"'meteo.nc"' >> pgtmp0
     echo $i
 end
+
+# Import all variable names <jjb>
+echo "let allnames = ..varnames" >> pgtmp0
 
 # define timeaxis
 # mtime as in netCDF is "local time", get "time since model start"
@@ -464,8 +467,14 @@ foreach k ($n_spec)
     if ($n_runs == 1) then 
 #       find max to correctly scale axes
         echo "let vmax=0." >> pgtmp0
+	# jjb also define vmax1 in case the variable does not exists
+        echo "let vmax1=0." >> pgtmp0
+	#echo "let var_exists = "'`'"IS_ELEMENT_OF_STR(allnames, "'"'$species[$k]'"'")"'`'"" >> pgtmp0
+	echo "let var_exists = IS_ELEMENT_OF_STR(allnames, "'"'$species[$k]'"'")" >> pgtmp0
+	#echo "list var_exists" >> pgtmp0
 	foreach kk($m_pl)
-	    echo "let vmax1=1.05*$species[$k][de1,$pll1$pld[$kk]$lim2,$bin]/$unit1a/$unit1b" >> pgtmp0
+	    #echo "let vmax1=1.05*$species[$k][de1,$pll1$pld[$kk]$lim2,$bin]/$unit1a/$unit1b" >> pgtmp0
+	    echo "if "'`'"var_exists eq 1"'`'" then let vmax1=1.05*$species[$k][de1,$pll1$pld[$kk]$lim2,$bin]/$unit1a/$unit1b endif" >> pgtmp0
 	    echo "if "'`'"vmax1 gt vmax"'`'" then let vmax="'`'"vmax1"'`'" endif" >> pgtmp0
 	end
 	echo "if "'`'"vmax eq 0."'`'" then let vmax=1 endif" >> pgtmp0

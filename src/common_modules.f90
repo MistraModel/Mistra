@@ -92,6 +92,10 @@ module gas_common
   integer, allocatable :: gas_m2k_a (:,:)
   integer, allocatable :: gas_m2k_t (:,:)
 
+  ! Advection (Eulerian view)
+  integer :: nadvmax
+  integer, allocatable :: nindadv (:)
+  real (kind=dp), allocatable :: xadv (:)
 
 
 ! RADICALS (gas phase)

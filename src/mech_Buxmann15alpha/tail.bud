@@ -1,0 +1,6 @@
+c accumulated rates (mlc/cm^3)
+      do i=1,xxxx
+         bg(2,i,kl)=bg(2,i,kl)+dtg*bg(1,i,kl)
+      end do
+      return
+      end

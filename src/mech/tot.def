@@ -3,33 +3,34 @@
 
 
 #INLINE F77_GLOBAL
+! IMPORTANT: this file must comply with both F77 and F90 standards
+!   - comment lines MUST start with an exclamation mark "!", not a "c" or "C"
+!   - continuation lines MUST begin with an ampersand "&" in 6-th position, and the
+!     previous line MUST end with an ampersand placed after the 72-nd position
+!     (for homogeneity, please always use the 73-rd position)
+
 ! photolysis common block
-! jjb original version
-!     double precision ph_rat
-!     dimension ph_rat(47) ! jjb
-!     common /ph_r/ ph_rat
-! jjb test version handling ph_rat another way
-      integer nphrxn
-      parameter (nphrxn=47)
+      !  (if updated here, other *.def files for KPP and global param must be updated as well)
+      integer, parameter :: nphrxn = 47
+      common /ph_r_t/ ph_rat(nphrxn)
+      double precision ph_rat
+
 ! conversion factors
-      double precision conv1,cvv1,cvv2,cvv3,cvv4,xhal,xiod,
-     &       xliq1,xliq2,xliq3,xliq4,
-     &       xhet1,xhet2,
+      double precision conv1,cvv1,cvv2,cvv3,cvv4,xhal,xiod,              &
+     &       xliq1,xliq2,xliq3,xliq4,                                    &
+     &       xhet1,xhet2,                                                &
      &       ykmt_OHClm,ycw,ycwd,yhenry,ykeb,ykef,yxkmt,yxkmtd,yxeq
-!     common /kpp_rate_t/ conv1,cvv1,cvv2,cvv3,cvv4,xhal,xiod,xliq1, ! jjb original version
-!    &   xliq2,xliq3,xliq4,ycw(4),yhenry(NSPEC),yxkmt(4,NSPEC),
-!    &   ykef(4,NSPEC),ykeb(4,NSPEC)
-!     common /kpp_rate_t/ conv1,cvv1,cvv2,cvv3,cvv4,xhal,xiod,xliq1, ! jjb updated Forcheck #20
-!    &   xliq2,xliq3,xliq4,ycw(4),yhenry(NSPEC),yxkmt(4,NSPEC),
-!    &   ykef(4,NSPEC),ykeb(4,NSPEC),xhet1,xhet2
-      common /kpp_rate_t/ conv1,cvv1,cvv2,cvv3,cvv4,xhal,xiod,xliq1, ! jjb updated ...
-     &   xliq2,xliq3,xliq4,ycw(4),yhenry(NSPEC),yxkmt(4,NSPEC),
-     &   ykef(4,NSPEC),ykeb(4,NSPEC),xhet1,xhet2,yxkmtd(2,NSPEC),
+!     common /kpp_rate_t/ conv1,cvv1,cvv2,cvv3,cvv4,xhal,xiod,xliq1,     & ! jjb original version
+!    &   xliq2,xliq3,xliq4,ycw(4),yhenry(NSPEC),yxkmt(NSPEC,4),          &
+!    &   ykef(NSPEC,4),ykeb(NSPEC,4)
+!     common /kpp_rate_t/ conv1,cvv1,cvv2,cvv3,cvv4,xhal,xiod,xliq1,     & ! jjb updated Forcheck #20
+!    &   xliq2,xliq3,xliq4,ycw(4),yhenry(NSPEC),yxkmt(NSPEC,4),          &
+!    &   ykef(NSPEC,4),ykeb(NSPEC,4),xhet1,xhet2
+      common /kpp_rate_t/ conv1,cvv1,cvv2,cvv3,cvv4,xhal,xiod,xliq1,     & ! jjb updated ...
+     &   xliq2,xliq3,xliq4,ycw(4),yhenry(NSPEC),yxkmt(NSPEC,4),          &
+     &   ykef(NSPEC,4),ykeb(NSPEC,4),xhet1,xhet2,yxkmtd(NSPEC,2),        &
      &   yxeq(NSPEC),ycwd(2)
       common /k_surf_t/ ykmt_OHClm(4)
-      double precision ph_rat
-      common /ph_r_t/ ph_rat(nphrxn) ! jjb
-
 #ENDINLINE
 
 #INLINE F77_RCONST

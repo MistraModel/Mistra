@@ -15,27 +15,40 @@
 # See the Licence for the specific language governing permissions
 # and limitations under the Licence.
 
-# Intel Fotran Compiler
-#FC=ifort
-#CFLAGS= -O2  -fpe0
+# Intel Fotran Compiler (tested up to version 2021.3.0)
+FC=ifort
+# -- Preferred flags for production run
+CFLAGS= -O2 -fpe0 -traceback
+# -- Alternative flags for production run
+#CFLAGS= -O2 -fpe0
+#CFLAGS= -O2 -fp-model source -traceback
 #CFLAGS= -O2 -r8 -fpe0
 #CFLAGS= -O2 -r8 -fpe0 -traceback
-#CFLAGS= -check all -traceback -warn all
-#CFLAGS= -O2 -r8 -fpe0 -fltconsistency
-# CFLAGS= -O2 #-check all -warn declarations -warn uncalled -warn unused#-g #-warn all
+#CFLAGS= -O2 -r8 -fpe0 -traceback -noalign
+#CFLAGS= -O2 -r8 -fpe0 -traceback -fltconsistency
+#CFLAGS= -O2 -r8 -fpe0 -traceback -fp-model source
+#CFLAGS= -O2 -noalign -fp-model source -traceback # some (not all) GEOS-Chem options for standard runs
+#CFLAGS= -O2 #-check all -warn declarations -warn uncalled -warn unused#-g #-warn all
 #CFLAGS= -O2 -ipo #-check all -warn all
 #CFLAGS= -fast # = -O3 -ipo -static (-xP)
+# -- Debug flags for development stages
+#CFLAGS= -O0 -r8 -fpe0 -traceback -fltconsistency -check uninit -warn all -check all
+#CFLAGS= -O0 -r8 -init=snan,arrays -traceback
+#CFLAGS= -O0 -debug all -g -check bounds -check arg_temp_created -fpe0 -ftrapuv # GEOS-Chem debug options
+#CFLAGS= -O0 -r8 -fpe0 -traceback -warn all -check all
+#CFLAGS= -check all -traceback -warn all
 
-# GNU Fortran
-FC=gfortran
-#  debug flags
-CFLAGS= -fdefault-real-8 -fdefault-double-8 -fbacktrace -Wall -ffpe-trap=invalid,zero,overflow -fbounds-check -O0 -g
-#CFLAGS= -fdefault-real-8 -fdefault-double-8 -fbacktrace -ffpe-trap=invalid,zero,overflow
-#CFLAGS= -fdefault-real-8 -fdefault-double-8 -fbacktrace -fbounds-check -O0 -g
-#CFLAGS= -fdefault-real-8 -fdefault-double-8 -fbacktrace -O3
-#  run flags
-#CFLAGS= -fdefault-real-8 -fdefault-double-8
-#CFLAGS= -fdefault-real-8 -fdefault-double-8 -O3
+# GNU Fortran (tested up to version 7.5.0)
+#FC=gfortran
+# --  Preferred run flags
+#CFLAGS= -O3 -w -fbacktrace # -fautomatic -fno-align-commons
+# --  Alternative run flags
+#CFLAGS= -O3 -fdefault-real-8 -fdefault-double-8 -fbacktrace
+# -- debug flags
+#CFLAGS= -O0 -g -fdefault-real-8 -fdefault-double-8 -fbacktrace -fcheck=bounds -ffpe-trap=invalid,zero,overflow -finit-real=snan -Wall -fcheck=all
+#CFLAGS= -g -fbacktrace -ffpe-trap=zero,underflow,overflow,invalid
+#CFLAGS= -fbacktrace -fdump-fortran-optimized -fdump-fortran-original -fdump-parse-tree -ffpe-trap= -ffpe-summary= -g -Wsurprising -Walign-commons -Wall
+
 
 # Makefile memo
 # -------------
@@ -50,7 +63,9 @@ CFLAGS= -fdefault-real-8 -fdefault-double-8 -fbacktrace -Wall -ffpe-trap=invalid
 # To avoid mistakes in this situation, the Makefile has been added in the dependency list of all modules,
 # and in the dependency list of all objects which don't already include a module
 
-mistra: precision.o constants.o global_params.o common_modules.o file_unit.o\
+mistra: precision.o constants.o global_params.o common_modules.o\
+	data_surface.o\
+	file_unit.o\
 	str.o radinit.o  nrad.o outp.o nuc.o jrate.o activity.o \
 	tot.o bud_t.o bud_s_t.o \
 	aer.o bud_a.o bud_s_a.o \
@@ -58,10 +73,10 @@ mistra: precision.o constants.o global_params.o common_modules.o file_unit.o\
 	kpp.o utils.o \
 	config.o \
 	mod_out_netCDF.o out_netCDF.o
-	$(FC) -o  $@ $(CFLAGS) $^ -lnetcdf -lnetcdff
+	$(FC) $(CFLAGS) -o $@ $^ -lnetcdf -lnetcdff
 
 # modules
-global_params.o global_params.mod: global_params.f90 Makefile
+global_params.o global_params.mod: global_params.f90 tot_Parameters.h Makefile
 	rm -f global_params.mod
 	$(FC) $(CFLAGS) -c $<
 
@@ -71,6 +86,10 @@ common_modules.o gas_common.mod: common_modules.f90 global_params.mod Makefile
 
 constants.o constants.mod: constants.f90 precision.mod Makefile
 	rm -f constants.mod
+	$(FC) $(CFLAGS) -c $<
+
+data_surface.o data_surface.mod: data_surface.f90 precision.mod Makefile
+	rm -f data_surface.mod
 	$(FC) $(CFLAGS) -c $<
 
 file_unit.o file_unit.mod: file_unit.f90 Makefile
@@ -114,22 +133,22 @@ utils.o: utils.f90 config.mod file_unit.mod gas_common.mod global_params.mod \
 	Makefile
 	$(FC) $(CFLAGS) -o $(@F) -c $<
 
-str.o: str.f90 config.mod constants.mod gas_common.mod global_params.mod Makefile
+str.o: str.f90 config.mod constants.mod file_unit.mod gas_common.mod global_params.mod Makefile
 	$(FC) $(CFLAGS) -o $(@F) -c $<
 
 radinit.o: radinit.f90 config.mod constants.mod file_unit.mod global_params.mod precision.mod Makefile
 	$(FC) $(CFLAGS) -o $(@F) -c $<
 
-nrad.o: nrad.f90 constants.mod global_params.mod precision.mod Makefile
+nrad.o: nrad.f90 config.mod constants.mod file_unit.mod global_params.mod precision.mod Makefile
 	$(FC) $(CFLAGS) -o $(@F) -c $<
 
-outp.o: outp.f config.mod constants.mod global_params.mod gas_common.mod precision.mod Makefile
+outp.o: outp.f90 config.mod constants.mod file_unit.mod global_params.mod gas_common.mod precision.mod Makefile
 	$(FC) $(CFLAGS) -o $(@F) -c $<
 
-out_netCDF.o: out_netCDF.f config.mod global_params.mod gas_common.mod cdf_var_gas.mod Makefile
+out_netCDF.o: out_netCDF.f cdf_var_gas.mod config.mod file_unit.mod global_params.mod gas_common.mod precision.mod Makefile
 	$(FC) $(CFLAGS) -o $(@F) -c $< -I/usr/include
 
-jrate.o: jrate.f config.mod global_params.mod Makefile
+jrate.o: jrate.f config.mod file_unit.mod global_params.mod Makefile
 	$(FC) $(CFLAGS) -o $(@F) -c $<
 
 nuc.o: nuc.f90 config.mod constants.mod file_unit.mod global_params.mod gas_common.mod precision.mod \
@@ -137,10 +156,10 @@ nuc.o: nuc.f90 config.mod constants.mod file_unit.mod global_params.mod gas_comm
 	rm -f mod_nuc.mod
 	$(FC) $(CFLAGS) -o $(@F) -c $<
 
-kpp.o: kpp.f tot_Parameters.h tot_Global.h aer_Parameters.h aer_Global.h gas_Parameters.h gas_Global.h \
+kpp.o: kpp.f90 tot_Parameters.h tot_Global.h aer_Parameters.h aer_Global.h gas_Parameters.h gas_Global.h \
 	kpp_tot_global.mod kpp_tot_parameters.mod \
 	kpp_aer_global.mod kpp_aer_parameters.mod \
-	config.mod constants.mod gas_common.mod global_params.mod precision.mod Makefile
+	config.mod constants.mod file_unit.mod gas_common.mod global_params.mod precision.mod Makefile
 	$(FC) $(CFLAGS) -o $(@F) -c $<
 
 activity.o: activity.f90 constants.mod global_params.mod precision.mod Makefile

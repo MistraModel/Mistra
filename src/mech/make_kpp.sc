@@ -31,6 +31,11 @@
   #                          without aliases. If aliases were defined (for instance, cp='cp -i'),
   #                          they were not overwritten by the local flag, and the user was asked
   #                          to confirm all steps.
+  #
+  # 29-May-2021  Josue Bock  After converting kpp.f into kpp.f90, need to make header files
+  #                          (*_Global.h and *_Parameters.h) compliant with both f77 and f90, by
+  #                          converting comment signs (c or C) into !. Apply sed substitution
+  # 24-Jun-2021  Josue Bock  Move this to mult_ch.sc
 
 # == End of modifications =====================================================================
 
@@ -83,7 +88,7 @@ foreach j ($suffix)
 end
 
 # =========================================
-# change concatenated files with mult_ch.sc 
+# change concatenated files with mult_ch.sc
 # =========================================
 echo "tuning KPP files for mechanism $prefix"
     ./mult_ch.sc $prefix $appendix

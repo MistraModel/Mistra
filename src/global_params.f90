@@ -35,6 +35,8 @@ module global_params
 
   implicit none
 
+  include 'tot_Parameters.h'
+
   public
   save
 ! param_met
@@ -101,6 +103,7 @@ module global_params
   integer, parameter :: nkc = 4
 
   ! Number of photolysis reactions
+  !  (if updated here, *.def files for KPP must also be updated for the same variable)
   integer, parameter :: nphrxn = 47
 
   ! Number of levels to compute budget
@@ -108,7 +111,8 @@ module global_params
 
   ! Number of chemical reactions in the tot mechanism
   !   (improvement: get this value from KPP header files)
-  integer, parameter :: nrxn = 1627
+  !integer, parameter :: nrxn = 1627
+  integer, parameter :: nrxn = NREACT
 
   ! Maximum level to compute prognostic chemistry in the aerosols
   integer, parameter :: nmax_chem_aer = nf

@@ -1,0 +1,367 @@
+{---aqueous phase reactions}
+{---base mechanism: von Glasow and Crutzen, ACP, 2004}
+{---iodine based on von Glasow et al, 2002a, update according to IUPAC 04-2004, Susanne}
+
+{---script replaces  z with 1-4}
+
+{---Ox and HOx reactions}
+
+{O1}  O3lz + OHlz            = HO2lz:                        xliqz*1.1d8 *cvvz; {#r212}
+{O2}  O3lz + O2mlz           = OHlz + OHmlz:                 xliqz*1.5d9 *cvvz; {#r211}
+{O3}  OHlz + OHlz            = H2O2lz:                       xliqz*dmin2(5.5d9) *cvvz; {#r144}
+{O4}  OHlz + HO2lz           = H2Olz:                        xliqz*dmin2(7.1d9) *cvvz; {#r213}
+{O5}  OHlz + O2mlz           = OHmlz:                        xliqz*dmin2(1.0d10) *cvvz; {#r213}
+{O6}  OHlz + H2O2lz          = HO2lz:                        xliqz*farr2(2.7d7,-1684) *cvvz; {#r217} 
+{O7}  HO2lz + HO2lz          = H2O2lz:                       xliqz*farr2(9.7d5,-2500) *cvvz; {#r210}
+{O8}  HO2lz + O2mlz          = H2O2lz - Hplz:                xliqz*farr2(1.0d8, -900) *cvvz; {#r210}
+
+{---NOy reactions}
+
+{N1}  HONOlz + OHlz          = NO2lz:                        xliqz*dmin2(1.0d10) *cvvz; {assumed =N7 #r1249}
+{N2}  HONOlz + H2O2lz + Hplz = HNO3lz + Hplz:                xliqz*uparp(4.6d3,-6800,C(ind_Hplz),cvvz); {3rd order} {#r45}
+{N3}  NO3lz + OHmlz          = NO3mlz + OHlz:                xliqz*farr2(8.2d7,-2700) *cvvz; {#r69}
+{N4}  NO2lz + NO2lz          = HNO3lz + HONOlz:              xliqz*1.0d8 *cvvz; {#r59}
+{N5}  NO2lz + HO2lz          = HNO4lz:                       xliqz*1.8d9 *cvvz; {#695}
+{N6}  NO2mlz + O3lz          = NO3mlz + O2lz:                xliqz*farr2(5.0d5,-6950) *cvvz; {#r45}
+{N7}  NO2mlz + OHlz          = NO2lz + OHmlz:                xliqz*dmin2(1.0d10) *cvvz; {#r1249}
+{N8}  NO4mlz                 = NO2mlz + O2lz:                xliqz*8.0d-1 ; {1st order} {#695}
+
+{---organic reactions}
+
+{C1}  HCHOlz + OHlz          = HCOOHlz + HO2lz:              xliqz*farr2(7.7d8,-1020) *cvvz; {#r231}
+{C2}  HCOOHlz + OHlz         = HO2lz + CO2lz:                xliqz*farr2(1.1d8, -991) *cvvz; {#r231}
+{C3}  HCOOmlz + OHlz         = OHmlz + HO2lz + CO2lz:        xliqz*farr2(3.1d9,-1240) *cvvz; {#r231}
+{C4}  CH3OOlz + HO2lz        = CH3OOHlz:                     xliqz*4.3d5 *cvvz; {estimated by #313}
+{C5}  CH3OOlz + O2mlz        = CH3OOHlz + OHmlz:             xliqz*5.0d7 *cvvz; {estimated by #313}
+{C6}  CH3OHlz + OHlz         = HCHOlz + HO2lz:               xliqz*9.7d8 *cvvz; {#r144}
+{C7}  CH3OOHlz + OHlz        = CH3OOlz:                      xliqz*farr2(2.7d7,-1715) *cvvz; {estimated by #313}
+{C8}  CH3OOHlz + OHlz        = HCHOlz + OHlz:                xliqz*farr2(1.1d7,-1715) *cvvz; {estimated by #313}
+{C9}  CO3mlz + O2mlz         = HCO3mlz + OHmlz:              xliqz*6.5d8 *cvvz; {#r222}
+{C10}  CO3mlz + H2O2lz       = HCO3mlz + HO2lz:              xliqz*4.3d5 *cvvz; {#r222}
+{C11}  CO3mlz + HCOOmlz      = HCO3mlz + HCO3mlz + HO2lz:    xliqz*1.5d5 *cvvz; {#r222}
+{C12}  HCO3mlz + OHlz        = CO3mlz:                       xliqz*8.5d6 *cvvz; {#r222}
+{---*  HCO3mlz + O2mlz       = CO3mlz + H2O2lz - Hplz:       xliqz*0; #  }
+{C13}  DOMlz + OHlz          = HO2lz:                        xliqz*5.0d9 *cvvz; {estimated by #2210 from #nist98}
+
+{---S reactions}
+
+{S1}  SO3mlz + O2lz           = SO5mlz:                       xliqz*1.5d9 *cvvz; {#r75}
+{S2}  HSO3mlz + O3lz          = SO42mlz + Hplz + O2lz:        xliqz*farr2(3.7d5,-5500) *cvvz; {#409}
+{S3}  SO32mlz + O3lz          = SO42mlz + O2lz:               xliqz*farr2(1.5d9,-5300) *cvvz; {#409}
+{S4}  HSO3mlz + OHlz          = SO3mlz:                       xliqz*4.5d9 *cvvz; {#r144}
+{S5}  SO32mlz + OHlz          = SO3mlz + OHmlz:               xliqz*dmin2(5.5d9) *cvvz; {#r144}
+{S6}  HSO3mlz + HO2lz         = SO42mlz + OHlz + Hplz:        xliqz*3.0d3 *cvvz; {upper limit D. Sedlak  pers. comm. with R. Sander}
+{S7}  HSO3mlz + O2mlz         = SO42mlz + OHlz:               xliqz*3.0d3 *cvvz; {upper limit D. Sedlak  pers. comm. with R. Sander}
+{S8}  HSO3mlz + H2O2lz        = SO42mlz + Hplz:               xliqz*fliq_60(5.2d6,-3650,C(ind_Hplz),cvvz) *cvvz; {#r45}
+{S9}  HSO3mlz + NO2lz         = HSO4mlz + HONOlz + HONOlz - NO2lz: xliqz*2.0d7 *cvvz; {#r452}
+{S10}  SO32mlz + NO2lz        = SO42mlz + HONOlz + HONOlz - NO2lz: xliqz*2.0d7 *cvvz; {#r452}
+{S11}  HSO3mlz + NO3lz        = SO3mlz + NO3mlz + Hplz:       xliqz*farr2(1.4d9,-2000) *cvvz; {#r69}
+{S12}  HSO3mlz + HNO4lz       = HSO4mlz + NO3mlz + Hplz:      xliqz*3.1d5 *cvvz; {#695}
+{S13}  HSO3mlz + CH3OOHlz + Hplz = SO42mlz + 2Hplz + CH3OHlz: xliqz*uparp(1.6d7,-3800,C(ind_Hplz),cvvz); {3rd order} {#r175}
+{S14}  SO32mlz + CH3OOHlz + Hplz = SO42mlz + CH3OHlz + Hplz:  xliqz*uparp(1.6d7,-3800,C(ind_Hplz),cvvz); {3rd order} {#r175}
+{S15}  HSO3mlz + HCHOlz       = CH2OHSO3mlz:                  xliqz*4.3d-1 *cvvz; {#r534}
+{S16}  SO32mlz + HCHOlz       = CH2OHSO3mlz - Hplz:           xliqz*1.4d4 *cvvz; {#r534}
+{S17}  CH2OHSO3mlz + OHmlz    = SO32mlz + HCHOlz:             xliqz*3.6d3 *cvvz; {#b17}
+{S18}  HSO3mlz + HSO5mlz + Hplz = SO42mlz + SO42mlz + 3Hplz : xliqz*uplip(7.1d6,C(ind_Hplz),cvvz); {3rd order} {#r85}
+{S19}  SO4mlz + OHlz          = HSO5mlz:                      xliqz*1.0d9 *cvvz; {#r1243}
+{S20}  SO4mlz + HO2lz         = SO42mlz + Hplz:               xliqz*3.5d9 *cvvz; {#r1243}
+{S21}  SO4mlz + O2mlz         = SO42mlz:                      xliqz*3.5d9 *cvvz; {assumed =S20}
+{S22}  SO4mlz + H2Olz         = SO42mlz + Hplz + OHlz:        xliqz*farr2(1.1d1,-1110) *cvvz; {#r1244}
+{S23}  SO4mlz + H2O2lz        = SO42mlz + Hplz + HO2lz:       xliqz*1.2d7 *cvvz; {#r86}
+{S24}  SO4mlz + NO3mlz        = SO42mlz + NO3lz:              xliqz*5.0d4 *cvvz; {#r69}
+{S25}  SO4mlz + HSO3mlz       = SO3mlz + SO42mlz + Hplz:      xliqz*8.0d8 *cvvz; {#r75}
+{S26}  SO4mlz + SO32mlz       = SO3mlz + SO42mlz:             xliqz*4.6d8 *cvvz; {#r75}
+{S27}  SO42mlz + NO3lz        = NO3mlz + SO4mlz:              xliqz*1.0d5 *cvvz; {#981}
+{S28}  SO5mlz + HSO3mlz       = SO4mlz + SO42mlz + Hplz:      xliqz*7.5d4 *cvvz; {#r75}
+{S29}  SO5mlz + SO32mlz       = SO4mlz + SO42mlz:             xliqz*9.4d6 *cvvz; {#r75}
+{S30}  SO5mlz + HSO3mlz       = SO3mlz + HSO5mlz:             xliqz*2.5d4 *cvvz; {#r75 @ r111}
+{S31}  SO5mlz + SO32mlz       = SO3mlz + HSO5mlz - Hplz:      xliqz*3.6d6 *cvvz; {#r75 @ r111}
+{S32}  SO5mlz + O2mlz         = HSO5mlz - Hplz + O2lz:        xliqz*2.3d8 *cvvz; {#r955}
+{S33}  SO5mlz + SO5mlz        = H2Olz:                        xliqz*1.0d8 *cvvz; {#r222}
+{S34}  DMSlz + O3lz           = O2lz + DMSOlz:                xliqz*farr2(8.6d8,-2600) *cvvz ; {#2082}
+{S35}  DMSlz + OHlz           = 0.5 CH3SO3mlz +  0.5 CH3OOlz + 
+                      0.5 HSO4mlz + HCHOlz + Hplz :            xliqz*dmin2(1.9d10) *cvvz ; {rate: nist98}
+{S36}  DMSOlz + OHlz          = CH3SO2mlz + CH3OOlz + Hplz {-O2}: xliqz*4.5d9 *cvvz ; {#2046}
+{S37}  CH3SO2mlz + OHlz       = CH3SO3mlz {+H2O - O2}:        xliqz*dmin2(1.2d10) *cvvz ; {#2046}
+{S38}  CH3SO3mlz + OHlz       = SO42mlz + Hplz + CH3OOlz:     xliqz*1.2d7 *cvvz ; {#2062}
+
+{---Cl reactions}
+
+{Cl1}  Cllz + H2O2lz          = HO2lz + Clmlz + Hplz:         xliqz*xhal*2.0d9 *cvvz; {#S40}
+{Cl2}  Cllz + H2Olz           = Hplz + ClOHmlz:               xliqz*xhal*1.8d5 *cvvz; {#S40}
+{Cl3}  Cllz + NO3mlz          = NO3lz + Clmlz:                xliqz*xhal*1.0d8 *cvvz; {#645}
+{Cl4}  Cllz + DOMlz           = Clmlz + HO2lz:                xliqz*xhal*5.0d9 *cvvz; {estimated by #2210 from #nist98}
+{Cl5}  Cllz + SO42mlz         = SO4mlz + Clmlz:               xliqz*2.1d8 *cvvz; {#646}
+{Cl6}  Cllz + Cllz            = Cl2lz:                        xliqz*xhal*8.8d7 *cvvz; {#r987}
+{Cl7}  Clmlz + OHlz           = ClOHmlz:                      xliqz*xhal*4.2d9 *cvvz; {#S40}
+{Cl8}  Clmlz + O3lz           = ClOmlz + O2lz:                xliqz*xhal*3.0d-3 *cvvz; {#r648}
+{Cl9}  Clmlz + NO3lz          = NO3mlz + Cllz:                xliqz*xhal*farr2(9.3d6,-4330) *cvvz; {#r69} 
+{Cl10} Clmlz + HNO4lz         = HOCllz + NO3mlz:              xliqz*xhal*1.4d-2 *cvvz; {#1868}
+{Cl11}  Clmlz + SO4mlz        = SO42mlz + Cllz:               xliqz*xhal*2.5d8 *cvvz;  {#646}
+{Cl12}  Clmlz + HSO5mlz       = HOCllz + SO42mlz:             xliqz*xhal*farr2(1.8d-3,-7352) *cvvz;  {#r475}
+{Cl13}  Clmlz + HOCllz + Hplz = Cl2lz:                        xliqz*xhal*uparp(2.2d4,-3508,C(ind_Hplz),cvvz); {3rd order}  {#1392}
+{Cl14}  Cl2lz                 = Clmlz + HOCllz + Hplz:        xliqz*xhal*uparm(2.2d1,-8012,2.2d4,C(ind_Hplz),cvvz) ; {1st order}  {#1392}
+{Cl15}  Cl2mlz + OHlz         = HOCllz + Clmlz:               xliqz*xhal*1.0d9 *cvvz; {#nist98}
+{Cl16}  Cl2mlz + OHmlz        = Clmlz + Clmlz + OHlz:         xliqz*xhal*4.0d6 *cvvz; {#S19}
+{Cl17}  Cl2mlz + HO2lz        = Clmlz + Clmlz + Hplz + O2lz:  xliqz*xhal*3.1d9 *cvvz; {#S40}
+{Cl18}  Cl2mlz + O2mlz        = Clmlz + Clmlz + O2lz:         xliqz*xhal*dmin2(6.0d9) *cvvz; {#S19}
+{Cl19}  Cl2mlz + H2O2lz       = Clmlz + Clmlz + Hplz + HO2lz: xliqz*xhal*farr2(7.0d5, -3340) *cvvz; {#S19}
+{Cl20}  Cl2mlz + NO2mlz       = Clmlz + Clmlz + NO2lz:        xliqz*6.0d7 *cvvz; {#S19}
+{Cl21}  Cl2mlz + CH3OOHlz     = Clmlz + Clmlz + Hplz + CH3OOlz: xliqz*xhal*farr2(7.0d5,-3340) *cvvz; {assumed by #S19}
+{Cl22}  Cl2mlz + DOMlz        = Clmlz + Clmlz + HO2lz:        xliqz*xhal*1.0d6 * cvvz; {estimated by #2210 from #nist98}
+{Cl23}  Cl2mlz + HSO3mlz      = SO3mlz + Clmlz + Clmlz + Hplz: xliqz*farr2(4.7d8,-1082) *cvvz; {#2209}
+{Cl24}  Cl2mlz + SO32mlz      = SO3mlz + Clmlz + Clmlz:       xliqz*6.2d7  *cvvz;  {#r1009}
+{Cl25}  Cl2mlz + Cl2mlz       = Cl2lz + 2Clmlz:               xliqz*xhal*dmin2(6.2d9) *cvvz; {#S40}
+{Cl26}  Cl2mlz + Cllz         = Clmlz + Cl2lz:                xliqz*xhal*2.7d9 *cvvz; {#S40} 
+{Cl27}  Cl2mlz + DMSlz        = 0.5 CH3SO3mlz +  0.5 CH3OOlz + 
+                      0.5 HSO4mlz + HCHOlz + 2 Clmlz + 2 Hplz: xliqz*xhal*3.0d9 *cvvz ; {rate #nist98}
+{Cl28}  ClOHmlz               = Clmlz + OHlz:                 xliqz*xhal*6.0d9 ; {1st order} {#S40}
+{Cl29}  ClOHmlz + Hplz        = Cllz:                         xliqz*xhal*dmin3(4.0d10) *cvvz; {#S40}
+{Cl30}  HOCllz + HO2lz        = Cllz + O2lz:                  xliqz*xhal*7.5d6 *cvvz; {assumed = Cl30 #r1034}
+{Cl31}  HOCllz + O2mlz        = Cllz + OHmlz + O2lz:          xliqz*xhal*7.5d6 *cvvz; {#r1034}
+{Cl32}  HOCllz + SO32mlz      = Clmlz + HSO4mlz:              xliqz*xhal*7.6d8 *cvvz; {#1395}
+{Cl33}  HOCllz + HSO3mlz      = Clmlz + HSO4mlz + Hplz:       xliqz*xhal*7.6d8 *cvvz; {assumed = Cl31 #1395}
+{Cl34}  Cl2lz + HO2lz         = Cl2mlz + Hplz + O2lz:         xliqz*xhal*1.0d9 *cvvz; {#r1035}
+{Cl35}  Cl2lz + O2mlz         = Cl2mlz + O2lz:                xliqz*xhal*1.0d9 *cvvz; {assumed = Cl33 #r1035}
+
+
+{---Br reactions}
+
+{Br1}  Brlz + OHmlz           = BrOHmlz:                      xliqz*xhal*dmin2(1.3d10) *cvvz; {#2212}
+{Br2}  Brlz + DOMlz           = Brmlz + HO2lz:                xliqz*xhal*2.0d8 *cvvz; {estimated by #2210 from #nist98}
+{Br3}  Brmlz + OHlz           = BrOHmlz:                      xliqz*xhal*dmin2(1.1d10) *cvvz; {#2212}
+{Br4}  Brmlz + O3lz           = BrOmlz:                       xliqz*xhal*farr2(2.1d2,-4450) *cvvz; {#1856}
+{Br5}  Brmlz + NO3lz          = Brlz + NO3mlz:                xliqz*xhal*3.8d9 *cvvz; {Zellner et al. 1996 in #893}
+{Br6}  Brmlz + HNO4lz         = HOBrlz + NO3mlz:              xliqz*xhal*5.4d-1*cvvz; {#1868}
+{Br7}  Brmlz + SO4mlz         = Brlz + SO42mlz:               xliqz*xhal*2.1d9 *cvvz; {#S19}
+{Br8}  Brmlz + HSO5mlz        = HOBrlz + SO42mlz:             xliqz*xhal*farr2(1.0d0,-5338) *cvvz; {#r475}
+{Br9}  Brmlz + HOBrlz + Hplz  = Br2lz:                        xliqz*xhal*uplip(1.6d10,C(ind_Hplz),cvvz); {3rd order} {#894}
+{Br10}  Br2lz                 = Brmlz + HOBrlz + Hplz:        xliqz*xhal*uparm(9.7d1,7457,1.6d10,C(ind_Hplz),cvvz) ; {1st order}  {#894}
+{Br11}  Br2mlz + O2mlz        = Brmlz + Brmlz:                xliqz*xhal*1.7d8 *cvvz; {#r366}
+{----*  Br2mlz + HO2lz        = Brmlz + Brmlz + Hplz:         xliqz*xhal*1.0d8 *cvvz; only oxidation!}
+{Br12}  Br2mlz + HO2lz        = Br2lz + H2O2lz - Hplz:        xliqz*xhal*4.4d9 *cvvz; {#2211}
+{Br13}  Br2mlz + H2O2lz       = Brmlz + Brmlz + Hplz + HO2lz: xliqz*xhal*5.0d2 *cvvz; {#470}
+{Br14}  Br2mlz + Br2mlz       = Brmlz + Brmlz + Br2lz:        xliqz*xhal*1.9d9 *cvvz; {#r222}
+{Br15}  Br2mlz + CH3OOHlz     = Brmlz + Brmlz + Hplz + CH3OOlz: xliqz*xhal*1.0d5 *cvvz; {assumed by #S19}
+{Br16}  Br2mlz+ DOMlz         = Brmlz +  Brmlz + HO2lz:       xliqz*xhal*1.0d5 *cvvz; {estimated by #2210 from #nist98}
+{Br17}  Br2mlz + NO2mlz       = Brmlz + Brmlz + NO2lz:        xliqz*farr2(1.7d7,-1720) *cvvz;{#2209}
+{Br18}  Br2mlz + HSO3mlz      = Brmlz + Brmlz + Hplz + SO3mlz: xliqz*xhal*farr2(6.3d7,-782) *cvvz; {#2209}
+{Br19}  Br2mlz + SO32mlz      = Brmlz + Brmlz + SO3mlz:       xliqz*xhal*farr2(2.2d8,-650) *cvvz; {#2209}
+{Br20}  Br2mlz + DMSlz        = 0.5 CH3SO3mlz + 0.5 CH3OOlz + 
+                      0.5 HSO4mlz + HCHOlz + 2 Brmlz + 2 Hplz: xliqz*xhal*3.2d9 *cvvz ; {rate nist98}
+{Br21}  BrOHmlz               = Brmlz + OHlz:                 xliqz*xhal*3.3d7 ; {1st order} {#2212}
+{Br22}  BrOHmlz               = Brlz + OHmlz:                 xliqz*xhal*4.2d6 ; {1st order} {#2212}
+{Br23}  BrOHmlz + Hplz        = Brlz:                         xliqz*xhal*dmin3(4.4d10) *cvvz; {#2212}
+{Br24}  BrOHmlz + Brmlz       = Br2mlz + OHmlz:               xliqz*xhal*1.9d8 *cvvz; {#2212}
+{Br25}  BrOmlz +  SO32mlz     = Brmlz + SO42mlz:              xliqz*xhal*1.0d8 *cvvz; {#1638}
+{Br26}  HOBrlz + HO2lz        = Brlz + O2lz:                  xliqz*xhal*1.0d9 *cvvz; {#560}
+{Br27}  HOBrlz + O2mlz        = Brlz + OHmlz + O2lz:          xliqz*xhal*3.5d9 *cvvz; {#r762}
+{Br28}  HOBrlz + H2O2lz       = Brmlz + Hplz + O2lz:          xliqz*xhal*1.2d6 *cvvz; {#611}
+{Br29}  HOBrlz + SO32mlz      = Brmlz + HSO4mlz:              xliqz*xhal*5.0d9 *cvvz; {#1638}
+{Br30}  HOBrlz + HSO3mlz      = Brmlz + HSO4mlz + Hplz:       xliqz*xhal*5.0d9 *cvvz; {assumed = Br28 #1638}
+{Br31}  Br2lz + HO2lz         = Br2mlz + Hplz + O2lz:         xliqz*xhal*1.1d8 *cvvz; {#nist98}
+{Br32}  Br2lz + O2mlz         = Br2mlz + O2lz:                xliqz*xhal*dmin2(5.6d9) *cvvz; {#nist98}
+
+
+{---I reactions}
+
+{I1}  HOIlz + Imlz + Hplz    = I2lz:                         xliqz*xhal*xiod*uplip(4.4d12,C(ind_Hplz),cvvz); {3rd order} 
+{I1a} I2lz                   = HOIlz + Imlz + Hplz :         xliqz*xhal*xiod*uplim(3.0d0,4.4d12,C(ind_Hplz),cvvz); {1st order}
+{I2}  HOIlz + Clmlz + Hplz   = ICllz:                        xliqz*xhal*xiod*uplip(2.9d10,C(ind_Hplz),cvvz); {3rd order} 
+{I2a} ICllz                  = HOIlz + Clmlz + Hplz:         xliqz*xhal*xiod*uplim(2.4d6,2.9d10,C(ind_Hplz),cvvz); {1st order} 
+{I3}  HOIlz + Brmlz + Hplz   = IBrlz:                        xliqz*xhal*xiod*uplip(4.1d12,C(ind_Hplz),cvvz); {3rd order; #s_671} 
+{I3a} IBrlz                  = HOIlz + Hplz + Brmlz:         xliqz*xhal*xiod*uplim(8.0d5,4.1d12,C(ind_Hplz),cvvz) ; {1st order} 
+{I4}  HOCllz + Imlz + Hplz   = ICllz:                        xliqz*xhal*xiod*uplip(3.5d11,C(ind_Hplz),cvvz); {3rd order} 
+{I5}  HOBrlz + Imlz + Hplz   = IBrlz:                        xliqz*xhal*xiod*uplip(1.2d13,C(ind_Hplz),cvvz); {3rd order, estimated from #s_676, Table VII} 
+{---  IOlz   + O2mlz         = HOIlz  +  O2lz - Hplz:        xliqz*xhal*xiod*0. *cvvz;     5.0d9} 
+{I6}  IOlz + IOlz            = HOIlz + HIO2lz:               xliqz*xhal*xiod*1.5d9 *cvvz; 
+{I7}  Imlz + O3lz            = HOIlz - Hplz:                 xliqz*xhal*xiod*farr2(4.2d9,-9311) *cvvz; 
+{I7b} Imlz + IBrlz          = I2lz + Brmlz :                 xliqz*xhal*xiod*2.0d9 *cvvz; {#s_671}
+{I7c} I2lz + Brmlz          = Imlz + IBrlz :                 xliqz*xhal*xiod*4.74d3 *cvvz; {#s_671}
+{I7d} Imlz + ICllz          = I2lz + Clmlz :                 xliqz*xhal*xiod*1.1d9 *cvvz; {#s_669}
+{I7a} Cl2lz + HOIlz          = HIO2lz + 2Clmlz + 2Hplz:      xliqz*xhal*xiod*1.0d6 *cvvz; 
+{I8a} HOIlz + HSO3mlz        = Imlz + HSO4mlz + Hplz:        xliqz*xhal*xiod*5.0d9 *cvvz; {assumed = Br29}
+{I8b} HOIlz + SO32mlz        = Imlz + HSO4mlz :              xliqz*xhal*xiod*5.0d9 *cvvz; {assumed = Br28}
+{I8}  HOIlz + HOCllz         = HIO2lz + Clmlz + Hplz:        xliqz*xhal*xiod*5.0d5 *cvvz; 
+{I9}  HOIlz + HOBrlz         = HIO2lz + Brmlz + Hplz:        xliqz*xhal*xiod*1.0d6 *cvvz; 
+{I10} HOIlz + HOIlz          = HIO2lz + Imlz + Hplz:         xliqz*xhal*xiod*uplim(2.5d1,2.0d10,C(ind_Hplz),cvvz); {#s_670}
+{I10a} HIO2lz + Imlz + Hplz  = 2HOIlz:                       xliqz*xhal*xiod*uplip(2.0d10,C(ind_Hplz),cvvz); {#s_664}
+{I11}  HIO2lz + H2O2lz       = IO3mlz + Hplz:                xliqz*xhal*xiod*6.0d1 *cvvz; {#s_670}
+{---  HOIlz + H2O2lz        = Imlz + O2lz + Hplz :          xliqz*xhal*xiod*3.7d1 *cvvz; #s_665}
+{I12} HIO2lz + HOCllz        = IO3mlz + Clmlz + 2Hplz:       xliqz*xhal*xiod*1.5d3 *cvvz; 
+{I13} HIO2lz + HOBrlz        = IO3mlz + Brmlz + 2Hplz:       xliqz*xhal*xiod*1.0d6 *cvvz; 
+{I14} HIO2lz + HOIlz         = IO3mlz + Imlz + 2Hplz:        xliqz*xhal*xiod*2.4d2 *cvvz;  {#s_690} 
+{I14a} IO3mlz + Imlz + Hplz  = HIO2lz + HOIlz - Hplz:        xliqz*xhal*xiod*flsc4(1.2d3,C(ind_Hplz),cvvz); {#s_650, Schmitz(2000)}
+{I15} HIO2lz + I2lz          = IO3mlz + 2Imlz + 3Hplz:       xliqz*xhal*xiod*flsc6(5.5d-5,C(ind_Hplz));  {G.Schmitz pers.comm.}
+{I15a} IO3mlz + Imlz + Imlz  = HIO2lz + I2lz - 2Hplz :       xliqz*xhal*xiod*flsc5(4.2d8,C(ind_Hplz),cvvz); {#s_650, Schmitz(2000)}
+{---  HIO2lz + HIO2lz       = HOIlz + IO3mlz + Hplz:        xliqz*xhal*xiod*2.5d1 *cvvz;  #s_668}
+{I16} I2lz + HSO3mlz         = Imlz + Imlz + HSO4mlz + 2Hplz:xliqz*xhal*xiod*1.0d6 *cvvz; 
+{---I17 IO3mlz + HSO3mlz       = SO42mlz + HIO2lz:           xliqz*xhal*xiod*2.95d-1 *cvvz; #s_664, Edblom et al.(1987)}
+
+{---mixed halide reactions}
+
+{Hx1}  Brmlz + HOCllz + Hplz  = BrCllz:                       xliqz*xhal*uplip(1.3d6,C(ind_Hplz),cvvz); {3rd order} {#894}
+{---Hx   BrCllz                 = Brmlz + HOCllz + Hplz:        xliqz*xhal*1.13d-3; 1st order #894 } 
+{Hx2}  Clmlz + HOBrlz + Hplz  = BrCllz:                       xliqz*xhal*uplip(2.3d10,C(ind_Hplz),cvvz); {3rd order} {#894}
+{Hx3}  BrCllz                 = Clmlz + HOBrlz + Hplz:        xliqz*xhal*uplim(3.0d6,2.3d10,C(ind_Hplz),cvvz) ; {1st order} {#894}
+{Hx4}  Brmlz + ClOmlz + Hplz  = BrCllz + OHmlz:               xliqz*xhal*uplip(3.7d10,C(ind_Hplz),cvvz); {3rd order} {#1725} 
+{Hx5}  Cl2lz + Brmlz          = BrCl2mlz:                     xliqz*xhal*dmin2(7.7d9) *cvvz; {#894}
+{Hx6}  BrCl2mlz               = Cl2lz + Brmlz:                xliqz*xhal*1.83d3 ; {1st order} {#894} 
+
+{---photolysis}
+{---factor 2 due to enhanced actinic flux in particle}
+{hv1}  O3lz + hv   = OHlz + OHlz + O2lz:                     xliqz*2.d0 *ph_rat( 3); {assumed 2x gas phase} {O1D reacts only with H2O} 
+{hv2}  H2O2lz + hv = OHlz + OHlz:                            xliqz*2.d0 *ph_rat( 6); {assumed 2x gas phase} 
+{hv3}  NO3mlz + hv = NO2lz + OHlz - Hplz:                    xliqz*2.d0* ph_rat(39); {#281}
+{hv4}  NO2mlz + hv = NOlz + OHlz - Hplz:                     xliqz*2.d0* ph_rat(38); {#281 @ f31}
+{hv5}  HOCllz + hv = OHlz + Cllz:                            xliqz*xhal*2.d0 *ph_rat(13); {assumed 2x gas phase}
+{hv6}  Cl2lz + hv  = Cllz + Cllz:                            xliqz*xhal*2.d0 *ph_rat(19); {assumed 2x gas phase}
+{hv7}  HOBrlz + hv = OHlz + Brlz:                            xliqz*xhal*2.d0 *ph_rat(20); {assumed 2x gas phase}
+{hv8}  Br2lz + hv  = Brlz + Brlz:                            xliqz*xhal*2.d0 *ph_rat(22); {assumed 2x gas phase}
+{hv9}  BrCllz + hv = Cllz + Brlz:                            xliqz*xhal*2.d0 *ph_rat(23); {assumed 2x gas phase}
+
+{---exchange between gas and liquid phase}
+
+{ex1}  O2              = O2lz:                               xliqz*yxkmt(ind_O2,z)*ycw(z) ;  
+{ex2}  O2lz            = O2:                                 xliqz*yxkmt(ind_O2,z)*yhenry(ind_O2) ;  
+{ex3}  O3              = O3lz:                               xliqz*yxkmt(ind_O3,z)*ycw(z) ;  
+{ex4}  O3lz            = O3:                                 xliqz*yxkmt(ind_O3,z)*yhenry(ind_O3) ;  
+{ex5}  OH              = OHlz:                               xliqz*yxkmt(ind_OH,z)*ycw(z) ;  
+{ex6}  OHlz            = OH:                                 xliqz*yxkmt(ind_OH,z)*yhenry(ind_OH) ;  
+{ex7}  HO2             = HO2lz:                              xliqz*yxkmt(ind_HO2,z)*ycw(z) ;  
+{ex8}  HO2lz           = HO2:                                xliqz*yxkmt(ind_HO2,z)*yhenry(ind_HO2) ;  
+{ex9}  H2O2            = H2O2lz:                             xliqz*yxkmt(ind_H2O2,z)*ycw(z) ;  
+{ex10}  H2O2lz         = H2O2:                               xliqz*yxkmt(ind_H2O2,z)*yhenry(ind_H2O2) ;  
+{---*  CH4             = CH4lz:                              xliqz*yxkmt(ind_CH4,z)*ycw(z) ;  }
+{---*  CH4lz           = CH4:                                xliqz*yxkmt(ind_CH4,z)*yhenry(ind_CH4) ;  }
+{ex11}  CO2            = CO2lz:                              xliqz*yxkmt(ind_CO2,z)*ycw(z) ;
+{ex12}  CO2lz          = CO2:                                xliqz*yxkmt(ind_CO2,z)*yhenry(ind_CO2) ;
+{ex13}  MO2            = CH3OOlz:                            xliqz*yxkmt(ind_MO2,z)*ycw(z) ;
+{ex14}  CH3OOlz        = MO2:                                xliqz*yxkmt(ind_MO2,z)*yhenry(ind_MO2) ;
+{ex15}  HCHO           = HCHOlz:                             xliqz*yxkmt(ind_HCHO,z)*ycw(z) ;
+{ex16}  HCHOlz         = HCHO:                               xliqz*yxkmt(ind_HCHO,z)*yhenry(ind_HCHO) ;
+{ex17}  ACO2           = HCOOHlz:                            xliqz*yxkmt(ind_ACO2,z)*ycw(z) ;
+{ex18}  HCOOHlz        = ACO2:                               xliqz*yxkmt(ind_ACO2,z)*yhenry(ind_ACO2) ;
+{ex19}  ACTA           = ACTAlz:                             xliqz*yxkmt(ind_ACTA,z)*ycw(z) ;
+{ex20}  ACTAlz         = ACTA:                               xliqz*yxkmt(ind_ACTA,z)*yhenry(ind_ACTA) ;
+{ex21}  CH3OH          = CH3OHlz:                            xliqz*yxkmt(ind_CH3OH,z)*ycw(z) ;
+{ex22}  CH3OHlz        = CH3OH:                              xliqz*yxkmt(ind_CH3OH,z)*yhenry(ind_CH3OH) ;
+{ex23}  C2H5OH         = C2H5OHlz:                           xliqz*yxkmt(ind_C2H5OH,z)*ycw(z) ;
+{ex24}  C2H5OHlz       = C2H5OH:                             xliqz*yxkmt(ind_C2H5OH,z)*yhenry(ind_C2H5OH) ;
+{ex25}  ROOH           = CH3OOHlz:                           xliqz*yxkmt(ind_ROOH,z)*ycw(z) ;
+{ex26}  CH3OOHlz       = ROOH:                               xliqz*yxkmt(ind_ROOH,z)*yhenry(ind_ROOH) ;
+{---*  N2O5            = N2O5lz:                             xliqz*yxkmt(ind_N2O5,z)*ycw(z) ;  }
+{---*  N2O5lz          = N2O5:                               xliqz*yxkmt(ind_N2O5,z)*yhenry(ind_N2O5) ;  }
+{ex27}  NO             = NOlz:                               xliqz*yxkmt(ind_NO,z)*ycw(z) ;
+{ex28}  NOlz           = NO:                                 xliqz*yxkmt(ind_NO,z)*yhenry(ind_NO) ;
+{ex29}  NO2            = NO2lz:                              xliqz*yxkmt(ind_NO2,z)*ycw(z) ;
+{ex30}  NO2lz          = NO2:                                xliqz*yxkmt(ind_NO2,z)*yhenry(ind_NO2) ;
+{ex31}  NO3            = NO3lz:                              xliqz*yxkmt(ind_NO3,z)*ycw(z) ;
+{ex32}  NO3lz          = NO3:                                xliqz*yxkmt(ind_NO3,z)*yhenry(ind_NO3) ;
+{ex33}  HONO           = HONOlz:                             xliqz*yxkmt(ind_HONO,z)*ycw(z) ;
+{ex34}  HONOlz         = HONO:                               xliqz*yxkmt(ind_HONO,z)*yhenry(ind_HONO) ;
+{ex35}  HNO3           = HNO3lz:                             xliqz*yxkmt(ind_HNO3,z)*ycw(z) ;
+{ex36}  HNO3lz         = HNO3:                               xliqz*yxkmt(ind_HNO3,z)*yhenry(ind_HNO3) ;
+{ex37}  HNO4           = HNO4lz:                             xliqz*yxkmt(ind_HNO4,z)*ycw(z) ;
+{ex38}  HNO4lz         = HNO4:                               xliqz*yxkmt(ind_HNO4,z)*yhenry(ind_HNO4) ;
+{ex39}  NH3            = NH3lz:                              xliqz*yxkmt(ind_NH3,z)*ycw(z) ;
+{ex40}  NH3lz          = NH3:                                xliqz*yxkmt(ind_NH3,z)*yhenry(ind_NH3) ;
+{ex41}  SO2            = SO2lz:                              xliqz*yxkmt(ind_SO2,z)*ycw(z) ;
+{ex42}  SO2lz          = SO2:                                xliqz*yxkmt(ind_SO2,z)*yhenry(ind_SO2) ;
+{ex43}  H2SO4          = SO4lz:                              xliqz*yxkmt(ind_H2SO4,z)*ycw(z) ;
+{ex44}  SO4lz          = H2SO4:                              xliqz*yxkmt(ind_H2SO4,z)*yhenry(ind_H2SO4) ;
+{ex45}  DMS            = DMSlz:                              xliqz*yxkmt(ind_DMS,z)*ycw(z) ;
+{ex46}  DMSlz          = DMS:                                xliqz*yxkmt(ind_DMS,z)*yhenry(ind_DMS) ;
+{ex47}  DMSO           = DMSOlz:                             xliqz*yxkmt(ind_DMSO,z)*ycw(z) ;
+{ex48}  DMSOlz         = DMSO:                               xliqz*yxkmt(ind_DMSO,z)*yhenry(ind_DMSO) ;
+{ex49}  DMSO2          = DMSO2lz:                            xliqz*yxkmt(ind_DMSO2,z)*ycw(z) ;
+{ex50}  DMSO2lz        = DMSO2:                              xliqz*yxkmt(ind_DMSO2,z)*yhenry(ind_DMSO2) ;
+{ex51}  CH3SO2H        = CH3SO2mlz + Hplz:                   xliqz*yxkmt(ind_CH3SO2H,z)*ycw(z) ;
+{ex52}  CH3SO2mlz      = CH3SO2H - Hplz:                     xliqz*yxkmt(ind_CH3SO2H,z)*yhenry(ind_CH3SO2H) ;
+{ex53}  CH3SO3H        = CH3SO3mlz + Hplz:                   xliqz*yxkmt(ind_CH3SO3H,z)*ycw(z) ;
+{ex54}  CH3SO3mlz      = CH3SO3H - Hplz:                     xliqz*yxkmt(ind_CH3SO3H,z)*yhenry(ind_CH3SO3H) ;
+{ex55}  SOR            = SORlz:                              xliqz*yxkmt(ind_SOR,z)*ycw(z) ;
+{ex56}  SORlz          = SOR:                                xliqz*yxkmt(ind_SOR,z)*yhenry(ind_SOR) ;
+{ex57}  HCl            = HCllz:                              xliqz*xhal*yxkmt(ind_HCl,z)*ycw(z) ;
+{ex58}  HCllz          = HCl:                                xliqz*xhal*yxkmt(ind_HCl,z)*yhenry(ind_HCl) ;
+{ex59}  HOCl           = HOCllz:                             xliqz*xhal*yxkmt(ind_HOCl,z)*ycw(z) ;
+{ex60}  HOCllz         = HOCl:                               xliqz*xhal*yxkmt(ind_HOCl,z)*yhenry(ind_HOCl) ;
+{ex61}  Cl2            = Cl2lz:                              xliqz*xhal*yxkmt(ind_Cl2,z)*ycw(z) ;
+{ex62}  Cl2lz          = Cl2:                                xliqz*xhal*yxkmt(ind_Cl2,z)*yhenry(ind_Cl2) ;
+{ex63}  HBr            = HBrlz:                              xliqz*xhal*yxkmt(ind_HBr,z)*ycw(z) ;
+{ex64}  HBrlz          = HBr:                                xliqz*xhal*yxkmt(ind_HBr,z)*yhenry(ind_HBr) ;
+{ex65}  HOBr           = HOBrlz:                             xliqz*xhal*yxkmt(ind_HOBr,z)*ycw(z) ;
+{ex66}  HOBrlz         = HOBr:                               xliqz*xhal*yxkmt(ind_HOBr,z)*yhenry(ind_HOBr) ;
+{ex67}  Br2            = Br2lz:                              xliqz*xhal*yxkmt(ind_Br2,z)*ycw(z) ;
+{ex68}  Br2lz          = Br2:                                xliqz*xhal*yxkmt(ind_Br2,z)*yhenry(ind_Br2) ;
+{ex69}  BrCl           = BrCllz:                             xliqz*xhal*yxkmt(ind_BrCl,z)*ycw(z) ;
+{ex70}  BrCllz         = BrCl:                               xliqz*xhal*yxkmt(ind_BrCl,z)*yhenry(ind_BrCl) ;
+{ex71}  HOI            = HOIlz:                              xliqz*xhal*xiod*yxkmt(ind_HOI,z)*ycw(z) ;
+{ex72}  HOIlz          = HOI:                                xliqz*xhal*xiod*yxkmt(ind_HOI,z)*yhenry(ind_HOI) ;
+{ex73}  IO             = IOlz:                               xliqz*xhal*xiod*yxkmt(ind_IO,z)*ycw(z) ;
+{ex74}  IOlz           = IO:                                 xliqz*xhal*xiod*yxkmt(ind_IO,z)*yhenry(ind_IO) ;
+{ex75}  I2             = I2lz:                               xliqz*xhal*xiod*yxkmt(ind_I2,z)*ycw(z) ;
+{ex76}  I2lz           = I2:                                 xliqz*xhal*xiod*yxkmt(ind_I2,z)*yhenry(ind_I2) ;
+{ex77}  ICl            = ICllz:                              xliqz*xhal*xiod*yxkmt(ind_ICl,z)*ycw(z) ;
+{ex78}  ICllz          = ICl:                                xliqz*xhal*xiod*yxkmt(ind_ICl,z)*yhenry(ind_ICl) ;
+{ex79}  IBr            = IBrlz:                              xliqz*xhal*xiod*yxkmt(ind_IBr,z)*ycw(z) ;
+{ex80}  IBrlz          = IBr:                                xliqz*xhal*xiod*yxkmt(ind_IBr,z)*yhenry(ind_IBr) ;
+{ex81}  XOR            = XORlz:                              xliqz*xhal*yxkmt(ind_XOR,z)*ycw(z) ;
+{ex82}  XORlz          = XOR:                                xliqz*xhal*yxkmt(ind_XOR,z)*yhenry(ind_XOR) ;
+
+{---equilibria}
+
+{eq1}  H2Olz             = Hplz + OHmlz:                     xliqz*ykef(ind_H2O,z) ;  
+{eq2}  Hplz + OHmlz      = H2Olz:                            xliqz*ykeb(ind_H2O,z) ; 
+{eq3}  HO2lz             = O2mlz + Hplz:                     xliqz*ykef(ind_HO2,z); 
+{eq4}  O2mlz + Hplz      = HO2lz:                            xliqz*ykeb(ind_HO2,z); 
+{eq5}  HCOOHlz           = Hplz + HCOOmlz:                   xliqz*ykef(ind_ACO2,z) ;  
+{eq6}  Hplz + HCOOmlz    = HCOOHlz:                          xliqz*ykeb(ind_ACO2,z) ;  
+{eq7}  CO2lz             = Hplz + HCO3mlz:                   xliqz*ykef(ind_CO2,z) ;  
+{eq8}  Hplz + HCO3mlz    = CO2lz:                            xliqz*ykeb(ind_CO2,z) ;  
+{eq9}  HONOlz            = Hplz + NO2mlz:                    xliqz*ykef(ind_HONO,z) ;  
+{eq10}  Hplz + NO2mlz    = HONOlz:                           xliqz*ykeb(ind_HONO,z) ;  
+{eq11}  HNO3lz           = Hplz + NO3mlz:                    xliqz*ykef(ind_HNO3,z) ;
+{eq12}  Hplz + NO3mlz    = HNO3lz:                           xliqz*ykeb(ind_HNO3,z) ;
+{eq13}  HNO4lz           = NO4mlz + Hplz:                    xliqz*ykef(ind_HNO4,z) ;
+{eq14}  NO4mlz + Hplz    = HNO4lz:                           xliqz*ykeb(ind_HNO4,z) ;
+{eq15}  NH3lz            = OHmlz + NH4plz:                   xliqz*ykef(ind_NH3,z) ;  
+{eq16}  OHmlz + NH4plz   = NH3lz:                            xliqz*ykeb(ind_NH3,z) ;  
+{eq17}  HSO3mlz          = Hplz + SO32mlz:                   xliqz*ykef(ind_HSO3ml1,z) ;  
+{eq18}  Hplz + SO32mlz   = HSO3mlz:                          xliqz*ykeb(ind_HSO3ml1,z) ;  
+{eq19}  SO4lz            = Hplz + HSO4mlz:                   xliqz*ykef(ind_H2SO4,z) ;  
+{eq20}  Hplz + HSO4mlz   = SO4lz:                            xliqz*ykeb(ind_H2SO4,z) ;  
+{eq21}  HSO4mlz          = Hplz + SO42mlz:                   xliqz*ykef(ind_HSO4ml1,z) ;  
+{eq22}  Hplz + SO42mlz   = HSO4mlz:                          xliqz*ykeb(ind_HSO4ml1,z) ;  
+{eq23}  SO2lz            = Hplz + HSO3mlz:                   xliqz*ykef(ind_SO2,z) ;  
+{eq24}  Hplz + HSO3mlz   = SO2lz:                            xliqz*ykeb(ind_SO2,z) ;  
+{---*  HCHOlz + HSO3mlz  = CH2OHSO3mlz:                      xliqz*ykef(ind_HCHO,z) ;  }
+{---*  CH2OHSO3mlz       = HCHOlz + HSO3mlz:                 xliqz*ykeb(ind_HCHO,z) ;  }
+{eq25}  HCllz            = Hplz + Clmlz:                     xliqz*xhal*ykef(ind_HCl,z) ;  
+{eq26}  Hplz + Clmlz     = HCllz:                            xliqz*xhal*ykeb(ind_HCl,z) ;  
+{eq27}  Cl2mlz           = Cllz + Clmlz:                     xliqz*xhal*ykef(ind_Cl2ml1,z) ; 
+{eq28}  Cllz + Clmlz     = Cl2mlz:                           xliqz*xhal*ykeb(ind_Cl2ml1,z) ; 
+{eq29}  HOCllz           = Hplz + ClOmlz:                    xliqz*xhal*ykef(ind_HOCl,z) ; 
+{eq30}  Hplz + ClOmlz    = HOCllz:                           xliqz*xhal*ykeb(ind_HOCl,z) ; 
+{eq31}  HBrlz            = Hplz + Brmlz:                     xliqz*xhal*ykef(ind_HBr,z) ; 
+{eq32}  Hplz + Brmlz     = HBrlz:                            xliqz*xhal*ykeb(ind_HBr,z) ; 
+{eq33}  Br2mlz           = Brlz + Brmlz:                     xliqz*xhal*ykef(ind_Br2,z) ; 
+{eq34}  Brlz + Brmlz     = Br2mlz:                           xliqz*xhal*ykeb(ind_Br2,z) ; 
+{eq35}  HOBrlz           = Hplz + BrOmlz:                    xliqz*xhal*ykef(ind_HOBr,z) ; 
+{eq36}  Hplz + BrOmlz    = HOBrlz:                           xliqz*xhal*ykeb(ind_HOBr,z) ; 
+{eq37}  BrCllz + Clmlz   = BrCl2mlz:                         xliqz*xhal*ykef(ind_BrCl2ml1,z) ; 
+{eq38}  BrCl2mlz         = BrCllz + Clmlz:                   xliqz*xhal*ykeb(ind_BrCl2ml1,z) ; 
+{---*  BrCllz + Brmlz    = Br2lz + Clmlz:                    xliqz*xhal*ykef(ind_Br2l1,z) ; }
+{---*  Br2lz + Clmlz     = BrCllz + Brmlz:                   xliqz*xhal*ykeb(ind_Br2l1,z) ; }
+{eq39}  BrCllz + Brmlz   = Br2Clmlz:                         xliqz*xhal*ykef(ind_Br2Clml1,z) ; 
+{eq40}  Br2Clmlz         = BrCllz + Brmlz:                   xliqz*xhal*ykeb(ind_Br2Clml1,z) ; 
+{eq41}  Br2lz + Clmlz    = Br2Clmlz:                         xliqz*xhal*ykef(ind_Br2l1,z) ; 
+{eq42}  Br2Clmlz         = Br2lz + Clmlz:                    xliqz*xhal*ykeb(ind_Br2l1,z) ; 
+{eq43}  ICllz + Clmlz 	 = ICl2mlz:                          xliqz*xhal*xiod*ykef(ind_ICl,z) ; 
+{eq44}  ICl2mlz          = ICllz + Clmlz:                    xliqz*xhal*xiod*ykeb(ind_ICl,z) ; 
+{eq45}  IBrlz + Brmlz    = IBr2mlz:                          xliqz*xhal*xiod*ykef(ind_IBr,z) ; 
+{eq46}  IBr2mlz          = IBrlz + Brmlz:                    xliqz*xhal*xiod*ykeb(ind_IBr,z) ; 
+{eq47}  ICllz + Brmlz    = IClBrmlz:                         xliqz*xhal*xiod*ykef(ind_IClBrml1,z) ;
+{eq48}  IClBrmlz         = ICllz + Brmlz:                    xliqz*xhal*xiod*ykeb(ind_IClBrml1,z) ;
+{eq49}  IBrlz + Clmlz    = IClBrmlz:                         xliqz*xhal*xiod*ykef(ind_I2,z) ;
+{eq50}  IClBrmlz         = IBrlz + Clmlz:                    xliqz*xhal*xiod*ykeb(ind_I2,z) ;

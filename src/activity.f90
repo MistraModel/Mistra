@@ -85,6 +85,8 @@ subroutine pitzer (k,kc,wact)
 
 ! Recent changes:
 ! ---------------
+!      /  /2016  <jjb>  in case N==1, removed unused statement rh=rh*exp(...) where rh uninitialised
+
 !    03/02/2017  <jjb>  xs array size is only 11 instead of 100, corrected in calpar as well
 
 !    03/02/2017  <jjb>  bugfix: c1(3,:) was not defined along with b0, b1, and c0 (see after call calpar).
@@ -134,7 +136,7 @@ subroutine pitzer (k,kc,wact)
   common /cb53/ theta(n),thetl(n),t(n),talt(n),p(n),rho(n)  ! get temp from MISTRA
   real(kind=dp) :: theta, thetl, t, talt, p, rho
 
-  common /kpp_mol/ xgamma(nf,j6,nkc)                        ! gamma output
+  common /kpp_mol/ xgamma(j6,nkc,nf)                        ! gamma output
   real(kind=dp) :: xgamma
 
 ! External functions:
@@ -166,8 +168,8 @@ subroutine pitzer (k,kc,wact)
   real(kind=dp) :: omega(nc,na)
   real(kind=dp) :: xs(11)
 
-!  character ionn*6                                  ! jjb currently unused, but left commented for later use
-!  dimension ionn(7)                                 !     could be tested along with Mistra ion names (index)
+!  character (len=6) :: ionn(7)        ! jjb currently unused, but left commented for later use
+!                                      !     could be tested along with Mistra ion names (index)
 !  data ionn /'H+', 'NH4+', 'Na+', 'HSO4-','SO4--','NO3-', 'Cl-'/
 
   integer, parameter :: ionind(NC+NA) = (/1,2,20,19,8,13,14/) !indices of ions in sion1
@@ -333,7 +335,7 @@ subroutine pitzer (k,kc,wact)
         g=g*exp(r2mix1)
      endif
 
-     xgamma(k,ionind(NI),kc)=g
+     xgamma(ionind(NI),kc,k)=g
 
   end do
 
@@ -635,7 +637,7 @@ function gammann(T,N,NC,NA,mC,mA,ZC,ZA,ZI,I,I2,B0,B1,C0,C1,omega)
 
   USE precision, ONLY : &
 ! Imported Parameters:
-       dp
+       dp, tiny_dp
 
   implicit none
 
@@ -698,7 +700,7 @@ function gammann(T,N,NC,NA,mC,mA,ZC,ZA,ZI,I,I2,B0,B1,C0,C1,omega)
         xo=omega1*I2
         xo4 = xo*xo*xo*xo
 
-        if(abs(XO4) > tiny(0._dp)) then
+        if(abs(XO4) > tiny_dp) then
            !xhx=1._dp/xo**4*(6._dp-exp(-xo)*(6._dp+6._dp*xo+3._dp*xo**2+xo**3))
            xhx=1._dp/xo4*(6._dp-exp(-xo)*(6._dp+6._dp*xo+3._dp*xo**2+xo**3))
         else

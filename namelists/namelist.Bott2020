@@ -1,0 +1,74 @@
+! =================================
+! mistra_cfg: general configuration
+!            (previous istart file)
+! =================================
+
+&mistra_cfg
+ ! Restart mode and duration
+ rst=F           !<-- rst: restart (true) or new initialization (false) of model run
+ lstmax=60       !<-- lstmax: integration time [hours] 60
+ 
+ ! Output choice
+ netcdf=T        !<-- netCDF: netCDF output
+ binout=F        !<-- binout: binary output
+
+ ! timing and geography
+ nday = 15       !<-- starting time: day
+ nmonth = 10     !<-- starting time: month
+ nyear = 2020    !<-- starting time: year
+ nhour = 6       !<-- starting time: hour (local time with alon=0., or UTC time with actual alon value)
+ alon = 0.       !<-- longitude [deg] (-180 ; 180)
+ alat = 50.      !<-- latitude [deg]
+
+! model grid
+ etaw1 = 2500.
+ rnw0 = 0.01
+ rnw1 = 10.
+ rw0 = 0.01
+ rw1 = 550.
+
+ ! Surface setings
+! isurf = 0       !<-- isurf: 0 = water or snow surface (default), 1 is bare soil
+ tw = 285.15      !<-- tw = water temperature [K]
+! ltwcst = T      !<-- constant tw (default = true). If not constant, set ntwopt (see SR surf0)
+! ntwopt = 1      !<-- choice for time varying SST (see SR surf0)
+ z0 = 0.0001       !<-- roughness length (m) (default = 0.01)
+
+ ! Meteorological settings
+ rp0 = 101325    !<-- Sea level atmospheric pressure [Pa]
+! rhsurf = 0.8   !<-- relative humidity at the surface, forced at each time step (default = 1)
+ ug = 5.         !<-- geostrophic wind, x-direction [m/s]
+ vg = 0.0        !<-- geostrophic wind, y-direction [m/s]
+ nuvProfOpt = 3  !<-- vertical profile of geostrophic wind components, 0=cst, 3=Bott2020
+ xm1w = 0.0069   !<-- specific humidity below inversion layer (kg/kg)
+ rhMaxBL = 0.95  !<-- Maximum rH below inversion layer (1)
+ xm1i = 0.002    !<-- specific humidity above inversion layer (kg/kg)
+ zinv = 730.     !<-- initial inversion height [m]
+ dtinv = 9.      !<-- inversion strength = temperature drop at inversion [K]
+ wmax = -0.004   !<-- large scale subsidence [m/s]
+ nwProfOpt = 3   !<-- vertical profile of subsidence, 1=original BTZ96 param, 2=default, 3=Bott2020
+
+ ! Microphysics
+ mic=T           !<-- mic: microphysics included (true)
+ iaertyp=3       !<-- iaertyp: aerosoltype 1=urban; 2=rural; 3=maritime
+
+ ! Chemistry
+ chem=F          !<-- chem: chemistry included (true)
+ halo=T          !<-- halo: halogen chemistry included (true)
+ iod=F           !<-- iod: iodine chemistry included (true) (automatically off, when 'halo = false')
+ nkc_l=4         !<-- nkc_l: number of output classes for liquid chem (set to <nkc if no cloud expected)
+ neula=1         !<-- neula: eulerian (=0, includes advection of chem species) or lagrangian (=1, no advection)
+
+ ! Box model
+ box=F           !<-- box: run model as box version (true)
+ bl_box=F        !<-- BL_box: box only, average init cond over BL and/or mean of J-values over BL
+ nlevbox=2       !<-- nlevbox: box only, level to be used for init cond of box if  BL_box=false
+ z_box=700.      !<-- z_box: height of box [m]
+
+ ! Nucleation
+ nuc=F           !<-- nuc: nucleation included (true)
+
+ ! Miscelaneous
+ scaleo3_m=300.  !<-- scaleo3_m: O3 [Dobson units] (only for scaling in photolysis calculations)
+ /
+ 

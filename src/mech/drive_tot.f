@@ -77,12 +77,12 @@
       double precision bg ! reaction rates (bg(1,:,:): instantaneous, bg(2,:,:): cumulative)
       integer il          ! indexes of the selected levels for reaction rates output
 
-      common /kpp_ltot/ henry(NSPEC,nf),xkmt(nf,nkc,NSPEC),
-     &     xkef(nf,nkc,NSPEC),xkeb(nf,nkc,NSPEC)
+      common /kpp_ltot/ henry(NSPEC,nf),xkmt(NSPEC,nkc,nf),
+     &     xkef(NSPEC,nkc,nf),xkeb(NSPEC,nkc,nf)
       double precision henry, xkmt,xkef,xkeb
 !      common /k_surf/ xkmt_OHClm(nf,nkc) ! jjb gamma_surf now commented, but keep this!
 
-      common /kpp_dryt/ xkmtd(nf,2,NSPEC),xeq(nf,NSPEC) ! jjb copied from drive_aer.f
+      common /kpp_dryt/ xkmtd(NSPEC,2,nf),xeq(NSPEC,nf) ! jjb copied from drive_aer.f
       double precision xkmtd,xeq
 !      common /kpp_dryp/ rcd(n,2),cwd(n,2) ! jjb copied from drive_aer.f
 
@@ -103,140 +103,68 @@ c parameters for /kpp_rate_t/
       ph_rat=xph_rat ! jjb
 
 c the following data is needed only for heterogeneous reactions on dry aerosol ! jjb copied from drive_aer.f
-! jjb matrix below
-c$$$      ycwd(1)=cwd(k,1)
-c$$$      ycwd(2)=cwd(k,2)
-c$$$      do l=1,nspec
-c$$$         yxkmtd(1,l)=xkmtd(k,1,l)
-c$$$         yxkmtd(2,l)=xkmtd(k,2,l)
-c$$$         yxeq(l)    =xeq(k,l)
-c$$$      enddo
-      ycwd(:)=cw(:2,k) ! jjb matrix
-      yxkmtd(:,:)=xkmtd(k,:,:) ! jjb matrix
-      yxeq(:)    =xeq(k,:) ! jjb matrix
+      ycwd(:)=cw(:2,k)
+      yxkmtd(:,:)=xkmtd(:,:,k)
+      yxeq(:)    =xeq(:,k)
 
 c liquid phase rates
  ! jjb this test is probably useless
       if (xliq1.eq.1..or.xliq2.eq.1..or.xliq3.eq.1..or.xliq4.eq.1.) then
-! jjb matrix below
-c$$$         do l=1,nspec
-c$$$            yhenry(l)=henry(k,l)
-c$$$         enddo
-         yhenry(:)=henry(:,k) ! jjb matrix
+         yhenry(:)=henry(:,k)
       else
-! jjb matrix below
-c$$$         do l=1,nspec
-c$$$            yhenry(l)=0.
-c$$$         enddo
-         yhenry(:)=0.d0 ! jjb matrix
+         yhenry(:)=0.d0
       endif
 
       if (xliq1.eq.1.) then
          ycw(1)=cw(1,k)
-! jjb matrix below
-c$$$         do l=1,nspec
-c$$$            yxkmt(1,l)=xkmt(k,1,l)
-c$$$            ykef(1,l)=xkef(k,1,l)
-c$$$            ykeb(1,l)=xkeb(k,1,l)
-c$$$            ykmt_OHClm(1) = xkmt_OHClm(k,1) ! jjb shouldn't be in the do loop !
-c$$$         enddo
-         yxkmt(1,:)=xkmt(k,1,:) ! jjb matrix
-         ykef(1,:)=xkef(k,1,:) ! jjb matrix
-         ykeb(1,:)=xkeb(k,1,:) ! jjb matrix
+         yxkmt(:,1)=xkmt(:,1,k)
+         ykef(:,1)=xkef(:,1,k)
+         ykeb(:,1)=xkeb(:,1,k)
 !         ykmt_OHClm(1) = xkmt_OHClm(k,1) ! jjb gamma_surf now commented, but keep this!
       else
          ycw(1)=0.
-! jjb matrix below
-c$$$         do l=1,nspec
-c$$$            yxkmt(1,l)=0.
-c$$$            ykef(1,l)=0.
-c$$$            ykeb(1,l)=0.
-c$$$            ykmt_OHClm(1) = 0. ! jjb shouldn't be in the do loop !
-c$$$         enddo
-         yxkmt(1,:)=0. ! jjb matrix
-         ykef(1,:)=0. ! jjb matrix
-         ykeb(1,:)=0. ! jjb matrix
+         yxkmt(:,1)=0.
+         ykef(:,1)=0.
+         ykeb(:,1)=0.
 !         ykmt_OHClm(1) = 0. ! jjb gamma_surf now commented, but keep this!
       endif
       if (xliq2.eq.1.) then
          ycw(2)=cw(2,k)
-! jjb matrix below
-c$$$         do l=1,nspec
-c$$$            yxkmt(2,l)=xkmt(k,2,l)
-c$$$            ykef(2,l)=xkef(k,2,l)
-c$$$            ykeb(2,l)=xkeb(k,2,l)
-c$$$            ykmt_OHClm(2) = xkmt_OHClm(k,2) ! jjb shouldn't be in the do loop !
-c$$$         enddo
-         yxkmt(2,:)=xkmt(k,2,:) ! jjb matrix
-         ykef(2,:)=xkef(k,2,:) ! jjb matrix
-         ykeb(2,:)=xkeb(k,2,:) ! jjb matrix
+         yxkmt(:,2)=xkmt(:,2,k)
+         ykef(:,2)=xkef(:,2,k)
+         ykeb(:,2)=xkeb(:,2,k)
 !         ykmt_OHClm(2) = xkmt_OHClm(k,2) ! jjb gamma_surf now commented, but keep this!
       else
          ycw(2)=0.
-! jjb matrix below
-c$$$         do l=1,nspec
-c$$$            yxkmt(2,l)=0.
-c$$$            ykef(2,l)=0.
-c$$$            ykeb(2,l)=0.
-c$$$            ykmt_OHClm(2) = 0. ! jjb shouldn't be in the do loop !
-c$$$         enddo
-            yxkmt(2,:)=0. ! jjb matrix
-            ykef(2,:)=0. ! jjb matrix
-            ykeb(2,:)=0. ! jjb matrix
+            yxkmt(:,2)=0.
+            ykef(:,2)=0.
+            ykeb(:,2)=0.
 !            ykmt_OHClm(2) = 0. ! jjb gamma_surf now commented, but keep this!
       endif
       if (xliq3.eq.1.) then
          ycw(3)=cw(3,k)
-! jjb matrix below
-c$$$         do l=1,nspec
-c$$$            yxkmt(3,l)=xkmt(k,3,l)
-c$$$            ykef(3,l)=xkef(k,3,l)
-c$$$            ykeb(3,l)=xkeb(k,3,l)
-c$$$            ykmt_OHClm(3) = xkmt_OHClm(k,3) ! jjb shouldn't be in the do loop !
-c$$$         enddo
-         yxkmt(3,:)=xkmt(k,3,:) ! jjb matrix
-         ykef(3,:)=xkef(k,3,:) ! jjb matrix
-         ykeb(3,:)=xkeb(k,3,:) ! jjb matrix
+         yxkmt(:,3)=xkmt(:,3,k)
+         ykef(:,3)=xkef(:,3,k)
+         ykeb(:,3)=xkeb(:,3,k)
 !         ykmt_OHClm(3) = xkmt_OHClm(k,3) ! jjb gamma_surf now commented, but keep this!
       else
          ycw(3)=0.
-! jjb matrix below
-c$$$         do l=3,nspec
-c$$$            yxkmt(3,l)=0.
-c$$$            ykef(3,l)=0.
-c$$$            ykeb(3,l)=0.
-c$$$            ykmt_OHClm(3) = 0. ! jjb shouldn't be in the do loop !
-c$$$         enddo
-         yxkmt(3,:)=0. ! jjb matrix
-         ykef(3,:)=0. ! jjb matrix
-         ykeb(3,:)=0. ! jjb matrix
+         yxkmt(:,3)=0.
+         ykef(:,3)=0.
+         ykeb(:,3)=0.
 !         ykmt_OHClm(3) = 0. ! jjb gamma_surf now commented, but keep this!
       endif
       if (xliq4.eq.1.) then
          ycw(4)=cw(4,k)
-! jjb matrix below
-c$$$         do l=1,nspec
-c$$$            yxkmt(4,l)=xkmt(k,4,l)
-c$$$            ykef(4,l)=xkef(k,4,l)
-c$$$            ykeb(4,l)=xkeb(k,4,l)
-c$$$            ykmt_OHClm(4) = xkmt_OHClm(k,4) ! jjb shouldn't be in the do loop !
-c$$$         enddo
-         yxkmt(4,:)=xkmt(k,4,:) ! jjb matrix
-         ykef(4,:)=xkef(k,4,:) ! jjb matrix
-         ykeb(4,:)=xkeb(k,4,:) ! jjb matrix
+         yxkmt(:,4)=xkmt(:,4,k)
+         ykef(:,4)=xkef(:,4,k)
+         ykeb(:,4)=xkeb(:,4,k)
 !         ykmt_OHClm(4) = xkmt_OHClm(k,4) ! jjb gamma_surf now commented, but keep this!
       else
          ycw(4)=0.
-! jjb matrix below
-c$$$         do l=1,nspec
-c$$$            yxkmt(4,l)=0.
-c$$$            ykef(4,l)=0.
-c$$$            ykeb(4,l)=0.
-c$$$            ykmt_OHClm(4) = 0. ! jjb shouldn't be in the do loop !
-c$$$         enddo
-         yxkmt(4,:)=0. ! jjb matrix
-         ykef(4,:)=0. ! jjb matrix
-         ykeb(4,:)=0. ! jjb matrix
+         yxkmt(:,4)=0.
+         ykef(:,4)=0.
+         ykeb(:,4)=0.
 !         ykmt_OHClm(4) = 0. ! jjb gamma_surf now commented, but keep this!
       endif
 
@@ -264,16 +192,6 @@ C#DEFFIX
          FIX(indf_N2) = 0.79*air
 
 c liquid phase
-! jjb matrix below
-c$$$         do kc=1,2 !nkc
-c$$$            do l=1,j2
-c$$$c               if (sl1(l,kc,k).lt.0) print *,k,'sl1(',l,kc,') < 0 !'
-c$$$               sl1(l,kc,k)=max(0.d0,sl1(l,kc,k)) ! eliminate negative values
-c$$$            enddo
-c$$$            do l=1,j6
-c$$$               sion1(l,kc,k)=max(0.d0,sion1(l,kc,k)) ! eliminate negative values
-c$$$            enddo
-c$$$         enddo
          sl1(:,:,k)=max(0.d0,sl1(:,:,k)) ! eliminate negative values
          sion1(:,:,k)=max(0.d0,sion1(:,:,k)) ! eliminate negative values
 

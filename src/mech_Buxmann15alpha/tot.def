@@ -1,0 +1,62 @@
+#include master.spc
+#include tot.eqn
+
+
+#INLINE F77_GLOBAL
+! IMPORTANT: this file must comply with both F77 and F90 standards
+!   - comment lines MUST start with an exclamation mark "!", not a "c" or "C"
+!   - continuation lines MUST begin with an ampersand "&" in 6-th position, and the
+!     previous line MUST end with an ampersand placed after the 72-nd position
+!     (for homogeneity, please always use the 73-rd position)
+
+! photolysis common block
+      !  (if updated here, other *.def files for KPP and global param must be updated as well)
+      integer, parameter :: nphrxn = 47
+      common /ph_r_t/ ph_rat(nphrxn)
+      double precision ph_rat
+
+! conversion factors
+      double precision conv1,cvv1,cvv2,cvv3,cvv4,xhal,xiod,              &
+     &       xliq1,xliq2,xliq3,xliq4,                                    &
+     &       xhet1,xhet2,                                                &
+     &       ykmt_OHClm,ycw,ycwd,yhenry,ykeb,ykef,yxkmt,yxkmtd,yxeq
+!     common /kpp_rate_t/ conv1,cvv1,cvv2,cvv3,cvv4,xhal,xiod,xliq1,     & ! jjb original version
+!    &   xliq2,xliq3,xliq4,ycw(4),yhenry(NSPEC),yxkmt(NSPEC,4),          &
+!    &   ykef(NSPEC,4),ykeb(NSPEC,4)
+!     common /kpp_rate_t/ conv1,cvv1,cvv2,cvv3,cvv4,xhal,xiod,xliq1,     & ! jjb updated Forcheck #20
+!    &   xliq2,xliq3,xliq4,ycw(4),yhenry(NSPEC),yxkmt(NSPEC,4),          &
+!    &   ykef(NSPEC,4),ykeb(NSPEC,4),xhet1,xhet2
+      common /kpp_rate_t/ conv1,cvv1,cvv2,cvv3,cvv4,xhal,xiod,xliq1,     & ! jjb updated ...
+     &   xliq2,xliq3,xliq4,ycw(4),yhenry(NSPEC),yxkmt(NSPEC,4),          &
+     &   ykef(NSPEC,4),ykeb(NSPEC,4),xhet1,xhet2,yxkmtd(NSPEC,2),        &
+     &   yxeq(NSPEC),ycwd(2)
+      common /k_surf_t/ ykmt_OHClm(4)
+#ENDINLINE
+
+#INLINE F77_RCONST
+! rates functions
+      REAL*8 atk_3, atk_3f
+      REAL*8 dmin2, dmin3
+      REAL*8 DMS_add
+      REAL*8 farr, farr2, farr_sp
+      REAL*8 fbck, fbckJ, fbck2, fbck2b
+      REAL*8 fcn
+      REAL*8 fdhett, fhet_dt, fhet_t
+      REAL*8 fliq_60
+      REAL*8 flsc4, flsc5, flsc6
+      REAL*8 shno3
+      REAL*8 sp_17, sp_23
+      REAL*8 uparm, uparp, uplim, uplip
+      EXTERNAL atk_3, atk_3f
+      EXTERNAL dmin2, dmin3
+      EXTERNAL DMS_add
+      EXTERNAL farr, farr2, farr_sp
+      EXTERNAL fbck, fbckJ, fbck2, fbck2b
+      EXTERNAL fcn
+      EXTERNAL fdhett, fhet_dt, fhet_t
+      EXTERNAL fliq_60
+      EXTERNAL flsc4, flsc5, flsc6
+      EXTERNAL shno3
+      EXTERNAL sp_17, sp_23
+      EXTERNAL uparm, uparp, uplim, uplip
+#ENDINLINE

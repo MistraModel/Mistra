@@ -17,7 +17,7 @@ set m_runs = ("1")
 # set m_runs = ("1" "2" "3" "4")
 # set n_runs = ("5")
 # set m_runs = ("1" "2" "3" "4" "5")
-set runs = ("/data/Roland/Mistra/v7.4.1_test/")
+set runs = ("/local/josue/Mistra_2019/out/Joyce2014bc/")
 
 
 # how to plot

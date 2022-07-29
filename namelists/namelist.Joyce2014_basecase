@@ -1,0 +1,81 @@
+! =================================
+! mistra_cfg: general configuration
+!            (previous istart file)
+! =================================
+
+&mistra_cfg
+
+! Special configuration
+ lpJoyce14bc = T !<-- Joyce, von Glasow, Simpson, ACP 2014 (base case)
+ cgaslistfile = "gas_species_Joyce14bc.csv"
+
+ ! Restart mode and duration
+ rst=F           !<-- rst: restart (true) or new initialization (false) of model run
+ lstmax=50       !<-- lstmax: integration time [hours] 60
+
+ ! Output choice
+ netcdf=T        !<-- netCDF: netCDF output
+ binout=F        !<-- binout: binary output
+
+ ! timing and geography
+ nday = 9        !<-- starting time: day
+ nmonth = 11     !<-- starting time: month
+ nyear = 2009    !<-- starting time: year
+ nhour = 0       !<-- starting time: hour (local time with alon=0., or UTC time with actual alon value)
+ alon = 0.       !<-- longitude [deg] (-180 ; 180)
+ alat = 64.76    !<-- latitude [deg]
+
+! model grid
+ etaw1 = 2000.
+ rnw0 = 0.005
+ rnw1 = 5.
+ rw0 = 0.005
+ rw1 = 20.
+
+ ! Surface setings
+! isurf = 0       !<-- isurf: 0 = water or snow surface (default), 1 is bare soil
+ tw = 257.15      !<-- tw = water temperature [K]
+! ltwcst = T      !<-- constant tw (default = true). If not constant, set ntwopt (see SR surf0)
+! ntwopt = 1      !<-- choice for time varying SST (see SR surf0)
+ z0 = 0.00001     !<-- roughness length (m) (default = 0.01)
+ jpAlbedoOpt = 1  !<-- default (0) is 0.05, (1) is 0.8 for snow cover
+
+ ! Meteorological settings
+ rp0 = 100000.   !<-- Sea level atmospheric pressure [Pa]
+ rhsurf = 0.6    !<-- relative humidity at the surface, forced at each time step (default = 1)
+ ug = 3.         !<-- geostrophic wind, x-direction [m/s]
+ vg = 0.0        !<-- geostrophic wind, y-direction [m/s]
+ xm1w = 0.008    !<-- specific humidity below inversion layer (kg/kg)
+ rhMaxBL = 0.78  !<-- Maximum rH below inversion layer (1)
+ xm1i = 0.004    !<-- specific humidity above inversion layer (kg/kg)
+ rhMaxFT = 0.40  !<-- Maximum rH above inversion layer (1)
+ zinv = 300.     !<-- initial inversion height [m]
+ dtinv = 0.      !<-- inversion strength = temperature drop at inversion [K]
+ wmax = 0.       !<-- large scale subsidence [m/s]
+! nwProfOpt = 3   !<-- vertical profile of subsidence, 1=original BTZ96 param, 2=default
+
+ ! Microphysics
+ mic=T           !<-- mic: microphysics included (true)
+ iaertyp = 1     !<-- iaertyp: aerosoltype 1=urban; 2=rural; 3=maritime
+
+ ! Chemistry
+ chem=T          !<-- chem: chemistry included (true)
+ halo=T          !<-- halo: halogen chemistry included (true)
+ iod=T           !<-- iod: iodine chemistry included (true) (automatically off, when 'halo = false')
+ nkc_l=2         !<-- nkc_l: number of output classes for liquid chem (set to <nkc if no cloud expected)
+ neula=1         !<-- neula: eulerian (=0, includes advection of chem species) or lagrangian (=1, no advection)
+
+ ! Box model
+ box=F           !<-- box: run model as box version (true)
+ bl_box=F        !<-- BL_box: box only, average init cond over BL and/or mean of J-values over BL
+ nlevbox=2       !<-- nlevbox: box only, level to be used for init cond of box if  BL_box=false
+ z_box=700.      !<-- z_box: height of box [m]
+
+ ! Nucleation
+ nuc=T           !<-- nuc: nucleation included (true)
+ ifeed=1         !<-- (0) no feedback on particle spectrum, (1) full feedback (2) partial feedback
+
+ ! Miscelaneous
+ scaleo3_m=401.  !<-- scaleo3_m: O3 [Dobson units] (only for scaling in photolysis calculations)
+ /
+

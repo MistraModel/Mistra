@@ -4,19 +4,19 @@
 TITLE="First simul with param file"
 
 #      MODEL BINARY USED
-MISTRAEXE=~/mistra/src/mistra
+MISTRAEXE=~/Mistra_2019/src/mistra
 
 #      NAMELIST USED
-NAMELIST=/local/hmb15gqu/mistra/namelists/namelist.base1
+NAMELIST=~/Mistra_2019/namelists/namelist.base1
 
 #      MECHANISM DIRECTORY
-MECHDIR=/local/hmb15gqu/mistra/src/mech/
+MECHDIR=~/Mistra_2019/src/mech/
 
 #      INPUT DIRECTORY
-INPDIR=/local/hmb15gqu/mistra/input/
+INPDIR=~/Mistra_2019/input/
 
 #      PARENT OUTPUT DIR
-POUTDIR=/local/hmb15gqu/mistra/out/
+POUTDIR=~/Mistra_2019/out/
 
 
 
@@ -36,11 +36,14 @@ OUTDIR=$POUTDIR$EXPID/
 if [ -e $OUTDIR ]
 then
     answer=''
-    until [[ $answer == 'y' ]] || [[ $answer == 'n' ]] ; do
-	read -p "The simulations already exists, overwrite? (y/n)" answer
+    until [[ $answer == 'y' ]] || [[ $answer == 'n' ]] || [[ $answer == 'e' ]] ; do
+	echo "The simulations already exists, overwrite?"
+	echo "  (fresh run, choose y; restart same run, choose n; exit to change name, choose e)"
+	read -p "(y=yes / n=no / e=exit)" answer
     done
     [[ $answer == 'y' ]] && rm -f $OUTDIR/* && echo "Output sub-directory cleaned, continue installation"
-    [[ $answer == 'n' ]] && echo "Installation aborted, change the param name" && exit 1
+    [[ $answer == 'n' ]] && echo "Continue installation"
+    [[ $answer == 'e' ]] && echo "Installation aborted, change the param name" && exit 1
 else
     mkdir -p $OUTDIR
     echo "Output sub-directory created, continue installation"
@@ -56,12 +59,14 @@ STDERR=${OUTDIR}/last_run.err
 if [ -e $MISTRAEXE ]
 then
     echo "Installation ended, the run will start"
+    echo $TITLE >> $STDOUT
+    echo "--------------------------------------------------------------------------------" >> $STDOUT
     env INPDIR=$INPDIR NAMELIST=$NAMELIST OUTDIR=$OUTDIR MECHDIR=$MECHDIR $MISTRAEXE >> $STDOUT 2>>$STDERR
 else
     echo "The executable does not exist, installation aborted" && exit 1
 fi
 
 # Move output files in OUTDIR
-mv fort.* *.out *.nc rst*.dat $OUTDIR
+mv fort.* *.out *.nc rst*.dat *.asc $OUTDIR
 
 echo " -- End of param script (end of the run) -- "

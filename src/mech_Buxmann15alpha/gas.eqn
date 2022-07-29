@@ -1,0 +1,46 @@
+{---Modular version, i.e. the reactions that are needed in this mechanism are included}
+{---via "include" statements. The keyword EQUATIONS can be found in gas_id.eqn and aer_id.eqn}
+{---This is mechanism 1/3, i.e. only gas phase chemistry plus reactions on dry aerosols}
+
+{---STEMII combined with MOCCA gas phase chemistry}
+
+
+#INCLUDE master_gas.eqn
+
+{---heterogeneous reactions on dry aerosol}
+
+{h1}  HNO3          = HNO3l1:                            xhet1*fdhetg(1,1) ; {RvG}
+{h2}  N2O5          = 2 HNO3 + DUMM1:                    xhet1*fdhetg(1,2) ; {RvG}
+{h3}  NH3           = NH3l1:                             xhet1*fdhetg(1,3) ; {RvG}
+{h4}  H2SO4         = SO4l1:                             xhet1*fdhetg(1,4) ; {RvG}
+
+{h1}  HNO3          = HNO3l2:                            xhet2*fdhetg(2,1) ; {RvG}
+{h2}  N2O5          = 2 HNO3:                            xhet2*fdhetg(2,2) ; {RvG}
+{h3}  NH3           = NH3l2:                             xhet2*fdhetg(2,3) ; {RvG}
+{h4}  H2SO4         = SO4l2:                             xhet2*fdhetg(2,4) ; {RvG}
+
+{---h1  HNO3 + Clml1  = HCl + NO3ml1:                      xhet1*xhal*fdhet0(1,1,2) ;} {RvG}
+{---h2  HNO3 + Brml1  = HBr + NO3ml1:                      xhet1*xhal*fdhet0(1,1,3) ;} {RvG}
+{---h3  N2O5          = 2 HNO3l1:                          xhet1*fdhet1(1,2,1) ;} {RvG}
+{---h4  N2O5 + Clml1  = ClNO2 + NO3ml1:                    xhet1*xhal*fdhet1(1,2,2) ;} {RvG}
+{---h5  N2O5 + Brml1  = BrNO2 + NO3ml1:                    xhet1*xhal*fdhet1(1,2,3) ;} {RvG}
+{---h6  BrNO3         = HOBr + HNO3l1:                     xhet1*xhal*fdhet1(1,3,1) ;} {RvG}
+{---h7  BrNO3 + Clml1 = BrCl + NO3ml1:                     xhet1*xhal*fdhet1(1,3,2) ;} {RvG}
+{---h8  BrNO3 + Brml1 = Br2 + NO3ml1:                      xhet1*xhal*fdhet1(1,3,3) ;} {RvG}
+{---h9  ClNO3         = HOCl + HNO3l1:                     xhet1*xhal*fdhet1(1,4,1) ;} {RvG}
+{---h10 ClNO3 + Clml1 = Cl2 + NO3ml1:                      xhet1*xhal*fdhet1(1,4,2) ;} {RvG}
+{---h11 ClNO3 + Brml1 = BrCl + NO3ml1:                     xhet1*xhal*fdhet1(1,4,3) ;} {RvG}
+{---h12 HOBr + Brml1  = Br2 + OHml1:                       xhet1*xhal*fdhet_hobr(1) ;} {RvG}
+
+{---h1  HNO3 + Clml2  = HCl + NO3ml2:                      xhet2*xhal*fdhet0(2,1,2) ;} {RvG}
+{---h2  HNO3 + Brml2  = HBr + NO3ml2:                      xhet2*xhal*fdhet0(2,1,3) ;} {RvG}
+{---h3  N2O5          = 2 HNO3l2:                          xhet2*fdhet1(2,2,1) ;} {RvG}
+{---h4  N2O5 + Clml2  = ClNO2 + NO3ml2:                    xhet2*xhal*fdhet1(2,2,2) ;} {RvG}
+{---h5  N2O5 + Brml2  = BrNO2 + NO3ml2:                    xhet2*xhal*fdhet1(2,2,3) ;} {RvG}
+{---h6  BrNO3         = HOBr + HNO3l2:                     xhet2*xhal*fdhet1(2,3,1) ;} {RvG}
+{---h7  BrNO3 + Clml2 = BrCl + NO3ml2:                     xhet2*xhal*fdhet1(2,3,2) ;} {RvG}
+{---h8  BrNO3 + Brml2 = Br2 + NO3ml2:                      xhet2*xhal*fdhet1(2,3,3) ;} {RvG}
+{---h9  ClNO3         = HOCl + HNO3l2:                     xhet2*xhal*fdhet1(2,4,1) ;} {RvG}
+{---h10 ClNO3 + Clml2 = Cl2 + NO3ml2:                      xhet2*xhal*fdhet1(2,4,2) ;} {RvG}
+{---h11 ClNO3 + Brml2 = BrCl + NO3ml2:                     xhet2*xhal*fdhet1(2,4,3) ;} {RvG}
+{---h12 HOBr + Brml2  = Br2 + OHml2:                       xhet2*xhal*fdhet_hobr(2) ;} {RvG}

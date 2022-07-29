@@ -743,10 +743,13 @@ subroutine initr
 
   USE config, ONLY : &
 ! Imported Routines:
-       abortM
+       abortM,       &
+! Imported Parameters:
+       jpAlbedoOpt
 
   USE constants, ONLY : &
 ! Imported Parameters:
+       g, &             ! Gravitational acceleration (m/s**2)
        r0               ! Specific gas constant of dry air, in J/(kg.K)
 
   USE file_unit, ONLY : &
@@ -758,7 +761,6 @@ subroutine initr
        n,                   &
        nrlay,               &
        nrlev,               &
-       nka,                 &
        mb,                  &
        mbs,                 &
        mbir
@@ -785,8 +787,8 @@ subroutine initr
   real (kind=dp) :: eta_o3(nrlev), u_o3(nrlay) ! intermediate variables for O3 interpolation
   real (kind=dp) :: rnaer(nrlay)               ! total number concentration of aerosol particles [cm**-3]
 
-! Internal function:
-  real (kind=dp) :: p21, tt
+! External function:
+  real (kind=dp), external :: p21              ! saturation water vapour pressure [Pa]
 
 ! Common blocks:
   common /aeag/ feux(8),seanew(8,mb,4),saanew(8,mb,4),ganew(8,mb,4)
@@ -805,11 +807,6 @@ subroutine initr
   common /cb41/ detw(n),deta(n),eta(n),etw(n)
   real (kind=dp) :: detw, deta, eta, etw
 
-  common /cb44/ g,a0m,b0m(nka),ug,vg,z0,ebs,psis,aks, &
-                bs,rhoc,rhocw,ebc,anu0,bs0,wmin,wmax,tw
-  real (kind=dp) :: g,a0m,b0m,ug,vg,z0,ebs,psis,aks, &
-                    bs,rhoc,rhocw,ebc,anu0,bs0,wmin,wmax,tw
-
   common /cb56/ o3un(52)
   real (kind=dp) :: o3un
 
@@ -821,22 +818,23 @@ subroutine initr
 
 ! == End of declarations =======================================================
 
-  ! Internal function: saturation pressure of liquid water
-  p21(tt)=610.7_dp*exp(17.15_dp*(tt-273.15_dp)/(tt-38.33_dp))
-
-
 ! albedo of the ground for the six solar wavelength regions of the radiation code
-  albedo(:)=0.05_dp
-!  albedo(:)=0.8_dp       ! snow
+  select case (jpAlbedoOpt)
+  case (0)
+     albedo(:)=0.05_dp
+  case (1)
+     albedo(:)=0.8_dp       ! snow
+  case default
+     write (jpfunerr,*) "Wrong choice in namelist for jpAlbedoOpt, must be 0 or 1"
+     call abortM ("Error in SR initr")
+  end select
+
   as = albedo
 ! emissivity of the ground
   ee(:)=1.0_dp
 
 ! total solar energy = sum of solar energies for each spectral bands
-  s0tot = s0b(1)
-  do jb = 2, mbs
-     s0tot = s0tot + s0b(jb)
-  end do
+  s0tot = sum(s0b(:))
 
 
 ! radiation model level
@@ -1113,6 +1111,7 @@ subroutine load1
   implicit none
 
 ! Local scalars:
+  logical :: llswitch
   integer :: ib0                                  ! first spectral band index (day => 1, night => 7)
   integer :: jb                                   ! loop index for spectral band number
   integer :: jka,jkt                              ! loop indexes, 2D microphysical grid
@@ -1160,8 +1159,8 @@ subroutine load1
   common /cb53/ theta(n),thetl(n),t(n),talt(n),p(n),rho(n)
   real (kind=dp) :: theta, thetl, t, talt, p, rho
 
-  common /cb54/ xm1(n),xm2(n),feu(n),dfddt(n),xm1a(n),xm2a(n)
-  real (kind=dp) :: xm1, xm2, feu, dfddt, xm1a, xm2a
+  common /cb54/ xm1(n),xm2(n),feu(n),dfddt(n),xm1a(n)
+  real (kind=dp) :: xm1, xm2, feu, dfddt, xm1a
 
 ! == End of declarations =======================================================
 
@@ -1178,18 +1177,18 @@ subroutine load1
      rhox(jz) = px(jz)/(r0*tx(jz)*(1._dp+.608_dp*xm1x(jz)))
   enddo
 
-  if (mic) then
-
 ! calculate u0 from geogr. latitude, declination and hourangle
 ! make correction because of spherical surface of the earth
-     zeit=lst*3600._dp+lmin*60._dp
-     horang=7.272205e-05_dp*zeit-pi
+  zeit=lst*3600._dp+lmin*60._dp
+  horang=7.272205e-05_dp*zeit-pi
 ! pi/180=1.745329e-02
-     rlat=alat*1.745329e-02_dp
-     rdec=declin*1.745329e-02_dp
-     u00=cos(rdec)*cos(rlat)*cos(horang)+sin(rdec)*sin(rlat)
-     ru0=6371._dp*u00
-     u0=8._dp/(dsqrt(ru0**2+102000._dp)-ru0)
+  rlat=alat*1.745329e-02_dp
+  rdec=declin*1.745329e-02_dp
+  u00=cos(rdec)*cos(rlat)*cos(horang)+sin(rdec)*sin(rlat)
+  ru0=6371._dp*u00
+  u0=8._dp/(dsqrt(ru0**2+102000._dp)-ru0)
+
+  if (mic) then
 
      ! Wavelenght bands: 1-6 = shortwave (sun), 7-18 = longwave (earth)
      ! 24h per day: earth longwave radiation taken into account
@@ -1227,7 +1226,7 @@ subroutine load1
            do jkt=1,nkt
               x0=pi*1.e-6_dp*rq(jkt,jka)**2*ff(jkt,jka,jzm)
               do jb = ib0,mb
-                 baax(jb,jz)  =baax(jb,jz) + qabs(jb,jkt,jka,ka)*x0
+                 baax(jb,jz) = baax(jb,jz) + qabs(jb,jkt,jka,ka)*x0
                  beax(jb,jz) = beax(jb,jz) + qext(jb,jkt,jka,ka)*x0
                  gax (jb,jz) = gax (jb,jz) + asym(jb,jkt,jka,ka)*x0*(qext(jb,jkt,jka,ka)-qabs(jb,jkt,jka,ka))
               end do
@@ -1255,6 +1254,9 @@ subroutine load1
 ! This is because a given jkt class has the same amount of water (expressed as an equivalent radius,
 ! surface, or volume in variables re1, re2 and re3) for all jka classes.
 
+     llswitch = .false. ! the next section has to be switched off for mistra
+
+     if (llswitch) then
      do jz=1,nf-1
         jzm = jz + 1
 
@@ -1289,6 +1291,12 @@ subroutine load1
         end if
 
      end do
+
+     else ! llswitch
+        rho2wx(1:nf-1) = 0._dp
+        fracx(1:nf-1) = 0._dp
+        rewx(1:nf-1)  = 0._dp
+     end if ! llswitch
 
   end if ! mic = .true.
 

@@ -3,24 +3,25 @@
 
 
 #INLINE F77_GLOBAL
+! IMPORTANT: this file must comply with both F77 and F90 standards
+!   - comment lines MUST start with an exclamation mark "!", not a "c" or "C"
+!   - continuation lines MUST begin with an ampersand "&" in 6-th position, and the
+!     previous line MUST end with an ampersand placed after the 72-nd position
+!     (for homogeneity, please always use the 73-rd position)
+
 ! photolysis common block
-! jjb original version
-!     double precision ph_rat
-!     dimension ph_rat(47) ! jjb
-!     common /ph_r/ ph_rat
-! jjb test version handling ph_rat another way
-      integer nphrxn
-      parameter (nphrxn=47)
+      !  (if updated here, other *.def files for KPP and global param must be updated as well)
+      integer, parameter :: nphrxn = 47
+      common /ph_r_a/ ph_rat(nphrxn)
+      double precision ph_rat
+
 ! conversion factors
-      double precision yhenry,yxkmt,ykef,ykeb,yxkmtd,ycwd,yxeq,conv1,
+      double precision yhenry,yxkmt,ykef,ykeb,yxkmtd,ycwd,yxeq,conv1,    &
      &    cvv1,cvv2,xhal,xiod,xliq1,xliq2,xhet1,xhet2,ycw,ykmt_OHClm
-      common /kpp_rate_a/ yhenry(NSPEC),yxkmt(2,NSPEC),ykef(2,NSPEC),
-     &    ykeb(2,NSPEC),yxkmtd(2,NSPEC),yxeq(NSPEC),ycw(2),ycwd(2),
+      common /kpp_rate_a/ yhenry(NSPEC),yxkmt(NSPEC,2),ykef(NSPEC,2),    &
+     &    ykeb(NSPEC,2),yxkmtd(NSPEC,2),yxeq(NSPEC),ycw(2),ycwd(2),      &
      &    conv1,cvv1,cvv2,xhal,xiod,xliq1,xliq2,xhet1,xhet2
       common /k_surf_a/ ykmt_OHClm(2)
-      double precision ph_rat
-      common /ph_r_a/ ph_rat(nphrxn) ! jjb
-
 #ENDINLINE
 
 #INLINE F77_RCONST

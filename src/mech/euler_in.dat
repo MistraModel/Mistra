@@ -1,0 +1,21 @@
+1
+  2 1.00d-11 NO2  advection in mol/(mol*day)
+  0 1.50d-9  O3   advection in mol/(mol*day)
+  0 1.00d10  O3   advection in mol/(mol*day)
+  0 1.00d-10 O3   advection in mol/(mol*day)
+  0 1.00d10  O3   advection in mol/(mol*day)
+  0 1.00d10  O3   advection in mol/(mol*day)
+  0 1.00d10  O3   advection in mol/(mol*day)
+  0 1.00d10  O3   advection in mol/(mol*day)
+  0 1.00d10  O3   advection in mol/(mol*day)
+  0 1.00d10  O3   advection in mol/(mol*day)
+
+! First line:
+Number of advected species ("eulerian" view)
+
+! Next lines:
+Index of the gas, advection rate (3rd and 4th column are not read)
+Index 0 are ignored, and indexes must match the user gas list (if not, they will be ignored)
+
+! More info about formatted read:
+i3 d9.2

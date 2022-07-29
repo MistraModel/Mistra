@@ -130,7 +130,7 @@ subroutine nuc_init (Napari,Lovejoy,iod)
 
   USE file_unit, ONLY: &
 ! Imported Parameters:
-       jpfunerr
+       jpfunerr, jpfunout
 
   USE gas_common, ONLY: &
 ! Imported Parameters:
@@ -225,8 +225,13 @@ subroutine nuc_init (Napari,Lovejoy,iod)
 ! ==============================================================================
 !   Retrieve the species names from gas (radical or non radical) name lists
 ! ==============================================================================
+  write (jpfunout,*)'Proceed to nuc initialisation: retrieve the species indexes'
+
   do jvap = 1,nvap
      jspec = 1 ! initialise index
+
+     write (jpfunout,*)'Search for ',nuc_name(jvap)
+
      if (ical(jvap) == 0) then
         do while ( trim(gas_name(jspec)) /= trim(nuc_name(jvap)) )
            jspec = jspec+1
@@ -237,7 +242,8 @@ subroutine nuc_init (Napari,Lovejoy,iod)
            end if
         end do
         ivap(jvap) = jspec
-        m_vap(jvap) = gas_mass (jspec)
+        m_vap(jvap) = gas_mass(jspec)
+        write (jpfunout,1010)trim(nuc_name(jvap)),' found in gas list with index ',jspec,', mass = ',gas_mass(jspec)
 
      else if (ical(jvap) == 1) then
         do while ( trim(rad_name(jspec)) /= trim(nuc_name(jvap)) )
@@ -249,7 +255,8 @@ subroutine nuc_init (Napari,Lovejoy,iod)
            end if
         end do
         ivap(jvap) = jspec
-        m_vap(jvap) = rad_mass (jspec)
+        m_vap(jvap) = rad_mass(jspec)
+        write (jpfunout,1010)trim(nuc_name(jvap)),' found in rad list with index ',jspec,', mass = ',rad_mass(jspec)
 
      else
         write (jpfunerr,'(a)')'Error in SR nuc_init:'
@@ -273,6 +280,7 @@ subroutine nuc_init (Napari,Lovejoy,iod)
         end if
      end do
      ind_H2SO4 = jspec
+     write (jpfunout,*)'Napari: H2SO4 found with index ',jspec
 
      jspec = 1              ! initialise index
      do while ( trim(gas_name(jspec)) /= 'NH3' )
@@ -284,6 +292,7 @@ subroutine nuc_init (Napari,Lovejoy,iod)
         end if
      end do
      ind_NH3 = jspec
+     write (jpfunout,*)'Napari: NH3 found with index ',jspec
   else
      ind_H2SO4 = 0
      ind_NH3   = 0
@@ -306,12 +315,14 @@ subroutine nuc_init (Napari,Lovejoy,iod)
         end if
      end do
      ind_OIO = jspec
+     write (jpfunout,*)'Lovejoy: OIO found with index ',jspec
   else
      ind_OIO = 0
   end if
 
 !  print*,'ind_H2SO4, ind_NH3, ind_OIO',ind_H2SO4, ind_NH3, ind_OIO
 !  write(*,1011)(jvap,ivap(jvap),ical(jvap),m_vap(jvap),jvap=1,nvap)
+1010 format(a,a,i4,a,f6.3)
 ! 1011 format(3i4,f6.3)
 
 
@@ -488,6 +499,9 @@ subroutine appnucl (dt,Napari,Lovejoy,both)
   ! 04-Nov-2017   Josue Bock   Fortran90
   !                            changed several test (... .ne. 0.) => (... .gt. 0.)
   !                            changed "over" (real) => llnovflw
+  !
+  ! 28-Apr-2021   Josue Bock   use rho3 (in module constants) to define ro_nuc
+  !                            turn hard-coded "2000" into conversion factors zconv_r2d / d2r
 
 ! == End of header =============================================================
 
@@ -495,10 +509,20 @@ subroutine appnucl (dt,Napari,Lovejoy,both)
 ! ------------
 ! Modules used:
 
+  USE config, ONLY : &
+       coutdir,      &
+       ifeed              ! ifeed = 0/1/2: feedback with background particles no/yes/partly
+
+
   USE constants, ONLY : &
        conv1,           & ! multiply by conv1 to get cm^3(air)/mlc --> m^3(air)/mol
        pi,              &
-       r1
+       r1,              &
+       ro_nuc => rho3,  & ! nuclei density [kg/m3] (same as assumed aesosol density rho3)
+       rhow
+
+  USE file_unit, ONLY : &
+       jpfunnuc0
 
   USE gas_common, ONLY: &
 ! Imported Parameters:
@@ -511,6 +535,7 @@ subroutine appnucl (dt,Napari,Lovejoy,both)
   USE global_params, ONLY : &
 ! Imported Parameters:
        j2,                  &
+       j3,                  &
        j6,                  &
        nkc,                 &
        nka,                 &
@@ -540,6 +565,11 @@ subroutine appnucl (dt,Napari,Lovejoy,both)
   logical, intent(in) :: Lovejoy       ! Lovejoy=true: J_real and d_nucini are calculated from OIO nucleation
   logical, intent(in) :: both          ! true if both Napari and Lovejoy are true (needed)
 
+! Local parameters:
+  ! optimisation: define parameters that will be computed only once
+  real (kind=dp), parameter :: zrho_frac = ro_nuc / rhow      ! = rho3 / rhow
+  real (kind=dp), parameter :: zconv_r2d = 2000._dp           ! convert radius, in micro meter, to diameter, in nm
+  real (kind=dp), parameter :: zconv_d2r = 1._dp / zconv_r2d  ! convert diameter, in nm, to radius, in micro meter
 
 !     --- Local Variables ---
   integer :: icount,jts
@@ -550,7 +580,6 @@ subroutine appnucl (dt,Napari,Lovejoy,both)
 
   real (kind=dp) :: alphaa !accomodation coefficient of condensing vapor
   real (kind=dp) :: betanuc, betacrit
-  real (kind=dp) :: ro_nuc !nuclei density [kg/m3]
   real (kind=dp) :: temp, press !Temperature [K] and Pressure [Pa]
   real (kind=dp) :: rh     ! relative humidity in layer k
   real (kind=dp) :: zdp(nkt)  !Particle diameter [nm]
@@ -606,11 +635,8 @@ subroutine appnucl (dt,Napari,Lovejoy,both)
   common /cb53/ theta(n),thetl(n),t(n),talt(n),p(n),rho(n)
   real (kind=dp) :: theta, thetl, t, talt, p, rho
 
-  common /cb54/ xm1(n),xm2(n),feu(n),dfddt(n),xm1a(n),xm2a(n)
-  real (kind=dp) :: xm1, xm2, feu, dfddt, xm1a, xm2a
-
-  common /nucfeed/ ifeed
-  integer :: ifeed          !ifeed = 0/1/2: feedback with background particles no/yes/partly
+  common /cb54/ xm1(n),xm2(n),feu(n),dfddt(n),xm1a(n)
+  real (kind=dp) :: xm1, xm2, feu, dfddt, xm1a
 
   common /nuclapp/ xn_app(n), xn_apacc(n), xv_apacc(n),bn_ges(n), &
                    bd_mean(n), dnucv(n), grorate(n), concnuc(n)
@@ -634,10 +660,9 @@ subroutine appnucl (dt,Napari,Lovejoy,both)
 ! == End of declarations =======================================================
 
 
-  open(unit=20,file='nuc.out',status='unknown',form='formatted')
+  open(unit=jpfunnuc0,file=trim(coutdir)//'nuc.out',status='unknown',form='formatted')
 
-  zdpmin = rn(1) * 2000._dp
-  ro_nuc = 2000._dp       !nuclei density [kg/m3] (same as assumed aesosol density rho3)
+  zdpmin = rn(1) * zconv_r2d ! rn is the radius in micro m, dp is the diameter in nm
 
 !     --- alphaa: for values for some species see alpha(jz,spec) in subroutine st_coeff_t ---
 !         but: in the current version only 1 alphaa can be used for all species together
@@ -661,10 +686,10 @@ subroutine appnucl (dt,Napari,Lovejoy,both)
      end do
 
 !     --- 1D size distribution of background particles wrt total droplet diameter ---
-     write (20,1070)
+     write (jpfunnuc0,1070)
      partsa(jz) = 0._dp
      do jt = 1,nkt
-        zdp(jt) = 2000._dp * rq(jt,1) !first dry aerosol class defines size bins for 1D distribution
+        zdp(jt) = zconv_r2d * rq(jt,1) !first dry aerosol class defines size bins for 1D distribution
         Np(jt)  = 0._dp
         do ia = 1, nka
            if (rn(ia).gt.rw(jt,1)) goto 2001
@@ -685,7 +710,7 @@ subroutine appnucl (dt,Napari,Lovejoy,both)
 2002       continue
         enddo
 2001    continue
-        write (20,1080) jz, jt, zdp(jt), Np(jt)
+        write (jpfunnuc0,1080) jz, jt, zdp(jt), Np(jt)
 !         -- background particle surface area --
         partsa(jz) = partsa(jz) + Np(jt) * zdp(jt)**2 *3.1416* 1.d-6 !in um2/cm3
 !         -- 1D particle distribution --
@@ -835,12 +860,13 @@ subroutine appnucl (dt,Napari,Lovejoy,both)
 !     a0mn = a0m=152200./(r1*rhow)
 !     b0mn = b0m=fcs*xnue*xmol2/xmol3: fcs(ia) fraction of soluble species
 !     xnue number of ions; xmol2 (xmol3) mol masses of water (aerosol)
-     a0mn = 152200._dp / (r1 * ro_nuc)
+     a0mn = 152200._dp / (r1 * ro_nuc) ! jjb mistake here? Should this be rhow instead of ro_nuc?
      b0mn = 1._dp * 1._dp * 0.018_dp/m_vapmean  !fcs=1 and xnue=1 are assumed -> please adjust!
      a0 = a0mn/temp
 !       ---  b0=b0m*rho3/rhow; rho3=2000; rhow=1000
-     b0 = b0mn*2._dp
-     rmin = zdpmin / 2000._dp
+     b0 = b0mn*zrho_frac ! jjb: not sure zrho_frac is correct: a0mn is computed with ro_nuc instead of rhow, shouldn't
+                         !      that be the same here? I.e. rho3/ro_nuc?
+     rmin = zdpmin * zconv_d2r
      rg = rgl(rmin,a0,b0,rh) !equilibrium total aerosol radius
      do jt = 1,nkt !find correct droplet size bin jts to smallest dry bin
         if (rw(jt,1) .ge. rg) then
@@ -849,7 +875,7 @@ subroutine appnucl (dt,Napari,Lovejoy,both)
         endif
      enddo
 2003 continue
-     zdpmint = rq(jts,1) * 2000._dp
+     zdpmint = rq(jts,1) * zconv_r2d
 !     --- Update growth rate (including equilibrium with ambient RH) after Kerminen (pers. comm.)---
      gr = gr * zdpmint/zdpmin
      grs = grs * zdpmint/zdpmin
@@ -939,7 +965,7 @@ subroutine appnucl (dt,Napari,Lovejoy,both)
 ! note: other condensing vapors than OIO and H2SO4 are NOT conserved!
 !    OIO goes to unreactive OIO in the liquid phase
            if (trim(nuc_name(jv)).eq.'OIO') &
-                sl1(j1+12,1,jz) = sl1(j1+12,1,jz) + s3old(ivap(jv),jz) - s3(ivap(jv),jz)
+                sl1(j2-j3+12,1,jz) = sl1(j2-j3+12,1,jz) + s3old(ivap(jv),jz) - s3(ivap(jv),jz)
 !    H2SO4 goes to H2SO4 in the liquid phase (which will further equilibrate with HSO4- and SO4=)
            if (trim(nuc_name(jv)).eq.'H2SO4') &
                 sl1(6,1,jz) = sl1(6,1,jz) + s1old(ivap(jv),jz) - s1(ivap(jv),jz)
@@ -947,22 +973,22 @@ subroutine appnucl (dt,Napari,Lovejoy,both)
 
         xn_apacc(jz) = xn_apacc(jz) + xn_app(jz)*dt                        ! accumulated number [/cm3]
         xv_apacc(jz) = xv_apacc(jz) + pi/6._dp * zdpmint**3 *xn_app(jz)*dt ! acculumated volume [nm3/cm3]
-        write (20,109)
-        write (20,110) jz,jts,xn_apacc(jz),xn_app(jz),ssum(jz)
+        write (jpfunnuc0,109)
+        write (jpfunnuc0,110) jz,jts,xn_apacc(jz),xn_app(jz),ssum(jz)
      endif
      !dnucv(jz) = soldsum(jz) - ssum(jz)                      ! change in nucleating vapors (sum) [mol/m3]
      dnucv(jz) = (soldsum(jz) - ssum(jz)) / am3(jz) *1.e12_dp  ! change in nucleating vapors (sum) [ppt]
      grorate(jz) = gr                                       ! 1D growth rate for output (for non-volatiles)
 
 !     --- Output (Test) ---
-     write(20,1003)
+     write(jpfunnuc0,1003)
      do jv=1,nvap
         if (j_real.gt.0._dp) then
-           write(20,1004) jz,d_nucini,zdpmin,zdpmint,d_mean,Nges,temp, &
+           write(jpfunnuc0,1004) jz,d_nucini,zdpmin,zdpmint,d_mean,Nges,temp, &
                 press,rh,ro_nuc,m_vap(jv),conc(jv),cs,gr,eta,gamma, &
                 J_real,J_app,(J_app/J_real)
         else
-           write(20,1004) jz,d_nucini,zdpmin,zdpmint,d_mean,Nges,temp, &
+           write(jpfunnuc0,1004) jz,d_nucini,zdpmin,zdpmint,d_mean,Nges,temp, &
                 press,rh,ro_nuc,m_vap(jv),conc(jv),cs,gr,eta,gamma, &
                 J_real,J_app
         endif
@@ -978,7 +1004,7 @@ subroutine appnucl (dt,Napari,Lovejoy,both)
  1004 format (I4,10F14.3,E12.5,7F14.5)
  110  format (2i4,9d16.8)
 
-  close (20)
+  close (jpfunnuc0)
 
 end subroutine appnucl
 ! ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -1084,6 +1110,9 @@ subroutine ternucl (dt,kz,Napari)
   USE gas_common, ONLY: &
        s1
 
+  USE file_unit, ONLY : &
+       jpfunnuc0
+
   USE global_params, ONLY : &
 ! Imported Parameters:
        n
@@ -1134,8 +1163,8 @@ subroutine ternucl (dt,kz,Napari)
   common /cb53/ theta(n),thetl(n),t(n),talt(n),p(n),rho(n)
   real (kind=dp) :: theta, thetl, t, talt, p, rho
 
-  common /cb54/ xm1(n),xm2(n),feu(n),dfddt(n),xm1a(n),xm2a(n)
-  real (kind=dp) :: xm1, xm2, feu, dfddt, xm1a, xm2a
+  common /cb54/ xm1(n),xm2(n),feu(n),dfddt(n),xm1a(n)
+  real (kind=dp) :: xm1, xm2, feu, dfddt, xm1a
 
   common /nucl/ xn_new(n), xn_acc(n), xv_acc(n), dh2so4(n), dnh3(n)
   real (kind=dp) :: xn_new, xn_acc, xv_acc, dh2so4, dnh3
@@ -1160,13 +1189,13 @@ subroutine ternucl (dt,kz,Napari)
               - 1.56727e-3_dp*b - 3.076e-5_dp  *log(a)*b + 1.08375e-5_dp*b**2
 
 ! convert units
-  rh      = feu(kz)                           ! relative humidity [0..1]
+  rh      = feu(kz)                            ! relative humidity [0..1]
   c_nh3   = s1(ind_NH3,kz) / am3(kz) *1.e12_dp ! NH3 in [pmol/mol]
-  c_nh3   = min(100._dp,c_nh3)               ! NH3 <= 100 ppt
-  c_h2so4 = s1(ind_H2SO4,kz) * conv1          ! H2SO4 in [molec/cm3]
-  !c_h2so4 = c_h2so4 * 1000._dp               ! artificial amplification for test
-  write (20,120)
-  write (20,110) kz,rh,c_nh3,c_h2so4
+  c_nh3   = min(100._dp,c_nh3)                 ! NH3 <= 100 ppt
+  c_h2so4 = s1(ind_H2SO4,kz) * conv1           ! H2SO4 in [molec/cm3]
+  !c_h2so4 = c_h2so4 * 1000._dp                ! artificial amplification for test
+  write (jpfunnuc0,120)
+  write (jpfunnuc0,110) kz,rh,c_nh3,c_h2so4
   Temp    = t(kz)                             ! temperature [K]
   Jn = 0._dp
   nn = 0._dp
@@ -1193,8 +1222,8 @@ subroutine ternucl (dt,kz,Napari)
         endif
         xn_acc(kz) = xn_acc(kz) + xn_new(kz)*dt                  ! accumulated number of new clusters [/cm3]
         xv_acc(kz) = xv_acc(kz) + 4.18879_dp*rc**3*xn_new(kz)*dt ! acculumated volume of new clusters [nm3/cm3]
-        write (20,109)
-        write (20,110) kz,dc,nn,nh,xn_acc(kz),xn_new(kz)
+        write (jpfunnuc0,109)
+        write (jpfunnuc0,110) kz,dc,nn,nh,xn_acc(kz),xn_new(kz)
      endif
   endif
 !  dnh3(kz)   = (c_nh3*am3(kz)/1.e12_dp) - s1(ind_NH3,kz)  ![mol/m3]
@@ -1257,6 +1286,9 @@ subroutine oionucl (dt,kz,Lovejoy)
   USE constants, ONLY : &
        conv1 ! multiply by conv1 to get cm^3(air)/mlc --> m^3(air)/mol
 
+  USE file_unit, ONLY : &
+       jpfunnuc0
+
   USE gas_common, ONLY: &
        s3
 
@@ -1288,7 +1320,7 @@ subroutine oionucl (dt,kz,Lovejoy)
   real (kind=dp) :: Temp           ! temperature [K]
 
 ! Internal function:
-  real (kind=dp) :: J_nuc2
+  real (kind=dp) :: J_nuc2    ! (statement function)
   real (kind=dp) :: a, b      ! internal function arguments
 
 ! Common blocks:
@@ -1305,15 +1337,15 @@ subroutine oionucl (dt,kz,Lovejoy)
   real (kind=dp) :: Jnio         ! nucleation rate [1/(cm3 s)]
   real (kind=dp) :: dcio         ! diameter of cluster [nm]
 
-! == End of declarations =======================================================
-
 ! Internal function for diagnostics of nucleation rate; a = oio[ppt], b=temp[K]
   J_nuc2(a,b) = a**(0.030657_dp * b - 4.4471_dp) * exp(-0.30947_dp * b + 81.097_dp)
 
+! == End of declarations =======================================================
+
 ! convert units
   c_oio   = s3(ind_OIO,kz) / am3(kz) *1.e12_dp
-  write (20,120)
-  write (20,110) kz,c_oio
+  write (jpfunnuc0,120)
+  write (jpfunnuc0,110) kz,c_oio
 
   dcio = 2._dp * rc
   Temp = t(kz)
@@ -1330,8 +1362,8 @@ subroutine oionucl (dt,kz,Lovejoy)
         endif
         xn_accio(kz) = xn_accio(kz) + xn_newio(kz)*dt !accumulated number of new clusters [/cm3]
         xv_accio(kz) = xv_accio(kz) + 4.18879_dp*rc**3*xn_newio(kz)*dt ! acculumated volume of new clusters [nm3/cm3]
-        write (20,109)
-        write (20,110) kz,dcio,n_oio,xn_accio(kz),xn_newio(kz)
+        write (jpfunnuc0,109)
+        write (jpfunnuc0,110) kz,dcio,n_oio,xn_accio(kz),xn_newio(kz)
      endif
   endif
 
@@ -1428,13 +1460,13 @@ function J_nuc (rH,nh3,h2so4,Temp)
   real (kind=dp) :: lnc, lnS, lnrH
 
 ! Internal function:
-  real (kind=dp) :: fpol
+  real (kind=dp) :: fpol    ! (statement function)
   real (kind=dp) :: T
   integer :: n
+  fpol(n,T) = fpd(1,n) + fpd(2,n)*T + fpd(3,n)*T**2 + fpd(4,n)*T**3
 
 ! == End of declarations =======================================================
 
-  fpol(n,T) = fpd(1,n) + fpd(2,n)*T + fpd(3,n)*T**2 + fpd(4,n)*T**3
   lnc  = log(h2so4)
   lnS  = log(nh3)
   lnrH = log(rH)
@@ -1483,12 +1515,19 @@ subroutine nucout1
 ! ------------
 ! Modules used:
 
+  USE config, ONLY : &
+       coutdir
+
   USE constants, ONLY : &
        conv1 ! multiply by conv1 to get cm^3(air)/mlc --> m^3(air)/mol
 
   USE gas_common, ONLY: &
        s1,              & ! non radical gas concentration
        s3                 ! radical gas concentration
+
+  USE file_unit, ONLY : &
+       jpfunnuc1, jpfunnuc2, &
+       jpfunnuc3, jpfunnuc4
 
   USE global_params, ONLY : &
 ! Imported Parameters:
@@ -1504,6 +1543,9 @@ subroutine nucout1
        dp
 
   implicit none
+
+! Local scalars:
+  character (len=150) :: clpath  ! complete path to file
 
 ! Common blocks:
   common /blck01/ am3(n),cm3(n)
@@ -1525,12 +1567,27 @@ subroutine nucout1
 
 ! == End of declarations =======================================================
 
-  write (21,106) xn_app(2),xn_apacc(2),bd_mean(2),bn_ges(2),grorate(2),concnuc(2)
-  write (22,104) xn_new(2),xn_acc(2),xn_newio(2),xn_accio(2)
-  write (23,106) (s1(ind_NH3,2)/am3(2)*1.e12_dp),(s1(ind_H2SO4,2)*conv1), &
+  clpath=trim(coutdir)//'nuc+part.asc'
+  open (unit=jpfunnuc1, file=clpath, status='unknown')
+  write (jpfunnuc1,106) xn_app(2),xn_apacc(2),bd_mean(2),bn_ges(2),grorate(2),concnuc(2)
+  close (jpfunnuc1)
+
+  clpath=trim(coutdir)//'ternuc.asc'
+  open (unit=jpfunnuc2, file=clpath, status='unknown')
+  write (jpfunnuc2,104) xn_new(2),xn_acc(2),xn_newio(2),xn_accio(2)
+  close (jpfunnuc2)
+
+  clpath=trim(coutdir)//'nh3_h2so4.asc'
+  open (unit=jpfunnuc3, file=clpath, status='unknown')
+  write (jpfunnuc3,106) (s1(ind_NH3,2)/am3(2)*1.e12_dp),(s1(ind_H2SO4,2)*conv1), &
                  dnh3(2),dh2so4(2), &
                  (s3(ind_OIO,2)/am3(2)*1.e12_dp),doio(2)
-  write (24,102) (ssum(2)/am3(2)*1.e12_dp),dnucv(2)
+  close (jpfunnuc3)
+
+  clpath=trim(coutdir)//'NUCV.asc'
+  open (unit=jpfunnuc4, file=clpath, status='unknown')
+  write (jpfunnuc4,102) (ssum(2)/am3(2)*1.e12_dp),dnucv(2)
+  close (jpfunnuc4)
 
  102  format (2d16.8)
  104  format (4d16.8)
@@ -1569,6 +1626,12 @@ subroutine nucout2
 ! ------------
 ! Modules used:
 
+  USE config, ONLY : &
+       coutdir
+
+  USE file_unit, ONLY : &
+       jpfunnuc5
+
   USE global_params, ONLY : &
 ! Imported Parameters:
        n
@@ -1580,6 +1643,7 @@ subroutine nucout2
   implicit none
 
 ! Local scalars:
+  character (len=150) :: clpath  ! complete path to file
   integer :: jz
 
 ! Common blocks:
@@ -1600,18 +1664,23 @@ subroutine nucout2
 
 ! == End of declarations =======================================================
 
-  write (25,104) lday,lst,lmin
+  clpath=trim(coutdir)//'nucout2.out'
+  open (unit=jpfunnuc5, file=clpath, status='unknown')
+
+  write (jpfunnuc5,104) lday,lst,lmin
   do jz=1,n
-     write (25,105) jz,xn_new(jz),xn_acc(jz),xv_acc(jz)
+     write (jpfunnuc5,105) jz,xn_new(jz),xn_acc(jz),xv_acc(jz)
   enddo
-  write (25,104) lday,lst,lmin
+  write (jpfunnuc5,104) lday,lst,lmin
   do jz=1,n
-     write (25,105) jz,xn_newio(jz),xn_accio(jz),xv_accio(jz)
+     write (jpfunnuc5,105) jz,xn_newio(jz),xn_accio(jz),xv_accio(jz)
   enddo
-  write (25,104) lday,lst,lmin
+  write (jpfunnuc5,104) lday,lst,lmin
   do jz=1,n
-     write (25,105) jz,xn_app(jz),xn_apacc(jz),xv_apacc(jz)
+     write (jpfunnuc5,105) jz,xn_app(jz),xn_apacc(jz),xv_apacc(jz)
   enddo
+
+  close (jpfunnuc5)
 
  104  format (3i4)
  105  format (i4,3d16.8)

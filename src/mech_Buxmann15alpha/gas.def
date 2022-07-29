@@ -1,0 +1,42 @@
+#INCLUDE master.spc
+#INCLUDE gas.eqn
+
+
+#INLINE F77_GLOBAL
+! IMPORTANT: this file must comply with both F77 and F90 standards
+!   - comment lines MUST start with an exclamation mark "!", not a "c" or "C"
+!   - continuation lines MUST begin with an ampersand "&" in 6-th position, and the
+!     previous line MUST end with an ampersand placed after the 72-nd position
+!     (for homogeneity, please always use the 73-rd position)
+
+! photolysis common block
+      !  (if updated here, other *.def files for KPP and global param must be updated as well)
+      integer, parameter :: nphrxn = 47
+      common /ph_r_g/ ph_rat(nphrxn)
+      double precision ph_rat
+
+! conversion factors
+      double precision yxkmtd,yhenry,yxeq,ycwd,conv1,xhal,xiod,xhet1,    &
+     &       xhet2
+      common /kpp_rate_g/ yxkmtd(NSPEC,2),yhenry(NSPEC),yxeq(NSPEC),     &
+     &       ycwd(2),conv1,xhal,xiod,xhet1,xhet2
+#ENDINLINE
+
+#INLINE F77_RCONST
+! rates functions
+      REAL*8 atk_3, atk_3f
+      REAL*8 DMS_add
+      REAL*8 farr, farr_sp
+      REAL*8 fbck, fbckJ, fbck2, fbck2b
+      REAL*8 fcn
+      REAL*8 fdhetg
+      REAL*8 shno3
+      REAL*8 sp_17, sp_23
+      EXTERNAL atk_3, atk_3f
+      EXTERNAL DMS_add
+      EXTERNAL farr, farr_sp
+      EXTERNAL fbck, fbckJ, fbck2, fbck2b
+      EXTERNAL fcn
+      EXTERNAL fdhetg
+      EXTERNAL shno3, sp_17, sp_23
+#ENDINLINE
