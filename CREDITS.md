@@ -76,4 +76,3 @@ Below are listed all co-authors of papers dealing with previous versions of MIST
 - Yalire, Mathieu
 - Zdunkowski, Wilford G.
 - Zetzsch, Cornelius
-
