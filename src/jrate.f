@@ -1,19 +1,20 @@
-!
+! ======================================================================= !
 ! Copyright 1996-2017 the Authors
 !
-! Licensed under the EUPL, Version 1.1 only (the "Licence");
+! This program is free software; you can redistribute it and/or modify
+! it under the terms of the GNU General Public License as published by
+! the Free Software Foundation; either version 2 of the License, or
+! (at your option) any later version.
 !
-! You may not use this work except in compliance with the Licence.
-! You may obtain a copy of the Licence at:
-!   https://joinup.ec.europa.eu/software/page/eupl
+! This program is distributed in the hope that it will be useful,
+! but WITHOUT ANY WARRANTY; without even the implied warranty of
+! MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+! GNU General Public License for more details.
 !
-! Unless required by applicable law or agreed to in writing,
-! software distributed under the Licence is distributed on an
-! "AS IS" basis, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND,
-! either express or implied.
-!
-! See the Licence for the specific language governing permissions
-! and limitations under the Licence.
+! You should have received a copy of the GNU General Public License along
+! with this program; if not, write to the Free Software Foundation, Inc.,
+! 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+! ======================================================================= !
 
 
 ! Description of jrate.f (as of 15/08/2016)
@@ -28,8 +29,10 @@
 ! Major changes done on this file:
 ! ================================
 !     - removal of an index used for 2D models (MJ = latitude), unused in Mistra
-!       This implied to re-index most arrays, to remove one dimension. And to remove all do J=1,MJ loops
-!     - major cleaning all over this file: unused variables, arguments, parameters and common blocks
+!       This implied to re-index most arrays, to remove one dimension.
+!       And to remove all do J=1,MJ loops
+!     - major cleaning all over this file: unused variables, arguments,
+!       parameters and common blocks
 !     - initialisation subroutine to read data only once
 
 

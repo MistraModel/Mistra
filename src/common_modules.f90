@@ -26,7 +26,7 @@ module gas_common
 
 ! Author :
 ! ------
-!    Josué Bock
+!    Josue Bock
 
 ! Modifications :
 ! -------------
