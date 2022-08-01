@@ -2,11 +2,11 @@
 ; Buxmann_2015_Fig5_alpha.ncl
 ;************************************************
 ;
-; Plot 
+; Plot
 ;
 ;  in a similar way as Buxmann et al 2015 (Fig 5: alpha case)
 ;
-; Author: Josué Bock
+; Author: J. Bock
 ;************************************************
 begin
 ;************************************************

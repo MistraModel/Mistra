@@ -12,7 +12,7 @@
  ! Restart mode and duration
  rst=F           !<-- rst: restart (true) or new initialization (false) of model run
  lstmax=3        !<-- lstmax: integration time [hours] 60
- 
+
  ! Output choice
  netcdf=T        !<-- netCDF: netCDF output
  binout=F        !<-- binout: binary output
@@ -79,4 +79,3 @@
  ! Miscelaneous
  scaleo3_m=300.  !<-- scaleo3_m: O3 [Dobson units] (only for scaling in photolysis calculations)
  /
- 

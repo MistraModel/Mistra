@@ -1351,106 +1351,106 @@ c************************************************************************
 c      common /sol/ s0b(mas)
 
 
-c	block data ckd1
+c      block data ckd1
 c *********************************************************************
-c hk is the interval in the g (cumulative probability) space from 0 to 
+c hk is the interval in the g (cumulative probability) space from 0 to
 c one. fko3 is the corresponding ozone absorption coefficient in units
-c of (cm-atm)**-1 (Fu, 1991). The spectral region is from 50000 cm**-1 
+c of (cm-atm)**-1 (Fu, 1991). The spectral region is from 50000 cm**-1
 c to 14500 cm**-1.
 c *********************************************************************
-c	common /band1/ hk1(10), fk1o3(10)
+c      common /band1/ hk1(10), fk1o3(10)
 
-c	block data ckd2
+c      block data ckd2
 c *********************************************************************
-c hk is the interval in the g (cumulative probability) space from 0 
+c hk is the interval in the g (cumulative probability) space from 0
 c to one. coeh2o is the coefficient to calculate the H2O absorption
-c coefficient in units of (cm-atm)**-1 at there temperatures, eleven 
+c coefficient in units of (cm-atm)**-1 at there temperatures, eleven
 c pressures,  and eight cumulative probabilities  ( Fu,  1991 ). The
 c spectral region is from 14500 to 7700 cm**-1.
 c *********************************************************************
-c	common /band2/ hk2(8), c2h2o(3,11,8)
+c      common /band2/ hk2(8), c2h2o(3,11,8)
 
-      
-c	block data ckd3
+
+c      block data ckd3
 c *********************************************************************
-c hk is the interval in the g (cumulative probability) space from 0 
+c hk is the interval in the g (cumulative probability) space from 0
 c to one. coeh2o is the coefficient to calculate the H2O absorption
-c coefficient in units of (cm-atm)**-1 at there temperatures, eleven 
+c coefficient in units of (cm-atm)**-1 at there temperatures, eleven
 c pressures,  and twelve cumulative probabilities ( Fu,  1991 ). The
 c spectral region is from 7700 to 5250 cm**-1.
 c *********************************************************************
-c	common /band3/ hk3(12), c3h2o(3,11,12)
+c      common /band3/ hk3(12), c3h2o(3,11,12)
 
-      
-c	block data ckd4
+
+c      block data ckd4
 c *********************************************************************
-c hk is the interval in the g (cumulative probability) space from 0 
+c hk is the interval in the g (cumulative probability) space from 0
 c to one. coeh2o is the coefficient to calculate the H2O absorption
-c coefficient in units of (cm-atm)**-1 at there temperatures, eleven 
+c coefficient in units of (cm-atm)**-1 at there temperatures, eleven
 c pressures,  and seven cumulative probabilities ( Fu,  1991 ). The
 c spectral region is from 5250 to 4000 cm**-1.
 c *********************************************************************
-c	common /band4/ hk4(7), c4h2o(3,11,7)
+c      common /band4/ hk4(7), c4h2o(3,11,7)
 
-      
-c	block data ckd5
+
+c      block data ckd5
 c *********************************************************************
-c hk is the interval in the g (cumulative probability) space from 0 
+c hk is the interval in the g (cumulative probability) space from 0
 c to one. coeh2o is the coefficient to calculate the H2O absorption
-c coefficient in units of (cm-atm)**-1 at there temperatures, eleven 
+c coefficient in units of (cm-atm)**-1 at there temperatures, eleven
 c pressures,  and twelve cumulative probabilities ( Fu,  1991 ). The
 c spectral region is from 4000 to 2850 cm**-1.
 c *********************************************************************
 c       common /band5/ hk5(12), c5h2o(3,11,12)
 
-      
-c	block data ckd6
+
+c      block data ckd6
 c *********************************************************************
-c hk is the interval in the g (cumulative probability) space from 0 
+c hk is the interval in the g (cumulative probability) space from 0
 c to one. coeh2o is the coefficient to calculate the H2O absorption
-c coefficient in units of (cm-atm)**-1 at there temperatures, eleven 
+c coefficient in units of (cm-atm)**-1 at there temperatures, eleven
 c pressures,  and  five  cumulative probabilities ( Fu,  1991 ). The
 c spectral region is from 2850 to 2500 cm**-1.
 c *********************************************************************
-c	common /band6/ hk6(5), c6h2o(3,11,5)
+c      common /band6/ hk6(5), c6h2o(3,11,5)
 
 
-c	block data ckd7
+c      block data ckd7
 c *********************************************************************
-c hk is the interval in the g (cumulative probability) space from 0 
+c hk is the interval in the g (cumulative probability) space from 0
 c to one. coeh2o is the coefficient to calculate the H2O absorption
 c coefficient in units of (cm-atm)**-1 at there temperatures, nine-
 c teen pressures, and  two  cumulative probabilities ( Fu,  1991 ).
 c The spectral region is from 2200 to 1900 cm**-1.
 c *********************************************************************
-c	common /band7/ hk7(2), c7h2o(3,19,2)
+c      common /band7/ hk7(2), c7h2o(3,19,2)
 
 
-c	block data ckd8
+c      block data ckd8
 c *********************************************************************
-c hk is the interval in the g (cumulative probability) space from 0 
+c hk is the interval in the g (cumulative probability) space from 0
 c to one. coeh2o is the coefficient to calculate the H2O absorption
 c coefficient in units of (cm-atm)**-1 at there temperatures, nine-
 c teen pressures, and  three cumulative probabilities ( Fu,  1991 ).
 c The spectral region is from 1900 to 1700 cm**-1.
 c *********************************************************************
-c	common /band8/ hk8(3), c8h2o(3,19,3)
+c      common /band8/ hk8(3), c8h2o(3,19,3)
 
 
-c	block data ckd9
+c      block data ckd9
 c *********************************************************************
-c hk is the interval in the g (cumulative probability) space from 0 
+c hk is the interval in the g (cumulative probability) space from 0
 c to one. coeh2o is the coefficient to calculate the H2O absorption
 c coefficient in units of (cm-atm)**-1 at there temperatures, nine-
 c teen pressures, and  four cumulative probabilities ( Fu,  1991 ).
 c The spectral region is from 1700 to 1400 cm**-1.
 c *********************************************************************
-c	common /band9/ hk9(4), c9h2o(3,19,4)
+c      common /band9/ hk9(4), c9h2o(3,19,4)
 
 
-c	block data ckd10
+c      block data ckd10
 c *********************************************************************
-c hk is the interval in the g (cumulative probability) space from 0 
+c hk is the interval in the g (cumulative probability) space from 0
 c to one. coeh2o is the coefficient to calculate the H2O absorption
 c coefficient in units of (cm-atm)**-1 at there temperatures, nine-
 c teen pressures, and  four cumulative probabilities ( Fu,  1991 ).
@@ -1459,12 +1459,12 @@ c are the coefficients to calculate the CH4 and N2O absorption coe-
 c fficients in units of (cm-atm)**-1 at three temperature, nineteen
 c pressures, and one cumulative probability (Fu, 1991), respectively.
 c *********************************************************************
-c	common /band10/hk10(4), c10h2o(3,19,4), c10ch4(3,19), c10n2o(3,19)
+c      common /band10/hk10(4), c10h2o(3,19,4), c10ch4(3,19), c10n2o(3,19)
 
 
-c	block data ckd11
+c      block data ckd11
 c *********************************************************************
-c hk is the interval in the g (cumulative probability) space from 0 
+c hk is the interval in the g (cumulative probability) space from 0
 c to one. coeh2o is the coefficient to calculate the H2O absorption
 c coefficient in units of (cm-atm)**-1 at there temperatures, nine-
 c teen pressures, and three cumulative probabilities ( Fu,  1991 ).
@@ -1473,12 +1473,12 @@ c are the coefficients to calculate the CH4 and N2O absorption coe-
 c fficients in units of (cm-atm)**-1 at three temperature, nineteen
 c pressures, and one cumulative probability (Fu, 1991), respectively.
 c *********************************************************************
-c	common /band11/hk11(3), c11h2o(3,19,3), c11ch4(3,19), c11n2o(3,19)
+c      common /band11/hk11(3), c11h2o(3,19,3), c11ch4(3,19), c11n2o(3,19)
 
 
-c	block data ckd12
+c      block data ckd12
 c *********************************************************************
-c hk is the interval in the g (cumulative probability) space from 0 
+c hk is the interval in the g (cumulative probability) space from 0
 c to one. coeo3 is the coefficient to calculate the ozone absorption
 c coefficient in units of (cm-atm)**-1 at there temperatures, nine-
 c teen pressures, and  five cumulative probabilities ( Fu,  1991 ).
@@ -1487,20 +1487,20 @@ c coefficient to calculate the H2O absorption coefficient in units
 c of (cm-atm)**-1 at three temperature, nineteen pressures, and one
 c cumulative probability ( Fu, 1991 ).
 c *********************************************************************
-c	common /band12/ hk12(5), c12o3(3,19,5), c12h2o(3,19)
+c      common /band12/ hk12(5), c12o3(3,19,5), c12h2o(3,19)
 
-c	block data ckd13
+c      block data ckd13
 c *********************************************************************
-c hk is the interval in the g (cumulative probability) space from 0 
+c hk is the interval in the g (cumulative probability) space from 0
 c to one. coeh2o is the coefficient to calculate the H2O absorption
 c coefficient in units of (cm-atm)**-1 at there temperatures, nine-
 c teen pressures, and  two  cumulative probabilities ( Fu,  1991 ).
 c The spectral region is from 980 to 800 cm**-1.
 c *********************************************************************
-c	common /band13/ hk13(2), c13h2o(3,19,2)
+c      common /band13/ hk13(2), c13h2o(3,19,2)
 
 
-c	block data ckd14
+c      block data ckd14
 c **********************************************************************
 c hk is the interval in the g (cumulative probability) space from 0
 c to one. coehca and coehcb are the coefficients to calculate the
@@ -1509,10 +1509,10 @@ c atm)**-1 at three temperature, nineteen pressures, and ten cumu-
 c lative probabilities (Fu, 1991). The spectral region is from 800
 c to 670 cm**-1.
 c **********************************************************************
-c	common /band14/ hk14(10), c14hca(3,19,10), c14hcb(3,19,10)
+c      common /band14/ hk14(10), c14hca(3,19,10), c14hcb(3,19,10)
 
 
-c	block data ckd15
+c      block data ckd15
 c **********************************************************************
 c hk is the interval in the g (cumulative probability) space from 0
 c to one. coehca and coehcb are the coefficients to calculate the
@@ -1521,37 +1521,37 @@ c atm)**-1 at three temperatures, nineteen pressures, and 12 cumu-
 c lative probabilities (Fu, 1991). The spectral region is from 670
 c to 540 cm**-1.
 c **********************************************************************
-c	common /band15/ hk15(12), c15hca(3,19,12), c15hcb(3,19,12)
+c      common /band15/ hk15(12), c15hca(3,19,12), c15hcb(3,19,12)
 
 
-c	block data ckd16
+c      block data ckd16
 c *********************************************************************
-c hk is the interval in the g (cumulative probability) space from 0 
+c hk is the interval in the g (cumulative probability) space from 0
 c to one. coeh2o is the coefficient to calculate the H2O absorption
 c coefficient in units of (cm-atm)**-1 at there temperatures, nine-
 c teen pressures, and  seven cumulative probabilities ( Fu,  1991 ).
 c The spectral region is from 540 to 400 cm**-1.
 c *********************************************************************
-	common /band16/ hk16(7), c16h2o(3,19,7)
+      common /band16/ hk16(7), c16h2o(3,19,7)
 
 
-c	block data ckd17
+c      block data ckd17
 c *********************************************************************
-c hk is the interval in the g (cumulative probability) space from 0 
+c hk is the interval in the g (cumulative probability) space from 0
 c to one. coeh2o is the coefficient to calculate the H2O absorption
 c coefficient in units of (cm-atm)**-1 at there temperatures, nine-
 c teen pressures, and  seven cumulative probabilities ( Fu,  1991 ).
 c The spectral region is from 400 to 280 cm**-1.
 c *********************************************************************
-c	common /band17/ hk17(7), c17h2o(3,19,7)
+c      common /band17/ hk17(7), c17h2o(3,19,7)
 
 
-c	block data ckd18
+c      block data ckd18
 c *********************************************************************
-c hk is the interval in the g (cumulative probability) space from 0 
+c hk is the interval in the g (cumulative probability) space from 0
 c to one. coeh2o is the coefficient to calculate the H2O absorption
 c coefficient in units of (cm-atm)**-1 at there temperatures, nine-
 c teen pressures, and eight cumulative probabilities ( Fu,  1991 ).
 c The spectral region is from 280 to 0 cm**-1.
 c *********************************************************************
-c	common /band18/ hk18(8), c18h2o(3,19,8)
+c      common /band18/ hk18(8), c18h2o(3,19,8)

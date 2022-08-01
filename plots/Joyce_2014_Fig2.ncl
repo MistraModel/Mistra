@@ -2,9 +2,10 @@
 ; Joyce_2014_Fig2.ncl
 ;************************************************
 ;
-; Plot specific humidity, T and theta in a similar way as Joyce et al 2014 (Fig 2)
+; Plot specific humidity, T and theta
+;  in a similar way as Joyce et al 2014 (Fig 2)
 ;
-; Author: Josué Bock
+; Author: J. Bock
 ;************************************************
 begin
 ;************************************************

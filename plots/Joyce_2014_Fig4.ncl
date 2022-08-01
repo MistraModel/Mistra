@@ -6,7 +6,7 @@
 ;  and NO3-, NH4+ (aqueous)
 ;  in a similar way as Joyce et al 2014 (Fig 4)
 ;
-; Author: Josué Bock
+; Author: J. Bock
 ;************************************************
 begin
 ;************************************************
