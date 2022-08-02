@@ -37,7 +37,7 @@ save
 real(kind=dp), parameter :: Avogadro = 6.022140857e+23_dp        ! [1/mol]
 
 ! Calorie:
-!     amount of energy required to warm one gram of air-free water from 14.5 to 15.5 °C at standard atmospheric pressure
+!     amount of energy required to warm one gram of air-free water from 14.5 to 15.5 C at standard atmospheric pressure
 real(kind=dp), parameter :: cal15 = 4.1855_dp                    ! [J]
 
 ! Conversion factor 1:

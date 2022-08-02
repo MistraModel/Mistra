@@ -25,7 +25,7 @@ module global_params
 
 
 ! Author :
-! ------  
+! ------
 !   Josue Bock
 
 

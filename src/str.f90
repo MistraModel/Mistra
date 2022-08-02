@@ -230,7 +230,7 @@ program mistra
 ! initial exchange coefficients and turbulent kinetic energy
      call atk0
 
-! initial position of humidified aerosols on Köhler curve
+! initial position of humidified aerosols on Kohler curve
      call equil(0)
 
   else
