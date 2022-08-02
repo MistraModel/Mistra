@@ -1,20 +1,20 @@
-!
+! ======================================================================= !
 ! Copyright 1996-2017 the Authors
 !
-! Licensed under the EUPL, Version 1.1 only (the "Licence");
+! This program is free software; you can redistribute it and/or modify
+! it under the terms of the GNU General Public License as published by
+! the Free Software Foundation; either version 2 of the License, or
+! (at your option) any later version.
 !
-! You may not use this work except in compliance with the Licence.
-! You may obtain a copy of the Licence at:
-!   https://joinup.ec.europa.eu/software/page/eupl
+! This program is distributed in the hope that it will be useful,
+! but WITHOUT ANY WARRANTY; without even the implied warranty of
+! MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+! GNU General Public License for more details.
 !
-! Unless required by applicable law or agreed to in writing,
-! software distributed under the Licence is distributed on an
-! "AS IS" basis, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND,
-! either express or implied.
-!
-! See the Licence for the specific language governing permissions
-! and limitations under the Licence.
-
+! You should have received a copy of the GNU General Public License along
+! with this program; if not, write to the Free Software Foundation, Inc.,
+! 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+! ======================================================================= !
 
 ! additional subroutines for KPP version
 ! --------------------------------------
@@ -3732,11 +3732,11 @@ subroutine aer_source_init
 
 ! Author :
 ! ------
-  ! Josué Bock
+  ! Josue Bock
 
 ! Modifications :
 ! -------------
-  ! 05-Jun-2021  Josué Bock  First version
+  ! 05-Jun-2021  Josue Bock  First version
 
 ! == End of header =============================================================
 
@@ -3820,9 +3820,9 @@ subroutine aer_source (box,dd,z_mbl,n_bl)
 ! Modifications :
 ! -------------
   ! work done:
-  ! 28-Apr-2021  Josué Bock  Propagate rho3 from constants module, instead of hard coded values
-  ! 04-Jun-2021  Josué Bock  Introduce aer_source_init so that u10 always match 10m height, whatever detamin
-  ! 30-Jun-2021  Josué Bock  Change jt_low initial value from -1 to 1, to avoid out of bound index
+  ! 28-Apr-2021  Josue Bock  Propagate rho3 from constants module, instead of hard coded values
+  ! 04-Jun-2021  Josue Bock  Introduce aer_source_init so that u10 always match 10m height, whatever detamin
+  ! 30-Jun-2021  Josue Bock  Change jt_low initial value from -1 to 1, to avoid out of bound index
 
 ! == End of header =============================================================
 

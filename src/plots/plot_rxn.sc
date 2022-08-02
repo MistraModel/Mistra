@@ -65,14 +65,14 @@ set species = ('R0001' 'R0002' 'R0003' 'R0004' 'R0005' 'R0006' 'R0007' 'R0008' '
 # HANDS OFF FROM BELOW!! NO USER SERVICABLE PARTS INSIDE!! DEVELOPPERS ONLY!!
 # ===========================================================================
 
-# make sure that each plotprog file is saved and none overwritten to be able to 
+# make sure that each plotprog file is saved and none overwritten to be able to
 # reproduce runs; this plotprog file name is put into plot
 
 # numbers of plots per page
 set pl_n = ("7")
 
 # define "overflow" value for viewports
-set pl_np = $pl_n 
+set pl_np = $pl_n
 @ pl_np+=1
 
 # define header
@@ -188,7 +188,7 @@ if ($pl_ty == 3) then
 endif
 # 4 - box model
 if ($pl_ty == 4) then
-# like evolution w/ time, but /k=2 
+# like evolution w/ time, but /k=2
  set plcmd = ("plot /nolabel /k=")
  set plcmdo = ("plot /nolabel /overlay /k=")
  set pll1 = ("k=")
@@ -199,7 +199,7 @@ if ($pl_ty == 4) then
  set m_pl = ("1")
  set xax = (" ")
  set yax = (" ")
-endif 
+endif
 # /title='"'$species[$k]'"'
 
 # unit conversion: 1 - mol m-3 s-1; 2 - mol mol-1 s-1; 3 - molec cm-3 s-1
@@ -249,8 +249,8 @@ if ($pl_un == 3) then
     set unit7c=1.
 endif
 
-# run info always on view port1 (VP1) 
-set countVP = 1 
+# run info always on view port1 (VP1)
+set countVP = 1
 echo "set viewport VP$countVP" >> pgtmp0
 # define linestyle master
 set lstym=("" "/dash=(.1,.1,.1,.1)" "/dash=(.01,.1,.01,.1)" "/dash=(.3,.1,.3,.1)")
@@ -279,7 +279,7 @@ if ($n_runs == 1) then
        set line$countl =("$runs[1] $pld[$kk]")
        set lsty[$countl] = $lstym[$kk]
     end
-endif 
+endif
 if ($n_runs == 2) then
     set countl = 0
     foreach kk ($m_pl)
@@ -290,7 +290,7 @@ if ($n_runs == 2) then
        set line$countl =("$runs[2] $pld[$kk]")
        set lsty[$countl] = $lstym[$kk]
     end
-endif 
+endif
 if ($n_runs == 3) then
     set countl = 0
     foreach kk ($m_pl)
@@ -304,7 +304,7 @@ if ($n_runs == 3) then
        set line$countl =("$runs[3] $pld[$kk]")
        set lsty[$countl] = $lstym[$kk]
     end
-endif 
+endif
 if ($n_runs == 4) then
     set countl = 0
     foreach kk ($m_pl)
@@ -321,7 +321,7 @@ if ($n_runs == 4) then
        set line$countl =("$runs[4] $pld[$kk]")
        set lsty[$countl] = $lstym[$kk]
     end
-endif 
+endif
 
 # put unit on plot
 # set unit_c=(" ")
@@ -333,7 +333,7 @@ set line9 = $unit_c[$pl_un]
 
 # empty plot
 echo "plot /i=0:100 /hlimits=0:100 /vlimits=0:100 /noaxis /nolabel 0" >> pgtmp0
-# plot explanation 
+# plot explanation
 echo "label 10,110,  -1, 0, .25 @P1Gas phase" >> pgtmp0
 echo "label 0, 90, -1, 0, .15 @P1$line1" >> pgtmp0
 echo "plot /overlay /vs /nolabel /line=1 $lsty[1] {80,99,99}, {95,95,95}" >> pgtmp0
@@ -370,88 +370,88 @@ foreach k ($n_spec)
 # echo $n_spec
 
 # 1 run
-    if ($n_runs == 1) then 
+    if ($n_runs == 1) then
 #       find max to correctly scale axes
 #        echo "let vmax=0." >> pgtmp0
-#	foreach kk($m_pl)
-#	    echo "let vmax1=1.05*$species[$k][de1,$pll1$pld[$kk]$lim2]/$unit1a/$unit1b" >> pgtmp0
-#	    echo "if "'`'"vmax1 gt vmax"'`'" then let vmax="'`'"vmax1"'`'" endif" >> pgtmp0
-#	end
-#	echo "if "'`'"vmax eq 0."'`'" then let vmax=1 endif" >> pgtmp0
+#       foreach kk($m_pl)
+#           echo "let vmax1=1.05*$species[$k][de1,$pll1$pld[$kk]$lim2]/$unit1a/$unit1b" >> pgtmp0
+#           echo "if "'`'"vmax1 gt vmax"'`'" then let vmax="'`'"vmax1"'`'" endif" >> pgtmp0
+#       end
+#       echo "if "'`'"vmax eq 0."'`'" then let vmax=1 endif" >> pgtmp0
 ##       plot
-#	if ($pl_ty != 3) then 
-#	    echo $plcmd$pld[1] $lstym[1] $lim1'`'"1.05*vmax"'`'  $xax$species[$k]dd1/$unit1a/$unit1c$yax >> pgtmp0
-#	else
-#	    echo $plcmd$pld[1] $lstym[1] $species[$k]dd1/$unit1a/$unit1c >> pgtmp0
-#	endif
+#       if ($pl_ty != 3) then
+#           echo $plcmd$pld[1] $lstym[1] $lim1'`'"1.05*vmax"'`'  $xax$species[$k]dd1/$unit1a/$unit1c$yax >> pgtmp0
+#       else
+#           echo $plcmd$pld[1] $lstym[1] $species[$k]dd1/$unit1a/$unit1c >> pgtmp0
+#       endif
 # only use Ferret's scaling:
         echo "let vmax=0." >> pgtmp0
-	foreach kk($m_pl)
-	    echo "let vmax1=1.05*$species[$k][de1,$pll1$pld[$kk]$lim2]/$unit1a/$unit1b" >> pgtmp0
-	    echo "if "'`'"vmax1 gt vmax"'`'" then let vmax="'`'"vmax1"'`'" endif" >> pgtmp0
-	end
-#	echo "if "'`'"vmax eq 0."'`'" then let vmax=1 endif" >> pgtmp0
+       foreach kk($m_pl)
+           echo "let vmax1=1.05*$species[$k][de1,$pll1$pld[$kk]$lim2]/$unit1a/$unit1b" >> pgtmp0
+           echo "if "'`'"vmax1 gt vmax"'`'" then let vmax="'`'"vmax1"'`'" endif" >> pgtmp0
+       end
+#       echo "if "'`'"vmax eq 0."'`'" then let vmax=1 endif" >> pgtmp0
 #       plot
-	if ($pl_ty != 3) then 
-	    echo $plcmd$pld[1] $lstym[1] $xax$species[$k]dd1/$unit1a/$unit1c$yax >> pgtmp0
-	else
-	    echo $plcmd$pld[1] $lstym[1] $species[$k]dd1/$unit1a/$unit1c >> pgtmp0
-	endif
+       if ($pl_ty != 3) then
+           echo $plcmd$pld[1] $lstym[1] $xax$species[$k]dd1/$unit1a/$unit1c$yax >> pgtmp0
+       else
+           echo $plcmd$pld[1] $lstym[1] $species[$k]dd1/$unit1a/$unit1c >> pgtmp0
+       endif
     endif
 
 # 2 runs
     if ($n_runs == 2) then
 #       find max to correctly scale axes
         echo "let vmax=0." >> pgtmp0
-	foreach kk($m_pl)
-	    echo "let vmax1=1.05*$species[$k][de1,$pll1$pld[$kk]$lim2]/$unit1a/$unit1b" >> pgtmp0
-	    echo "if "'`'"vmax1 gt vmax"'`'" then let vmax="'`'"vmax1"'`'" endif" >> pgtmp0
-	    echo "let vmax1=1.05*$species[$k][de3,$pll1$pld[$kk]$lim2]/$unit3a/$unit3b" >> pgtmp0
-	    echo "if "'`'"vmax1 gt vmax"'`'" then let vmax="'`'"vmax1"'`'" endif" >> pgtmp0
+       foreach kk($m_pl)
+           echo "let vmax1=1.05*$species[$k][de1,$pll1$pld[$kk]$lim2]/$unit1a/$unit1b" >> pgtmp0
+           echo "if "'`'"vmax1 gt vmax"'`'" then let vmax="'`'"vmax1"'`'" endif" >> pgtmp0
+           echo "let vmax1=1.05*$species[$k][de3,$pll1$pld[$kk]$lim2]/$unit3a/$unit3b" >> pgtmp0
+           echo "if "'`'"vmax1 gt vmax"'`'" then let vmax="'`'"vmax1"'`'" endif" >> pgtmp0
         end
-	echo "if "'`'"vmax eq 0."'`'" then let vmax=1 endif" >> pgtmp0
+       echo "if "'`'"vmax eq 0."'`'" then let vmax=1 endif" >> pgtmp0
 #       plot
-	echo $plcmd$pld[1] $lstym[1] $lim1'`'"1.05*vmax"'`' $xax$species[$k]dd1/$unit1a/$unit1c$yax >> pgtmp0
-	echo $plcmdo$pld[1] $lstym[1] $xax$species[$k]dd3/$unit3a/$unit3c$yax >> pgtmp0
-    endif	
+       echo $plcmd$pld[1] $lstym[1] $lim1'`'"1.05*vmax"'`' $xax$species[$k]dd1/$unit1a/$unit1c$yax >> pgtmp0
+       echo $plcmdo$pld[1] $lstym[1] $xax$species[$k]dd3/$unit3a/$unit3c$yax >> pgtmp0
+    endif
 # 3 runs
     if ($n_runs == 3) then
 #       find max to correctly scale axes
         echo "let vmax=0." >> pgtmp0
-	foreach kk($m_pl)
-	    echo "let vmax1=1.05*$species[$k][de1,$pll1$pld[$kk]$lim2]/$unit1a/$unit1b" >> pgtmp0
-	    echo "if "'`'"vmax1 gt vmax"'`'" then let vmax="'`'"vmax1"'`'" endif" >> pgtmp0
-	    echo "let vmax1=1.05*$species[$k][de3,$pll1$pld[$kk]$lim2]/$unit3a/$unit3b" >> pgtmp0
-	    echo "if "'`'"vmax1 gt vmax"'`'" then let vmax="'`'"vmax1"'`'" endif" >> pgtmp0
-	    echo "let vmax1=1.05*$species[$k][de5,$pll1$pld[$kk]$lim2]/$unit5a/$unit5b" >> pgtmp0
-	    echo "if "'`'"vmax1 gt vmax"'`'" then let vmax="'`'"vmax1"'`'" endif" >> pgtmp0
+       foreach kk($m_pl)
+           echo "let vmax1=1.05*$species[$k][de1,$pll1$pld[$kk]$lim2]/$unit1a/$unit1b" >> pgtmp0
+           echo "if "'`'"vmax1 gt vmax"'`'" then let vmax="'`'"vmax1"'`'" endif" >> pgtmp0
+           echo "let vmax1=1.05*$species[$k][de3,$pll1$pld[$kk]$lim2]/$unit3a/$unit3b" >> pgtmp0
+           echo "if "'`'"vmax1 gt vmax"'`'" then let vmax="'`'"vmax1"'`'" endif" >> pgtmp0
+           echo "let vmax1=1.05*$species[$k][de5,$pll1$pld[$kk]$lim2]/$unit5a/$unit5b" >> pgtmp0
+           echo "if "'`'"vmax1 gt vmax"'`'" then let vmax="'`'"vmax1"'`'" endif" >> pgtmp0
         end
-	echo "if "'`'"vmax eq 0."'`'" then let vmax=1 endif" >> pgtmp0
+       echo "if "'`'"vmax eq 0."'`'" then let vmax=1 endif" >> pgtmp0
 #       plot
-	echo $plcmd$pld[1] $lstym[1] $lim1'`'"1.05*vmax"'`' $xax$species[$k]dd1/$unit1a/$unit1c$yax >> pgtmp0
-	echo $plcmdo$pld[1] $lstym[1] $xax$species[$k]dd3/$unit3a/$unit3c$yax >> pgtmp0
-	echo $plcmdo$pld[1] $lstym[1] $xax$species[$k]dd5/$unit5a/$unit5c$yax >> pgtmp0
+       echo $plcmd$pld[1] $lstym[1] $lim1'`'"1.05*vmax"'`' $xax$species[$k]dd1/$unit1a/$unit1c$yax >> pgtmp0
+       echo $plcmdo$pld[1] $lstym[1] $xax$species[$k]dd3/$unit3a/$unit3c$yax >> pgtmp0
+       echo $plcmdo$pld[1] $lstym[1] $xax$species[$k]dd5/$unit5a/$unit5c$yax >> pgtmp0
     endif
 # four runs
     if ($n_runs == 4) then
 #       find max to correctly scale axes
         echo "let vmax=0." >> pgtmp0
-	foreach kk($m_pl)
-	    echo "let vmax1=1.05*$species[$k][de1,$pll1$pld[$kk]$lim2]/$unit1a/$unit1b" >> pgtmp0
-	    echo "if "'`'"vmax1 gt vmax"'`'" then let vmax="'`'"vmax1"'`'" endif" >> pgtmp0
-	    echo "let vmax1=1.05*$species[$k][de3,$pll1$pld[$kk]$lim2]/$unit3a/$unit3b" >> pgtmp0
-	    echo "if "'`'"vmax1 gt vmax"'`'" then let vmax="'`'"vmax1"'`'" endif" >> pgtmp0
-	    echo "let vmax1=1.05*$species[$k][de5,$pll1$pld[$kk]$lim2]/$unit5a/$unit5b" >> pgtmp0
-	    echo "if "'`'"vmax1 gt vmax"'`'" then let vmax="'`'"vmax1"'`'" endif" >> pgtmp0
-	    echo "let vmax1=1.05*$species[$k][de7,$pll1$pld[$kk]$lim2]/$unit7a/$unit7b" >> pgtmp0
-	    echo "if "'`'"vmax1 gt vmax"'`'" then let vmax="'`'"vmax1"'`'" endif" >> pgtmp0
+       foreach kk($m_pl)
+           echo "let vmax1=1.05*$species[$k][de1,$pll1$pld[$kk]$lim2]/$unit1a/$unit1b" >> pgtmp0
+           echo "if "'`'"vmax1 gt vmax"'`'" then let vmax="'`'"vmax1"'`'" endif" >> pgtmp0
+           echo "let vmax1=1.05*$species[$k][de3,$pll1$pld[$kk]$lim2]/$unit3a/$unit3b" >> pgtmp0
+           echo "if "'`'"vmax1 gt vmax"'`'" then let vmax="'`'"vmax1"'`'" endif" >> pgtmp0
+           echo "let vmax1=1.05*$species[$k][de5,$pll1$pld[$kk]$lim2]/$unit5a/$unit5b" >> pgtmp0
+           echo "if "'`'"vmax1 gt vmax"'`'" then let vmax="'`'"vmax1"'`'" endif" >> pgtmp0
+           echo "let vmax1=1.05*$species[$k][de7,$pll1$pld[$kk]$lim2]/$unit7a/$unit7b" >> pgtmp0
+           echo "if "'`'"vmax1 gt vmax"'`'" then let vmax="'`'"vmax1"'`'" endif" >> pgtmp0
         end
-	echo "if "'`'"vmax eq 0."'`'" then let vmax=1 endif" >> pgtmp0
+       echo "if "'`'"vmax eq 0."'`'" then let vmax=1 endif" >> pgtmp0
 #       plot
-	echo $plcmd$pld[1] $lstym[1] $lim1'`'"1.05*vmax"'`' $xax$species[$k]dd1/$unit1a/$unit1c$yax >> pgtmp0
-	echo $plcmdo$pld[1] $lstym[1] $xax$species[$k]dd3/$unit3a/$unit3c$yax >> pgtmp0
-	echo $plcmdo$pld[1] $lstym[1] $xax$species[$k]dd5/$unit5a/$unit5c$yax >> pgtmp0
-	echo $plcmdo$pld[1] $lstym[1] $xax$species[$k]dd7/$unit7a/$unit7c$yax >> pgtmp0
+       echo $plcmd$pld[1] $lstym[1] $lim1'`'"1.05*vmax"'`' $xax$species[$k]dd1/$unit1a/$unit1c$yax >> pgtmp0
+       echo $plcmdo$pld[1] $lstym[1] $xax$species[$k]dd3/$unit3a/$unit3c$yax >> pgtmp0
+       echo $plcmdo$pld[1] $lstym[1] $xax$species[$k]dd5/$unit5a/$unit5c$yax >> pgtmp0
+       echo $plcmdo$pld[1] $lstym[1] $xax$species[$k]dd7/$unit7a/$unit7c$yax >> pgtmp0
     endif
 #   add name of species
     echo "let label_y = 1.15*vmax" >> pgtmp0
@@ -462,59 +462,59 @@ foreach k ($n_spec)
 #   heights/times to be overplotted
     foreach kk ($m_pl)
         if ($n_runs == 1 && $kk != 1) echo $plcmdo$pld[$kk] $lstym[$kk] $xax$species[$k]dd1/$unit1a/$unit1c$yax >> pgtmp0
-	if ($n_runs == 2 && $kk != 1) then
-	    echo $plcmdo$pld[$kk] $lstym[$kk] $xax$species[$k]dd1/$unit1a/$unit1c$yax >> pgtmp0
-	    echo $plcmdo$pld[$kk] $lstym[$kk] $xax$species[$k]dd3/$unit3a/$unit3c$yax >> pgtmp0
-	endif
-	if ($n_runs == 3 && $kk != 1) then
-	    echo $plcmdo$pld[$kk] $lstym[$kk] $xax$species[$k]dd1/$unit1a/$unit1c$yax >> pgtmp0
-	    echo $plcmdo$pld[$kk] $lstym[$kk] $xax$species[$k]dd3/$unit3a/$unit3c$yax >> pgtmp0
-	    echo $plcmdo$pld[$kk] $lstym[$kk] $xax$species[$k]dd5/$unit5a/$unit5c$yax >> pgtmp0
-	endif
-	if ($n_runs == 4 && $kk != 1) then
-	    echo $plcmdo$pld[$kk] $lstym[$kk] $xax$species[$k]dd1/$unit1a/$unit1c$yax >> pgtmp0
-	    echo $plcmdo$pld[$kk] $lstym[$kk] $xax$species[$k]dd3/$unit3a/$unit3c$yax >> pgtmp0
-	    echo $plcmdo$pld[$kk] $lstym[$kk] $xax$species[$k]dd5/$unit5a/$unit5c$yax >> pgtmp0	    
-	    echo $plcmdo$pld[$kk] $lstym[$kk] $xax$species[$k]dd7/$unit7a/$unit7c$yax >> pgtmp0
-	endif
-    end	
+       if ($n_runs == 2 && $kk != 1) then
+           echo $plcmdo$pld[$kk] $lstym[$kk] $xax$species[$k]dd1/$unit1a/$unit1c$yax >> pgtmp0
+           echo $plcmdo$pld[$kk] $lstym[$kk] $xax$species[$k]dd3/$unit3a/$unit3c$yax >> pgtmp0
+       endif
+       if ($n_runs == 3 && $kk != 1) then
+           echo $plcmdo$pld[$kk] $lstym[$kk] $xax$species[$k]dd1/$unit1a/$unit1c$yax >> pgtmp0
+           echo $plcmdo$pld[$kk] $lstym[$kk] $xax$species[$k]dd3/$unit3a/$unit3c$yax >> pgtmp0
+           echo $plcmdo$pld[$kk] $lstym[$kk] $xax$species[$k]dd5/$unit5a/$unit5c$yax >> pgtmp0
+       endif
+       if ($n_runs == 4 && $kk != 1) then
+           echo $plcmdo$pld[$kk] $lstym[$kk] $xax$species[$k]dd1/$unit1a/$unit1c$yax >> pgtmp0
+           echo $plcmdo$pld[$kk] $lstym[$kk] $xax$species[$k]dd3/$unit3a/$unit3c$yax >> pgtmp0
+           echo $plcmdo$pld[$kk] $lstym[$kk] $xax$species[$k]dd5/$unit5a/$unit5c$yax >> pgtmp0
+           echo $plcmdo$pld[$kk] $lstym[$kk] $xax$species[$k]dd7/$unit7a/$unit7c$yax >> pgtmp0
+       endif
+    end
 
     if ($countVP == $pl_np) then
 #       next page
-	echo "CANCEL MODE METAFILE" >> pgtmp0
-	@ countPG+=1
-	echo "SET MODE METAFILE:"$pl_name.$countPG".plt" >> pgtmp0
+       echo "CANCEL MODE METAFILE" >> pgtmp0
+       @ countPG+=1
+       echo "SET MODE METAFILE:"$pl_name.$countPG".plt" >> pgtmp0
         set countVP = 1
         echo "SET WINDOW /clear" >> pgtmp0
 #       put basic info again on VP1
         echo "set viewport VP$countVP" >> pgtmp0
         echo "plot /i=0:100 /hlimits=0:100 /vlimits=0:100 /noaxis /nolabel 0" >> pgtmp0
         echo "label 10,110,  -1, 0, .25 @P1Gas phase" >> pgtmp0
-	echo "label 0, 90, -1, 0, .15 @P1$line1" >> pgtmp0
-	echo "plot /overlay /vs /nolabel /line=1 $lsty[1] {80,99,99}, {95,95,95}" >> pgtmp0
-	echo "label 0, 80, -1, 0, .15 @P1$line2" >> pgtmp0
-	if ($countl >= 2) echo "plot /overlay /vs /nolabel /line=2 $lsty[2] {80,99,99}, {85,85,85}" >> pgtmp0
-	echo "label 0, 70, -1, 0, .15 @P1$line3" >> pgtmp0
-	if ($countl >= 3) echo "plot /overlay /vs /nolabel /line=3 $lsty[3] {80,99,99}, {75,75,75}" >> pgtmp0
-	echo "label 0, 60, -1, 0, .15 @P1$line4" >> pgtmp0
-	if ($countl >= 4) echo "plot /overlay /vs /nolabel /line=4 $lsty[4] {80,99,99}, {65,65,65}" >> pgtmp0
-	echo "label 0, 50, -1, 0, .15 @P1$line5" >> pgtmp0
-	if ($countl >= 5) echo "plot /overlay /vs /nolabel /line=5 $lsty[5] {80,99,99}, {55,55,55}" >> pgtmp0
-	echo "label 0, 40, -1, 0, .15 @P1$line6" >> pgtmp0
-	if ($countl >= 6) echo "plot /overlay /vs /nolabel /line=6 $lsty[6] {80,99,99}, {45,45,45}" >> pgtmp0
-	echo "label 0, 30, -1, 0, .15 @P1$line7" >> pgtmp0
-	if ($countl >= 7) echo "plot /overlay /vs /nolabel /line=7 $lsty[7] {80,99,99}, {35,35,35}" >> pgtmp0
-	echo "label 0, 20, -1, 0, .15 @P1$line8" >> pgtmp0
-	if ($countl >= 8) echo "plot /overlay /vs /nolabel /line=8 $lsty[8] {80,99,99}, {25,25,25}" >> pgtmp0
-	echo "label 0, 10, -1, 0, .15 @P1$line9" >> pgtmp0
-	if ($countl >= 9) echo "plot /overlay /vs /nolabel /line=9 $lsty[9] {80,99,99}, {15,15,15}" >> pgtmp0
+       echo "label 0, 90, -1, 0, .15 @P1$line1" >> pgtmp0
+       echo "plot /overlay /vs /nolabel /line=1 $lsty[1] {80,99,99}, {95,95,95}" >> pgtmp0
+       echo "label 0, 80, -1, 0, .15 @P1$line2" >> pgtmp0
+       if ($countl >= 2) echo "plot /overlay /vs /nolabel /line=2 $lsty[2] {80,99,99}, {85,85,85}" >> pgtmp0
+       echo "label 0, 70, -1, 0, .15 @P1$line3" >> pgtmp0
+       if ($countl >= 3) echo "plot /overlay /vs /nolabel /line=3 $lsty[3] {80,99,99}, {75,75,75}" >> pgtmp0
+       echo "label 0, 60, -1, 0, .15 @P1$line4" >> pgtmp0
+       if ($countl >= 4) echo "plot /overlay /vs /nolabel /line=4 $lsty[4] {80,99,99}, {65,65,65}" >> pgtmp0
+       echo "label 0, 50, -1, 0, .15 @P1$line5" >> pgtmp0
+       if ($countl >= 5) echo "plot /overlay /vs /nolabel /line=5 $lsty[5] {80,99,99}, {55,55,55}" >> pgtmp0
+       echo "label 0, 40, -1, 0, .15 @P1$line6" >> pgtmp0
+       if ($countl >= 6) echo "plot /overlay /vs /nolabel /line=6 $lsty[6] {80,99,99}, {45,45,45}" >> pgtmp0
+       echo "label 0, 30, -1, 0, .15 @P1$line7" >> pgtmp0
+       if ($countl >= 7) echo "plot /overlay /vs /nolabel /line=7 $lsty[7] {80,99,99}, {35,35,35}" >> pgtmp0
+       echo "label 0, 20, -1, 0, .15 @P1$line8" >> pgtmp0
+       if ($countl >= 8) echo "plot /overlay /vs /nolabel /line=8 $lsty[8] {80,99,99}, {25,25,25}" >> pgtmp0
+       echo "label 0, 10, -1, 0, .15 @P1$line9" >> pgtmp0
+       if ($countl >= 9) echo "plot /overlay /vs /nolabel /line=9 $lsty[9] {80,99,99}, {15,15,15}" >> pgtmp0
     endif
 
 end
 
 echo "CANCEL MODE METAFILE" >> pgtmp0
 # if total number of plots is multiple of "plots per page" there is an empty output file: ignore it!
-if ($countVP == 1) @ countPG-=1 
+if ($countVP == 1) @ countPG-=1
 
 # finalize plot file
 # d1, d3, d5, .. have to be replaced with sed in final ferret file to give [d=1] etc
@@ -541,10 +541,10 @@ mv -f pgtmp14 $pl_name.jnl
 # plot
 
 # source /soft/ferret_paths_RH9
-# # ferret -batch $pl_name.ps -script $pl_name.jnl 
-ferret -script $pl_name.jnl 
+# # ferret -batch $pl_name.ps -script $pl_name.jnl
+ferret -script $pl_name.jnl
 
-# determine number of meta print files 
+# determine number of meta print files
 if ($countPG == 1) set metafiles="$pl_name.1.plt"
 if ($countPG == 2) set metafiles="$pl_name.1.plt $pl_name.2.plt"
 if ($countPG == 3) set metafiles="$pl_name.1.plt $pl_name.2.plt $pl_name.3.plt"
@@ -556,7 +556,7 @@ if ($countPG == 8) set metafiles="$pl_name.1.plt $pl_name.2.plt $pl_name.3.plt $
 if ($countPG == 9) set metafiles="$pl_name.1.plt $pl_name.2.plt $pl_name.3.plt $pl_name.4.plt $pl_name.5.plt $pl_name.6.plt $pl_name.7.plt $pl_name.8.plt $pl_name.9.plt"
 if ($countPG == 10) set metafiles="$pl_name.1.plt $pl_name.2.plt $pl_name.3.plt $pl_name.4.plt $pl_name.5.plt $pl_name.6.plt $pl_name.7.plt $pl_name.8.plt $pl_name.9.plt  $pl_name.10.plt"
 if ($countPG == 11) set metafiles="$pl_name.1.plt $pl_name.2.plt $pl_name.3.plt $pl_name.4.plt $pl_name.5.plt $pl_name.6.plt $pl_name.7.plt $pl_name.8.plt $pl_name.9.plt  $pl_name.10.plt $pl_name.11.plt"
-if ($countPG == 12) set metafiles="$pl_name.1.plt $pl_name.2.plt $pl_name.3.plt $pl_name.4.plt $pl_name.5.plt $pl_name.6.plt $pl_name.7.plt $pl_name.8.plt $pl_name.9.plt  $pl_name.10.plt $pl_name.11.plt $pl_name.12.plt" 
+if ($countPG == 12) set metafiles="$pl_name.1.plt $pl_name.2.plt $pl_name.3.plt $pl_name.4.plt $pl_name.5.plt $pl_name.6.plt $pl_name.7.plt $pl_name.8.plt $pl_name.9.plt  $pl_name.10.plt $pl_name.11.plt $pl_name.12.plt"
 if ($countPG == 13) set metafiles="$pl_name.1.plt $pl_name.2.plt $pl_name.3.plt $pl_name.4.plt $pl_name.5.plt $pl_name.6.plt $pl_name.7.plt $pl_name.8.plt $pl_name.9.plt  $pl_name.10.plt $pl_name.11.plt $pl_name.12.plt $pl_name.13.plt"
 if ($countPG == 58) set metafiles="$pl_name.1.plt $pl_name.2.plt $pl_name.3.plt $pl_name.4.plt $pl_name.5.plt $pl_name.6.plt $pl_name.7.plt $pl_name.8.plt $pl_name.9.plt $pl_name.10.plt $pl_name.11.plt $pl_name.12.plt $pl_name.13.plt $pl_name.14.plt $pl_name.15.plt $pl_name.16.plt $pl_name.17.plt $pl_name.18.plt $pl_name.19.plt $pl_name.20.plt $pl_name.21.plt $pl_name.22.plt $pl_name.23.plt $pl_name.24.plt $pl_name.25.plt $pl_name.26.plt $pl_name.27.plt $pl_name.28.plt $pl_name.29.plt $pl_name.30.plt $pl_name.31.plt $pl_name.32.plt $pl_name.33.plt $pl_name.34.plt $pl_name.35.plt $pl_name.36.plt $pl_name.37.plt $pl_name.38.plt $pl_name.39.plt $pl_name.40.plt $pl_name.41.plt $pl_name.42.plt $pl_name.43.plt $pl_name.44.plt $pl_name.45.plt $pl_name.46.plt $pl_name.47.plt $pl_name.48.plt $pl_name.49.plt $pl_name.50.plt $pl_name.51.plt $pl_name.52.plt $pl_name.53.plt $pl_name.54.plt $pl_name.55.plt $pl_name.56.plt $pl_name.57.plt $pl_name.58.plt"
 if ($countPG == 59) set metafiles="$pl_name.1.plt $pl_name.2.plt $pl_name.3.plt $pl_name.4.plt $pl_name.5.plt $pl_name.6.plt $pl_name.7.plt $pl_name.8.plt $pl_name.9.plt $pl_name.10.plt $pl_name.11.plt $pl_name.12.plt $pl_name.13.plt $pl_name.14.plt $pl_name.15.plt $pl_name.16.plt $pl_name.17.plt $pl_name.18.plt $pl_name.19.plt $pl_name.20.plt $pl_name.21.plt $pl_name.22.plt $pl_name.23.plt $pl_name.24.plt $pl_name.25.plt $pl_name.26.plt $pl_name.27.plt $pl_name.28.plt $pl_name.29.plt $pl_name.30.plt $pl_name.31.plt $pl_name.32.plt $pl_name.33.plt $pl_name.34.plt $pl_name.35.plt $pl_name.36.plt $pl_name.37.plt $pl_name.38.plt $pl_name.39.plt $pl_name.40.plt $pl_name.41.plt $pl_name.42.plt $pl_name.43.plt $pl_name.44.plt $pl_name.45.plt $pl_name.46.plt $pl_name.47.plt $pl_name.48.plt $pl_name.49.plt $pl_name.50.plt $pl_name.51.plt $pl_name.52.plt $pl_name.53.plt $pl_name.54.plt $pl_name.55.plt $pl_name.56.plt $pl_name.57.plt $pl_name.58.plt $pl_name.59.plt"
@@ -568,7 +568,7 @@ if ($countPG == 63) set metafiles="$pl_name.1.plt $pl_name.2.plt $pl_name.3.plt 
 # if ($countPG == 113) set metafiles="$pl_name.1.plt $pl_name.2.plt $pl_name.3.plt $pl_name.4.plt $pl_name.5.plt $pl_name.6.plt $pl_name.7.plt $pl_name.8.plt $pl_name.9.plt $pl_name.10.plt $pl_name.11.plt $pl_name.12.plt $pl_name.13.plt $pl_name.14.plt $pl_name.15.plt $pl_name.16.plt $pl_name.17.plt $pl_name.18.plt $pl_name.19.plt $pl_name.20.plt $pl_name.21.plt $pl_name.22.plt $pl_name.23.plt $pl_name.24.plt $pl_name.25.plt $pl_name.26.plt $pl_name.27.plt $pl_name.28.plt $pl_name.29.plt $pl_name.30.plt $pl_name.31.plt $pl_name.32.plt $pl_name.33.plt $pl_name.34.plt $pl_name.35.plt $pl_name.36.plt $pl_name.37.plt $pl_name.38.plt $pl_name.39.plt $pl_name.40.plt $pl_name.41.plt $pl_name.42.plt $pl_name.43.plt $pl_name.44.plt $pl_name.45.plt $pl_name.46.plt $pl_name.47.plt $pl_name.48.plt $pl_name.49.plt $pl_name.50.plt $pl_name.51.plt $pl_name.52.plt $pl_name.53.plt $pl_name.54.plt $pl_name.55.plt $pl_name.56.plt $pl_name.57.plt $pl_name.58.plt $pl_name.59.plt $pl_name.60.plt $pl_name.61.plt $pl_name.62.plt $pl_name.63.plt $pl_name.64.plt $pl_name.65.plt $pl_name.66.plt $pl_name.67.plt $pl_name.68.plt $pl_name.69.plt $pl_name.70.plt $pl_name.71.plt $pl_name.72.plt $pl_name.73.plt $pl_name.74.plt $pl_name.75.plt $pl_name.76.plt $pl_name.77.plt $pl_name.78.plt $pl_name.79.plt $pl_name.80.plt $pl_name.81.plt $pl_name.82.plt $pl_name.83.plt $pl_name.84.plt $pl_name.85.plt $pl_name.86.plt $pl_name.87.plt $pl_name.88.plt $pl_name.89.plt $pl_name.90.plt $pl_name.91.plt $pl_name.92.plt $pl_name.93.plt $pl_name.94.plt $pl_name.95.plt $pl_name.96.plt $pl_name.97.plt $pl_name.98.plt $pl_name.99.plt $pl_name.100.plt $pl_name.101.plt $pl_name.102.plt $pl_name.103.plt $pl_name.104.plt $pl_name.105.plt $pl_name.106.plt $pl_name.107.plt $pl_name.108.plt $pl_name.109.plt $pl_name.110.plt $pl_name.111.plt $pl_name.112.plt $pl_name.113.plt"
 # if ($countPG == 114) set metafiles="$pl_name.1.plt $pl_name.2.plt $pl_name.3.plt $pl_name.4.plt $pl_name.5.plt $pl_name.6.plt $pl_name.7.plt $pl_name.8.plt $pl_name.9.plt $pl_name.10.plt $pl_name.11.plt $pl_name.12.plt $pl_name.13.plt $pl_name.14.plt $pl_name.15.plt $pl_name.16.plt $pl_name.17.plt $pl_name.18.plt $pl_name.19.plt $pl_name.20.plt $pl_name.21.plt $pl_name.22.plt $pl_name.23.plt $pl_name.24.plt $pl_name.25.plt $pl_name.26.plt $pl_name.27.plt $pl_name.28.plt $pl_name.29.plt $pl_name.30.plt $pl_name.31.plt $pl_name.32.plt $pl_name.33.plt $pl_name.34.plt $pl_name.35.plt $pl_name.36.plt $pl_name.37.plt $pl_name.38.plt $pl_name.39.plt $pl_name.40.plt $pl_name.41.plt $pl_name.42.plt $pl_name.43.plt $pl_name.44.plt $pl_name.45.plt $pl_name.46.plt $pl_name.47.plt $pl_name.48.plt $pl_name.49.plt $pl_name.50.plt $pl_name.51.plt $pl_name.52.plt $pl_name.53.plt $pl_name.54.plt $pl_name.55.plt $pl_name.56.plt $pl_name.57.plt $pl_name.58.plt $pl_name.59.plt $pl_name.60.plt $pl_name.61.plt $pl_name.62.plt $pl_name.63.plt $pl_name.64.plt $pl_name.65.plt $pl_name.66.plt $pl_name.67.plt $pl_name.68.plt $pl_name.69.plt $pl_name.70.plt $pl_name.71.plt $pl_name.72.plt $pl_name.73.plt $pl_name.74.plt $pl_name.75.plt $pl_name.76.plt $pl_name.77.plt $pl_name.78.plt $pl_name.79.plt $pl_name.80.plt $pl_name.81.plt $pl_name.82.plt $pl_name.83.plt $pl_name.84.plt $pl_name.85.plt $pl_name.86.plt $pl_name.87.plt $pl_name.88.plt $pl_name.89.plt $pl_name.90.plt $pl_name.91.plt $pl_name.92.plt $pl_name.93.plt $pl_name.94.plt $pl_name.95.plt $pl_name.96.plt $pl_name.97.plt $pl_name.98.plt $pl_name.99.plt $pl_name.100.plt $pl_name.101.plt $pl_name.102.plt $pl_name.103.plt $pl_name.104.plt $pl_name.105.plt $pl_name.106.plt $pl_name.107.plt $pl_name.108.plt $pl_name.109.plt $pl_name.110.plt $pl_name.111.plt $pl_name.112.plt $pl_name.113.plt $pl_name.114.plt"
 # if ($countPG == 115) set metafiles="$pl_name.1.plt $pl_name.2.plt $pl_name.3.plt $pl_name.4.plt $pl_name.5.plt $pl_name.6.plt $pl_name.7.plt $pl_name.8.plt $pl_name.9.plt $pl_name.10.plt $pl_name.11.plt $pl_name.12.plt $pl_name.13.plt $pl_name.14.plt $pl_name.15.plt $pl_name.16.plt $pl_name.17.plt $pl_name.18.plt $pl_name.19.plt $pl_name.20.plt $pl_name.21.plt $pl_name.22.plt $pl_name.23.plt $pl_name.24.plt $pl_name.25.plt $pl_name.26.plt $pl_name.27.plt $pl_name.28.plt $pl_name.29.plt $pl_name.30.plt $pl_name.31.plt $pl_name.32.plt $pl_name.33.plt $pl_name.34.plt $pl_name.35.plt $pl_name.36.plt $pl_name.37.plt $pl_name.38.plt $pl_name.39.plt $pl_name.40.plt $pl_name.41.plt $pl_name.42.plt $pl_name.43.plt $pl_name.44.plt $pl_name.45.plt $pl_name.46.plt $pl_name.47.plt $pl_name.48.plt $pl_name.49.plt $pl_name.50.plt $pl_name.51.plt $pl_name.52.plt $pl_name.53.plt $pl_name.54.plt $pl_name.55.plt $pl_name.56.plt $pl_name.57.plt $pl_name.58.plt $pl_name.59.plt $pl_name.60.plt $pl_name.61.plt $pl_name.62.plt $pl_name.63.plt $pl_name.64.plt $pl_name.65.plt $pl_name.66.plt $pl_name.67.plt $pl_name.68.plt $pl_name.69.plt $pl_name.70.plt $pl_name.71.plt $pl_name.72.plt $pl_name.73.plt $pl_name.74.plt $pl_name.75.plt $pl_name.76.plt $pl_name.77.plt $pl_name.78.plt $pl_name.79.plt $pl_name.80.plt $pl_name.81.plt $pl_name.82.plt $pl_name.83.plt $pl_name.84.plt $pl_name.85.plt $pl_name.86.plt $pl_name.87.plt $pl_name.88.plt $pl_name.89.plt $pl_name.90.plt $pl_name.91.plt $pl_name.92.plt $pl_name.93.plt $pl_name.94.plt $pl_name.95.plt $pl_name.96.plt $pl_name.97.plt $pl_name.98.plt $pl_name.99.plt $pl_name.100.plt $pl_name.101.plt $pl_name.102.plt $pl_name.103.plt $pl_name.104.plt $pl_name.105.plt $pl_name.106.plt $pl_name.107.plt $pl_name.108.plt $pl_name.109.plt $pl_name.110.plt $pl_name.111.plt $pl_name.112.plt $pl_name.113.plt $pl_name.114.plt $pl_name.115.plt"
-# if ($countPG == 201) set metafiles="$pl_name.1.plt $pl_name.2.plt $pl_name.3.plt $pl_name.4.plt $pl_name.5.plt $pl_name.6.plt $pl_name.7.plt $pl_name.8.plt $pl_name.9.plt $pl_name.10.plt $pl_name.11.plt $pl_name.12.plt $pl_name.13.plt $pl_name.14.plt $pl_name.15.plt $pl_name.16.plt $pl_name.17.plt $pl_name.18.plt $pl_name.19.plt $pl_name.20.plt $pl_name.21.plt $pl_name.22.plt $pl_name.23.plt $pl_name.24.plt $pl_name.25.plt $pl_name.26.plt $pl_name.27.plt $pl_name.28.plt $pl_name.29.plt $pl_name.30.plt $pl_name.31.plt $pl_name.32.plt $pl_name.33.plt $pl_name.34.plt $pl_name.35.plt $pl_name.36.plt $pl_name.37.plt $pl_name.38.plt $pl_name.39.plt $pl_name.40.plt $pl_name.41.plt $pl_name.42.plt $pl_name.43.plt $pl_name.44.plt $pl_name.45.plt $pl_name.46.plt $pl_name.47.plt $pl_name.48.plt $pl_name.49.plt $pl_name.50.plt $pl_name.51.plt $pl_name.52.plt $pl_name.53.plt $pl_name.54.plt $pl_name.55.plt $pl_name.56.plt $pl_name.57.plt $pl_name.58.plt $pl_name.59.plt $pl_name.60.plt $pl_name.61.plt $pl_name.62.plt $pl_name.63.plt $pl_name.64.plt $pl_name.65.plt $pl_name.66.plt $pl_name.67.plt $pl_name.68.plt $pl_name.69.plt $pl_name.70.plt $pl_name.71.plt $pl_name.72.plt $pl_name.73.plt $pl_name.74.plt $pl_name.75.plt $pl_name.76.plt $pl_name.77.plt $pl_name.78.plt $pl_name.79.plt $pl_name.80.plt $pl_name.81.plt $pl_name.82.plt $pl_name.83.plt $pl_name.84.plt $pl_name.85.plt $pl_name.86.plt $pl_name.87.plt $pl_name.88.plt $pl_name.89.plt $pl_name.90.plt $pl_name.91.plt $pl_name.92.plt $pl_name.93.plt $pl_name.94.plt $pl_name.95.plt $pl_name.96.plt $pl_name.97.plt $pl_name.98.plt $pl_name.99.plt $pl_name.100.plt $pl_name.101.plt $pl_name.102.plt $pl_name.103.plt $pl_name.104.plt $pl_name.105.plt $pl_name.106.plt $pl_name.107.plt $pl_name.108.plt $pl_name.109.plt $pl_name.110.plt $pl_name.111.plt $pl_name.112.plt $pl_name.113.plt $pl_name.114.plt $pl_name.115.plt $pl_name.116.plt $pl_name.117.plt $pl_name.118.plt $pl_name.119.plt $pl_name.120.plt $pl_name.121.plt $pl_name.122.plt $pl_name.123.plt $pl_name.124.plt $pl_name.125.plt $pl_name.126.plt $pl_name.127.plt $pl_name.128.plt $pl_name.129.plt $pl_name.130.plt $pl_name.131.plt $pl_name.132.plt $pl_name.133.plt $pl_name.134.plt $pl_name.135.plt $pl_name.136.plt $pl_name.137.plt $pl_name.138.plt $pl_name.139.plt $pl_name.140.plt $pl_name.141.plt $pl_name.142.plt $pl_name.143.plt $pl_name.144.plt $pl_name.145.plt $pl_name.146.plt $pl_name.147.plt $pl_name.148.plt $pl_name.149.plt $pl_name.150.plt $pl_name.151.plt $pl_name.152.plt $pl_name.153.plt $pl_name.154.plt $pl_name.155.plt $pl_name.156.plt $pl_name.157.plt $pl_name.158.plt $pl_name.159.plt $pl_name.160.plt $pl_name.161.plt $pl_name.162.plt $pl_name.163.plt $pl_name.164.plt $pl_name.165.plt $pl_name.166.plt $pl_name.167.plt $pl_name.168.plt $pl_name.169.plt $pl_name.170.plt $pl_name.171.plt $pl_name.172.plt $pl_name.173.plt $pl_name.174.plt $pl_name.175.plt $pl_name.176.plt $pl_name.177.plt $pl_name.178.plt $pl_name.179.plt $pl_name.180.plt $pl_name.181.plt $pl_name.182.plt $pl_name.183.plt $pl_name.184.plt $pl_name.185.plt $pl_name.186.plt $pl_name.187.plt $pl_name.188.plt $pl_name.189.plt $pl_name.190.plt $pl_name.191.plt $pl_name.192.plt $pl_name.193.plt $pl_name.194.plt $pl_name.195.plt $pl_name.196.plt $pl_name.197.plt $pl_name.198.plt $pl_name.199.plt $pl_name.200.plt $pl_name.201.plt"   
+# if ($countPG == 201) set metafiles="$pl_name.1.plt $pl_name.2.plt $pl_name.3.plt $pl_name.4.plt $pl_name.5.plt $pl_name.6.plt $pl_name.7.plt $pl_name.8.plt $pl_name.9.plt $pl_name.10.plt $pl_name.11.plt $pl_name.12.plt $pl_name.13.plt $pl_name.14.plt $pl_name.15.plt $pl_name.16.plt $pl_name.17.plt $pl_name.18.plt $pl_name.19.plt $pl_name.20.plt $pl_name.21.plt $pl_name.22.plt $pl_name.23.plt $pl_name.24.plt $pl_name.25.plt $pl_name.26.plt $pl_name.27.plt $pl_name.28.plt $pl_name.29.plt $pl_name.30.plt $pl_name.31.plt $pl_name.32.plt $pl_name.33.plt $pl_name.34.plt $pl_name.35.plt $pl_name.36.plt $pl_name.37.plt $pl_name.38.plt $pl_name.39.plt $pl_name.40.plt $pl_name.41.plt $pl_name.42.plt $pl_name.43.plt $pl_name.44.plt $pl_name.45.plt $pl_name.46.plt $pl_name.47.plt $pl_name.48.plt $pl_name.49.plt $pl_name.50.plt $pl_name.51.plt $pl_name.52.plt $pl_name.53.plt $pl_name.54.plt $pl_name.55.plt $pl_name.56.plt $pl_name.57.plt $pl_name.58.plt $pl_name.59.plt $pl_name.60.plt $pl_name.61.plt $pl_name.62.plt $pl_name.63.plt $pl_name.64.plt $pl_name.65.plt $pl_name.66.plt $pl_name.67.plt $pl_name.68.plt $pl_name.69.plt $pl_name.70.plt $pl_name.71.plt $pl_name.72.plt $pl_name.73.plt $pl_name.74.plt $pl_name.75.plt $pl_name.76.plt $pl_name.77.plt $pl_name.78.plt $pl_name.79.plt $pl_name.80.plt $pl_name.81.plt $pl_name.82.plt $pl_name.83.plt $pl_name.84.plt $pl_name.85.plt $pl_name.86.plt $pl_name.87.plt $pl_name.88.plt $pl_name.89.plt $pl_name.90.plt $pl_name.91.plt $pl_name.92.plt $pl_name.93.plt $pl_name.94.plt $pl_name.95.plt $pl_name.96.plt $pl_name.97.plt $pl_name.98.plt $pl_name.99.plt $pl_name.100.plt $pl_name.101.plt $pl_name.102.plt $pl_name.103.plt $pl_name.104.plt $pl_name.105.plt $pl_name.106.plt $pl_name.107.plt $pl_name.108.plt $pl_name.109.plt $pl_name.110.plt $pl_name.111.plt $pl_name.112.plt $pl_name.113.plt $pl_name.114.plt $pl_name.115.plt $pl_name.116.plt $pl_name.117.plt $pl_name.118.plt $pl_name.119.plt $pl_name.120.plt $pl_name.121.plt $pl_name.122.plt $pl_name.123.plt $pl_name.124.plt $pl_name.125.plt $pl_name.126.plt $pl_name.127.plt $pl_name.128.plt $pl_name.129.plt $pl_name.130.plt $pl_name.131.plt $pl_name.132.plt $pl_name.133.plt $pl_name.134.plt $pl_name.135.plt $pl_name.136.plt $pl_name.137.plt $pl_name.138.plt $pl_name.139.plt $pl_name.140.plt $pl_name.141.plt $pl_name.142.plt $pl_name.143.plt $pl_name.144.plt $pl_name.145.plt $pl_name.146.plt $pl_name.147.plt $pl_name.148.plt $pl_name.149.plt $pl_name.150.plt $pl_name.151.plt $pl_name.152.plt $pl_name.153.plt $pl_name.154.plt $pl_name.155.plt $pl_name.156.plt $pl_name.157.plt $pl_name.158.plt $pl_name.159.plt $pl_name.160.plt $pl_name.161.plt $pl_name.162.plt $pl_name.163.plt $pl_name.164.plt $pl_name.165.plt $pl_name.166.plt $pl_name.167.plt $pl_name.168.plt $pl_name.169.plt $pl_name.170.plt $pl_name.171.plt $pl_name.172.plt $pl_name.173.plt $pl_name.174.plt $pl_name.175.plt $pl_name.176.plt $pl_name.177.plt $pl_name.178.plt $pl_name.179.plt $pl_name.180.plt $pl_name.181.plt $pl_name.182.plt $pl_name.183.plt $pl_name.184.plt $pl_name.185.plt $pl_name.186.plt $pl_name.187.plt $pl_name.188.plt $pl_name.189.plt $pl_name.190.plt $pl_name.191.plt $pl_name.192.plt $pl_name.193.plt $pl_name.194.plt $pl_name.195.plt $pl_name.196.plt $pl_name.197.plt $pl_name.198.plt $pl_name.199.plt $pl_name.200.plt $pl_name.201.plt"
 
 
 gksm2ps -p portrait -l cps -d cps -o $pl_name.pre.ps $metafiles
@@ -585,10 +585,3 @@ rm -rf pgtmp*
 rm -f $pl_name.pre.ps
 # meta print files
 rm -f *.plt
-
-
-
-
-
-
-

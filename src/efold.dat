@@ -1,7 +1,7 @@
-c  efolding depth [meters] for each of the species in the firn, the corresponding photolysis rate is shown commented out after the efolding depth
+c  e-folding depth [meters] for each of the species in the firn, the corresponding photolysis rate is shown commented out after the e-folding depth
 .1d0     !{N8} NO2 + hv = NO + O3 :                             ph_ratf( 1)      ; {band-model}
 .1d0     !{N10} NO3 + hv = NO + O2 :                            ph_ratf( 2)      ; {band-model}
-.1d0     !{O9}  O3 + hv = O2 + O1D:                             ph_ratf( 3)      ; {band-model}      
+.1d0     !{O9}  O3 + hv = O2 + O1D:                             ph_ratf( 3)      ; {band-model}
 .1d0     !{N18} HONO + hv = NO + OH :                           ph_ratf( 4)      ; {band-model}
 .1d0     !{N19} HNO3 + hv = NO2 + OH :                          ph_ratf( 5)      ; {band-model}
 .1d0     !{O10} H2O2 + hv = 2OH :                               ph_ratf( 6)      ; {band-model}
@@ -36,12 +36,12 @@ c  efolding depth [meters] for each of the species in the firn, the correspondin
 .1d0     !{Cl30} OClO + hv = O3 + ClO - O2:                     xhal*ph_ratf(35) ; {band-model}
 .1d0     !{I23} I2O2 + hv = 2 I + O2:                           xiod*ph_ratf(36) ; {band-model}
 .1d0     !{I25} INO2 + hv = I + NO2:                            xiod*ph_ratf(37) ; {band-model}
-.1d0     !NO2m + hv ->  :           (38) ; 
-.1d0     !NO3m + hv -> NO2 + OH :           (39) ; 
-.1d0     !?? :           (40) ; 
-.1d0     !?? :           (41) ; 
-.1d0     !?? :           (42) ; 
-.1d0     !O3 -> O2 + O3P :           (43) ; 
+.1d0     !NO2m + hv ->  :           (38) ;
+.1d0     !NO3m + hv -> NO2 + OH :           (39) ;
+.1d0     !?? :           (40) ;
+.1d0     !?? :           (41) ;
+.1d0     !?? :           (42) ;
+.1d0     !O3 -> O2 + O3P :           (43) ;
 .1d0     !?
 .1d0     !?
 .1d0     !?

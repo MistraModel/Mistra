@@ -37,9 +37,9 @@ if [ -e $OUTDIR ]
 then
     answer=''
     until [[ $answer == 'y' ]] || [[ $answer == 'n' ]] || [[ $answer == 'e' ]] ; do
-	echo "The simulations already exists, overwrite?"
-	echo "  (fresh run, choose y; restart same run, choose n; exit to change name, choose e)"
-	read -p "(y=yes / n=no / e=exit)" answer
+        echo "The simulations already exists, overwrite?"
+        echo "  (fresh run, choose y; restart same run, choose n; exit to change name, choose e)"
+        read -p "(y=yes / n=no / e=exit)" answer
     done
     [[ $answer == 'y' ]] && rm -f $OUTDIR/* && echo "Output sub-directory cleaned, continue installation"
     [[ $answer == 'n' ]] && echo "Continue installation"

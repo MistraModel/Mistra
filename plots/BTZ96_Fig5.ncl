@@ -38,7 +38,7 @@ begin
   LWC!1 = "time"
   LWC&height = height
   LWC&time = time
-  
+
 
 ;************************************************
 ; create plots

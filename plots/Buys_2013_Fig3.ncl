@@ -5,7 +5,7 @@
 ; Plot Br2 and BrCl
 ;  in a similar way as Buys et al 2014 (Fig 3)
 ;
-; Author: Josué Bock
+; Author: J. Bock
 ;************************************************
 begin
 ;************************************************

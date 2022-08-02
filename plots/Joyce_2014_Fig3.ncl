@@ -6,7 +6,7 @@
 ;  and PM2.5 (aqueous)
 ;  in a similar way as Joyce et al 2014 (Fig 3)
 ;
-; Author: Josué Bock
+; Author: J. Bock
 ;************************************************
 begin
 ;************************************************

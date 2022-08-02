@@ -6,4 +6,3 @@ do
 #  mv tmp.sc $i
   chmod u+x $i
 done
-
