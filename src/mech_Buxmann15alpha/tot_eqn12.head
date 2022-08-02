@@ -23,46 +23,46 @@
 
 {---heterogenous rxn on small dry and liquid aerosols}
 
-{h1}  N2O5          = HNO3l1 + HNO3l1:        fhet_dt(xliq1,xhet1,1,1,1); 
-{h2}  N2O5 + Clml1  = ClNO2 + NO3ml1:         fhet_dt(xliq1,xhet1,1,2,1); 
-{h3}  N2O5 + Brml1  = BrNO2 + NO3ml1:         fhet_dt(xliq1,xhet1,1,3,1); 
-{h4}  ClNO3         = HOCll1 + HNO3l1:        fhet_dt(xliq1,xhet1,1,1,2); 
-{h5}  ClNO3 + Clml1 = Cl2l1 + NO3ml1:         fhet_dt(xliq1,xhet1,1,2,2); 
-{h6}  ClNO3 + Brml1 = BrCll1 + NO3ml1:        fhet_dt(xliq1,xhet1,1,3,2); 
-{h7}  BrNO3         = HOBrl1 + HNO3l1:        fhet_dt(xliq1,xhet1,1,1,3); 
-{h8}  BrNO3 + Clml1 = BrCll1 + NO3ml1:        fhet_dt(xliq1,xhet1,1,2,3); 
-{h9}  BrNO3 + Brml1 = Br2l1 + NO3ml1:         fhet_dt(xliq1,xhet1,1,3,3); 
+{h1}  N2O5          = HNO3l1 + HNO3l1:        fhet_dt(xliq1,xhet1,1,1,1);
+{h2}  N2O5 + Clml1  = ClNO2 + NO3ml1:         fhet_dt(xliq1,xhet1,1,2,1);
+{h3}  N2O5 + Brml1  = BrNO2 + NO3ml1:         fhet_dt(xliq1,xhet1,1,3,1);
+{h4}  ClNO3         = HOCll1 + HNO3l1:        fhet_dt(xliq1,xhet1,1,1,2);
+{h5}  ClNO3 + Clml1 = Cl2l1 + NO3ml1:         fhet_dt(xliq1,xhet1,1,2,2);
+{h6}  ClNO3 + Brml1 = BrCll1 + NO3ml1:        fhet_dt(xliq1,xhet1,1,3,2);
+{h7}  BrNO3         = HOBrl1 + HNO3l1:        fhet_dt(xliq1,xhet1,1,1,3);
+{h8}  BrNO3 + Clml1 = BrCll1 + NO3ml1:        fhet_dt(xliq1,xhet1,1,2,3);
+{h9}  BrNO3 + Brml1 = Br2l1 + NO3ml1:         fhet_dt(xliq1,xhet1,1,3,3);
 {---h10 H2SO4         = SO4l1:                  yxkmt(ind_H2SO4,1)*ycw(1);}
 {---h11 CH3SO2H       = CH3SO2ml1:              yxkmt(ind_CH3SO2H,1)*ycw(1);}
 {---h12 CH3SO3H       = CH3SO3ml1:              yxkmt(ind_CH3SO3H,1)*ycw(1);}
-{h13}  INO3          = HOIl1 + HNO3l1:         xliq1*xhal*xiod*yxkmt(ind_INO3,1)*ycw(1); 
-{h14}  HI            = Hpl1 + Iml1:            xliq1*xhal*xiod*yxkmt(ind_HI,1)*ycw(1); 
-{h15}  I2O2          = HOIl1 + Hpl1 + IO2ml1:  xliq1*xhal*xiod*yxkmt(ind_I2O2,1)*ycw(1); 
-{h16}  INO2          = HOIl1 + HONOl1:         xliq1*xhal*xiod*yxkmt(ind_INO2,1)*ycw(1); 
-{h17}  OIO           = HOIl1 + HO2l1:          xliq1*xhal*xiod*yxkmt(ind_OIO,1)*ycw(1); 
-{h18}  HIO3          = IO3ml1 + Hpl1:          xliq1*xhal*xiod*yxkmt(ind_HIO3,1)*ycw(1); 
+{h13}  INO3          = HOIl1 + HNO3l1:         xliq1*xhal*xiod*yxkmt(ind_INO3,1)*ycw(1);
+{h14}  HI            = Hpl1 + Iml1:            xliq1*xhal*xiod*yxkmt(ind_HI,1)*ycw(1);
+{h15}  I2O2          = HOIl1 + Hpl1 + IO2ml1:  xliq1*xhal*xiod*yxkmt(ind_I2O2,1)*ycw(1);
+{h16}  INO2          = HOIl1 + HONOl1:         xliq1*xhal*xiod*yxkmt(ind_INO2,1)*ycw(1);
+{h17}  OIO           = HOIl1 + HO2l1:          xliq1*xhal*xiod*yxkmt(ind_OIO,1)*ycw(1);
+{h18}  HIO3          = IO3ml1 + Hpl1:          xliq1*xhal*xiod*yxkmt(ind_HIO3,1)*ycw(1);
 
 
 {---heterogenous rxn in large dry and liquid aerosols}
 
-{h1}  N2O5          = HNO3l2 + HNO3l2:        fhet_dt(xliq2,xhet2,2,1,1); 
-{h2}  N2O5 + Clml2  = ClNO2 + NO3ml2:         fhet_dt(xliq2,xhet2,2,2,1); 
-{h3}  N2O5 + Brml2  = BrNO2 + NO3ml2:         fhet_dt(xliq2,xhet2,2,3,1); 
-{h4}  ClNO3         = HOCll2 + HNO3l2:        fhet_dt(xliq2,xhet2,2,1,2); 
-{h5}  ClNO3 + Clml2 = Cl2l2 + NO3ml2:         fhet_dt(xliq2,xhet2,2,2,2); 
-{h6}  ClNO3 + Brml2 = BrCll2 + NO3ml2:        fhet_dt(xliq2,xhet2,2,3,2); 
-{h7}  BrNO3         = HOBrl2 + HNO3l2:        fhet_dt(xliq2,xhet2,2,1,3); 
-{h8}  BrNO3 + Clml2 = BrCll2 + NO3ml2:        fhet_dt(xliq2,xhet2,2,2,3); 
-{h9}  BrNO3 + Brml2 = Br2l2 + NO3ml2:         fhet_dt(xliq2,xhet2,2,3,3); 
+{h1}  N2O5          = HNO3l2 + HNO3l2:        fhet_dt(xliq2,xhet2,2,1,1);
+{h2}  N2O5 + Clml2  = ClNO2 + NO3ml2:         fhet_dt(xliq2,xhet2,2,2,1);
+{h3}  N2O5 + Brml2  = BrNO2 + NO3ml2:         fhet_dt(xliq2,xhet2,2,3,1);
+{h4}  ClNO3         = HOCll2 + HNO3l2:        fhet_dt(xliq2,xhet2,2,1,2);
+{h5}  ClNO3 + Clml2 = Cl2l2 + NO3ml2:         fhet_dt(xliq2,xhet2,2,2,2);
+{h6}  ClNO3 + Brml2 = BrCll2 + NO3ml2:        fhet_dt(xliq2,xhet2,2,3,2);
+{h7}  BrNO3         = HOBrl2 + HNO3l2:        fhet_dt(xliq2,xhet2,2,1,3);
+{h8}  BrNO3 + Clml2 = BrCll2 + NO3ml2:        fhet_dt(xliq2,xhet2,2,2,3);
+{h9}  BrNO3 + Brml2 = Br2l2 + NO3ml2:         fhet_dt(xliq2,xhet2,2,3,3);
 {---h10 H2SO4         = SO4l2:                  yxkmt(ind_H2SO4,2)*ycw(2);}
 {---h11 CH3SO2H       = CH3SO2ml2:              yxkmt(ind_CH3SO2H,2)*ycw(2);}
 {---h12 CH3SO3H       = CH3SO3ml2:              yxkmt(ind_CH3SO3H,2)*ycw(2);}
 {h13}  INO3          = HOIl2 + HNO3l2:         xliq2*xhal*xiod*yxkmt(ind_INO3,2)*ycw(2);
-{h14}  HI            = Hpl2 + Iml2:            xliq2*xhal*xiod*yxkmt(ind_HI,2)*ycw(2); 
-{h15}  I2O2          = HOIl2 + Hpl2 + IO2ml2:  xliq2*xhal*xiod*yxkmt(ind_I2O2,2)*ycw(2); 
-{h16}  INO2          = HOIl2 + HONOl2:         xliq2*xhal*xiod*yxkmt(ind_INO2,2)*ycw(2); 
-{h17}  OIO           = HOIl2 + HO2l2:          xliq2*xhal*xiod*yxkmt(ind_OIO,2)*ycw(2); 
-{h18}  HIO3          = IO3ml2 + Hpl2:          xliq2*xhal*xiod*yxkmt(ind_HIO3,2)*ycw(2); 
+{h14}  HI            = Hpl2 + Iml2:            xliq2*xhal*xiod*yxkmt(ind_HI,2)*ycw(2);
+{h15}  I2O2          = HOIl2 + Hpl2 + IO2ml2:  xliq2*xhal*xiod*yxkmt(ind_I2O2,2)*ycw(2);
+{h16}  INO2          = HOIl2 + HONOl2:         xliq2*xhal*xiod*yxkmt(ind_INO2,2)*ycw(2);
+{h17}  OIO           = HOIl2 + HO2l2:          xliq2*xhal*xiod*yxkmt(ind_OIO,2)*ycw(2);
+{h18}  HIO3          = IO3ml2 + Hpl2:          xliq2*xhal*xiod*yxkmt(ind_HIO3,2)*ycw(2);
 
 {---heterogeneous reactions on small dry aerosol}
 
