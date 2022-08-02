@@ -60,14 +60,14 @@ set species = ("u" "v" "w" "theta" "thetl" "temp" "q" "LWC" "rh" "p" "rho" )
 # HANDS OFF FROM BELOW!! NO USER SERVICABLE PARTS INSIDE!! DEVELOPPERS ONLY!!
 # ===========================================================================
 
-# make sure that each plotprog file is saved and none overwritten to be able to 
+# make sure that each plotprog file is saved and none overwritten to be able to
 # reproduce runs; this plotprog file name is put into plot
 
 # numbers of plots per page
 set pl_n = ("7")
 
 # define "overflow" value for viewports
-set pl_np = $pl_n 
+set pl_np = $pl_n
 @ pl_np+=1
 
 # define header
@@ -162,7 +162,7 @@ if ($pl_ty == 3) then
 endif
 # 4 - box model
 if ($pl_ty == 4) then
-# like evolution w/ time, but /k=2 
+# like evolution w/ time, but /k=2
  set plcmd = ("plot /nolabel /k=")
  set plcmdo = ("plot /nolabel /overlay /k=")
  set pll1 = ("k=")
@@ -173,7 +173,7 @@ if ($pl_ty == 4) then
  set m_pl = ("1")
  set xax = (" ")
  set yax = (" ")
-endif 
+endif
 # /title='"'$species[$k]'"'
 
 # unit conversion: 1 - unchanged
@@ -196,8 +196,8 @@ if ($pl_un == 1) then
     set unit9c=1.
 endif
 
-# run info always on view port1 (VP1) 
-set countVP = 1 
+# run info always on view port1 (VP1)
+set countVP = 1
 echo "set viewport VP$countVP" >> pgtmp0
 # define linestyle master
 set lstym=("" "/dash=(.1,.1,.1,.1)" "/dash=(.01,.1,.01,.1)" "/dash=(.3,.1,.3,.1)")
@@ -226,7 +226,7 @@ if ($n_runs == 1) then
        set line$countl =("$runs[1] $pld[$kk]")
        set lsty[$countl] = $lstym[$kk]
     end
-endif 
+endif
 if ($n_runs == 2) then
     set countl = 0
     foreach kk ($m_pl)
@@ -237,7 +237,7 @@ if ($n_runs == 2) then
        set line$countl =("$runs[2] $pld[$kk]")
        set lsty[$countl] = $lstym[$kk]
     end
-endif 
+endif
 if ($n_runs == 3) then
     set countl = 0
     foreach kk ($m_pl)
@@ -251,7 +251,7 @@ if ($n_runs == 3) then
        set line$countl =("$runs[3] $pld[$kk]")
        set lsty[$countl] = $lstym[$kk]
     end
-endif 
+endif
 if ($n_runs == 4) then
     set countl = 0
     foreach kk ($m_pl)
@@ -268,7 +268,7 @@ if ($n_runs == 4) then
        set line$countl =("$runs[4] $pld[$kk]")
        set lsty[$countl] = $lstym[$kk]
     end
-endif 
+endif
 if ($n_runs == 5) then
     set countl = 0
     foreach kk ($m_pl)
@@ -288,7 +288,7 @@ if ($n_runs == 5) then
        set line$countl =("$runs[5] $pld[$kk]")
        set lsty[$countl] = $lstym[$kk]
     end
-endif 
+endif
 
 # put unit on plot
 # set unit_c=(" ")
@@ -300,7 +300,7 @@ set line9 = $unit_c[$pl_un]
 
 # empty plot
 echo "plot /i=0:100 /hlimits=0:100 /vlimits=0:100 /noaxis /nolabel 0" >> pgtmp0
-# plot explanation 
+# plot explanation
 echo "label 10,110,  -1, 0, .25 @P1Meteorology" >> pgtmp0
 echo "label 0, 90, -1, 0, .15 @P1$line1" >> pgtmp0
 echo "plot /overlay /vs /nolabel /line=1 $lsty[1] {80,99,99}, {95,95,95}" >> pgtmp0
@@ -333,98 +333,98 @@ foreach k ($n_spec)
 # d1, d3, d5, .. have to be replaced with sed in final ferret file to give [d=1] etc
 
 # 1 run
-    if ($n_runs == 1) then 
+    if ($n_runs == 1) then
 #       find max to correctly scale axes
         echo "let vmax=0." >> pgtmp0
-	foreach kk($m_pl)
-	    echo "let vmax1=1.05*$species[$k][de1,$pll1$pld[$kk]$lim2]/$unit1a/$unit1b" >> pgtmp0
-	    echo "if "'`'"vmax1 gt vmax"'`'" then let vmax="'`'"vmax1"'`'" endif" >> pgtmp0
-	end
-	echo "if "'`'"vmax eq 0."'`'" then let vmax=1 endif" >> pgtmp0
+       foreach kk($m_pl)
+           echo "let vmax1=1.05*$species[$k][de1,$pll1$pld[$kk]$lim2]/$unit1a/$unit1b" >> pgtmp0
+           echo "if "'`'"vmax1 gt vmax"'`'" then let vmax="'`'"vmax1"'`'" endif" >> pgtmp0
+       end
+       echo "if "'`'"vmax eq 0."'`'" then let vmax=1 endif" >> pgtmp0
 #       plot
-	if ($pl_ty != 3) then 
-	    echo $plcmd$pld[1] $lstym[1] $lim1'`'"1.05*vmax"'`'  $xax$species[$k]dd1/$unit1a/$unit1c$yax >> pgtmp0
-	else
-	    echo $plcmd$pld[1] $lstym[1] $species[$k]dd1/$unit1a/$unit1c >> pgtmp0
-	endif
+       if ($pl_ty != 3) then
+           echo $plcmd$pld[1] $lstym[1] $lim1'`'"1.05*vmax"'`'  $xax$species[$k]dd1/$unit1a/$unit1c$yax >> pgtmp0
+       else
+           echo $plcmd$pld[1] $lstym[1] $species[$k]dd1/$unit1a/$unit1c >> pgtmp0
+       endif
     endif
 # 2 runs
     if ($n_runs == 2) then
 #       find max to correctly scale axes
         echo "let vmax=0." >> pgtmp0
-	foreach kk($m_pl)
-	    echo "let vmax1=1.05*$species[$k][de1,$pll1$pld[$kk]$lim2]/$unit1a/$unit1b" >> pgtmp0
-	    echo "if "'`'"vmax1 gt vmax"'`'" then let vmax="'`'"vmax1"'`'" endif" >> pgtmp0
-	    echo "let vmax1=1.05*$species[$k][de2,$pll1$pld[$kk]$lim2]/$unit3a/$unit3b" >> pgtmp0
-	    echo "if "'`'"vmax1 gt vmax"'`'" then let vmax="'`'"vmax1"'`'" endif" >> pgtmp0
+       foreach kk($m_pl)
+           echo "let vmax1=1.05*$species[$k][de1,$pll1$pld[$kk]$lim2]/$unit1a/$unit1b" >> pgtmp0
+           echo "if "'`'"vmax1 gt vmax"'`'" then let vmax="'`'"vmax1"'`'" endif" >> pgtmp0
+           echo "let vmax1=1.05*$species[$k][de2,$pll1$pld[$kk]$lim2]/$unit3a/$unit3b" >> pgtmp0
+           echo "if "'`'"vmax1 gt vmax"'`'" then let vmax="'`'"vmax1"'`'" endif" >> pgtmp0
         end
-	echo "if "'`'"vmax eq 0."'`'" then let vmax=1 endif" >> pgtmp0
+       echo "if "'`'"vmax eq 0."'`'" then let vmax=1 endif" >> pgtmp0
 #       plot
-	echo $plcmd$pld[1] $lstym[1] $lim1'`'"1.05*vmax"'`' $xax$species[$k]dd1/$unit1a/$unit1c$yax >> pgtmp0
-	echo $plcmdo$pld[1] $lstym[1] $xax$species[$k]dd2/$unit3a/$unit3c$yax >> pgtmp0
-    endif	
+       echo $plcmd$pld[1] $lstym[1] $lim1'`'"1.05*vmax"'`' $xax$species[$k]dd1/$unit1a/$unit1c$yax >> pgtmp0
+       echo $plcmdo$pld[1] $lstym[1] $xax$species[$k]dd2/$unit3a/$unit3c$yax >> pgtmp0
+    endif
 # 3 runs
     if ($n_runs == 3) then
 #       find max to correctly scale axes
         echo "let vmax=0." >> pgtmp0
-	foreach kk($m_pl)
-	    echo "let vmax1=1.05*$species[$k][de1,$pll1$pld[$kk]$lim2]/$unit1a/$unit1b" >> pgtmp0
-	    echo "if "'`'"vmax1 gt vmax"'`'" then let vmax="'`'"vmax1"'`'" endif" >> pgtmp0
-	    echo "let vmax1=1.05*$species[$k][de2,$pll1$pld[$kk]$lim2]/$unit2a/$unit2b" >> pgtmp0
-	    echo "if "'`'"vmax1 gt vmax"'`'" then let vmax="'`'"vmax1"'`'" endif" >> pgtmp0
-	    echo "let vmax1=1.05*$species[$k][de3,$pll1$pld[$kk]$lim2]/$unit3a/$unit3b" >> pgtmp0
-	    echo "if "'`'"vmax1 gt vmax"'`'" then let vmax="'`'"vmax1"'`'" endif" >> pgtmp0
+       foreach kk($m_pl)
+           echo "let vmax1=1.05*$species[$k][de1,$pll1$pld[$kk]$lim2]/$unit1a/$unit1b" >> pgtmp0
+           echo "if "'`'"vmax1 gt vmax"'`'" then let vmax="'`'"vmax1"'`'" endif" >> pgtmp0
+           echo "let vmax1=1.05*$species[$k][de2,$pll1$pld[$kk]$lim2]/$unit2a/$unit2b" >> pgtmp0
+           echo "if "'`'"vmax1 gt vmax"'`'" then let vmax="'`'"vmax1"'`'" endif" >> pgtmp0
+           echo "let vmax1=1.05*$species[$k][de3,$pll1$pld[$kk]$lim2]/$unit3a/$unit3b" >> pgtmp0
+           echo "if "'`'"vmax1 gt vmax"'`'" then let vmax="'`'"vmax1"'`'" endif" >> pgtmp0
         end
-	echo "if "'`'"vmax eq 0."'`'" then let vmax=1 endif" >> pgtmp0
+       echo "if "'`'"vmax eq 0."'`'" then let vmax=1 endif" >> pgtmp0
 #       plot
-	echo $plcmd$pld[1] $lstym[1] $lim1'`'"1.05*vmax"'`' $xax$species[$k]dd1/$unit1a/$unit1c$yax >> pgtmp0
-	echo $plcmdo$pld[1] $lstym[1] $xax$species[$k]dd2/$unit3a/$unit3c$yax >> pgtmp0
-	echo $plcmdo$pld[1] $lstym[1] $xax$species[$k]dd3/$unit5a/$unit5c$yax >> pgtmp0
+       echo $plcmd$pld[1] $lstym[1] $lim1'`'"1.05*vmax"'`' $xax$species[$k]dd1/$unit1a/$unit1c$yax >> pgtmp0
+       echo $plcmdo$pld[1] $lstym[1] $xax$species[$k]dd2/$unit3a/$unit3c$yax >> pgtmp0
+       echo $plcmdo$pld[1] $lstym[1] $xax$species[$k]dd3/$unit5a/$unit5c$yax >> pgtmp0
     endif
 # 4 runs
     if ($n_runs == 4) then
 #       find max to correctly scale axes
         echo "let vmax=0." >> pgtmp0
-	foreach kk($m_pl)
-	    echo "let vmax1=1.05*$species[$k][de1,$pll1$pld[$kk]$lim2]/$unit1a/$unit1b" >> pgtmp0
-	    echo "if "'`'"vmax1 gt vmax"'`'" then let vmax="'`'"vmax1"'`'" endif" >> pgtmp0
-	    echo "let vmax1=1.05*$species[$k][de2,$pll1$pld[$kk]$lim2]/$unit2a/$unit2b" >> pgtmp0
-	    echo "if "'`'"vmax1 gt vmax"'`'" then let vmax="'`'"vmax1"'`'" endif" >> pgtmp0
-	    echo "let vmax1=1.05*$species[$k][de3,$pll1$pld[$kk]$lim2]/$unit3a/$unit3b" >> pgtmp0
-	    echo "if "'`'"vmax1 gt vmax"'`'" then let vmax="'`'"vmax1"'`'" endif" >> pgtmp0
-	    echo "let vmax1=1.05*$species[$k][de4,$pll1$pld[$kk]$lim2]/$unit4a/$unit4b" >> pgtmp0
-	    echo "if "'`'"vmax1 gt vmax"'`'" then let vmax="'`'"vmax1"'`'" endif" >> pgtmp0
+       foreach kk($m_pl)
+           echo "let vmax1=1.05*$species[$k][de1,$pll1$pld[$kk]$lim2]/$unit1a/$unit1b" >> pgtmp0
+           echo "if "'`'"vmax1 gt vmax"'`'" then let vmax="'`'"vmax1"'`'" endif" >> pgtmp0
+           echo "let vmax1=1.05*$species[$k][de2,$pll1$pld[$kk]$lim2]/$unit2a/$unit2b" >> pgtmp0
+           echo "if "'`'"vmax1 gt vmax"'`'" then let vmax="'`'"vmax1"'`'" endif" >> pgtmp0
+           echo "let vmax1=1.05*$species[$k][de3,$pll1$pld[$kk]$lim2]/$unit3a/$unit3b" >> pgtmp0
+           echo "if "'`'"vmax1 gt vmax"'`'" then let vmax="'`'"vmax1"'`'" endif" >> pgtmp0
+           echo "let vmax1=1.05*$species[$k][de4,$pll1$pld[$kk]$lim2]/$unit4a/$unit4b" >> pgtmp0
+           echo "if "'`'"vmax1 gt vmax"'`'" then let vmax="'`'"vmax1"'`'" endif" >> pgtmp0
         end
-	echo "if "'`'"vmax eq 0."'`'" then let vmax=1 endif" >> pgtmp0
+       echo "if "'`'"vmax eq 0."'`'" then let vmax=1 endif" >> pgtmp0
 #       plot
-	echo $plcmd$pld[1] $lstym[1] $lim1'`'"1.05*vmax"'`' $xax$species[$k]dd1/$unit1a/$unit1c$yax >> pgtmp0
-	echo $plcmdo$pld[1] $lstym[1] $xax$species[$k]dd2/$unit3a/$unit3c$yax >> pgtmp0
-	echo $plcmdo$pld[1] $lstym[1] $xax$species[$k]dd3/$unit5a/$unit5c$yax >> pgtmp0
-	echo $plcmdo$pld[1] $lstym[1] $xax$species[$k]dd4/$unit7a/$unit7c$yax >> pgtmp0
+       echo $plcmd$pld[1] $lstym[1] $lim1'`'"1.05*vmax"'`' $xax$species[$k]dd1/$unit1a/$unit1c$yax >> pgtmp0
+       echo $plcmdo$pld[1] $lstym[1] $xax$species[$k]dd2/$unit3a/$unit3c$yax >> pgtmp0
+       echo $plcmdo$pld[1] $lstym[1] $xax$species[$k]dd3/$unit5a/$unit5c$yax >> pgtmp0
+       echo $plcmdo$pld[1] $lstym[1] $xax$species[$k]dd4/$unit7a/$unit7c$yax >> pgtmp0
     endif
 # 5 runs
     if ($n_runs == 5) then
 #       find max to correctly scale axes
         echo "let vmax=0." >> pgtmp0
-	foreach kk($m_pl)
-	    echo "let vmax1=1.05*$species[$k][de1,$pll1$pld[$kk]$lim2]/$unit1a/$unit1b" >> pgtmp0
-	    echo "if "'`'"vmax1 gt vmax"'`'" then let vmax="'`'"vmax1"'`'" endif" >> pgtmp0
-	    echo "let vmax1=1.05*$species[$k][de2,$pll1$pld[$kk]$lim2]/$unit2a/$unit2b" >> pgtmp0
-	    echo "if "'`'"vmax1 gt vmax"'`'" then let vmax="'`'"vmax1"'`'" endif" >> pgtmp0
-	    echo "let vmax1=1.05*$species[$k][de3,$pll1$pld[$kk]$lim2]/$unit3a/$unit3b" >> pgtmp0
-	    echo "if "'`'"vmax1 gt vmax"'`'" then let vmax="'`'"vmax1"'`'" endif" >> pgtmp0
-	    echo "let vmax1=1.05*$species[$k][de4,$pll1$pld[$kk]$lim2]/$unit4a/$unit4b" >> pgtmp0
-	    echo "if "'`'"vmax1 gt vmax"'`'" then let vmax="'`'"vmax1"'`'" endif" >> pgtmp0
-	    echo "let vmax1=1.05*$species[$k][de5,$pll1$pld[$kk]$lim2]/$unit5a/$unit5b" >> pgtmp0
-	    echo "if "'`'"vmax1 gt vmax"'`'" then let vmax="'`'"vmax1"'`'" endif" >> pgtmp0
+       foreach kk($m_pl)
+           echo "let vmax1=1.05*$species[$k][de1,$pll1$pld[$kk]$lim2]/$unit1a/$unit1b" >> pgtmp0
+           echo "if "'`'"vmax1 gt vmax"'`'" then let vmax="'`'"vmax1"'`'" endif" >> pgtmp0
+           echo "let vmax1=1.05*$species[$k][de2,$pll1$pld[$kk]$lim2]/$unit2a/$unit2b" >> pgtmp0
+           echo "if "'`'"vmax1 gt vmax"'`'" then let vmax="'`'"vmax1"'`'" endif" >> pgtmp0
+           echo "let vmax1=1.05*$species[$k][de3,$pll1$pld[$kk]$lim2]/$unit3a/$unit3b" >> pgtmp0
+           echo "if "'`'"vmax1 gt vmax"'`'" then let vmax="'`'"vmax1"'`'" endif" >> pgtmp0
+           echo "let vmax1=1.05*$species[$k][de4,$pll1$pld[$kk]$lim2]/$unit4a/$unit4b" >> pgtmp0
+           echo "if "'`'"vmax1 gt vmax"'`'" then let vmax="'`'"vmax1"'`'" endif" >> pgtmp0
+           echo "let vmax1=1.05*$species[$k][de5,$pll1$pld[$kk]$lim2]/$unit5a/$unit5b" >> pgtmp0
+           echo "if "'`'"vmax1 gt vmax"'`'" then let vmax="'`'"vmax1"'`'" endif" >> pgtmp0
         end
-	echo "if "'`'"vmax eq 0."'`'" then let vmax=1 endif" >> pgtmp0
+       echo "if "'`'"vmax eq 0."'`'" then let vmax=1 endif" >> pgtmp0
 #       plot
-	echo $plcmd$pld[1] $lstym[1] $lim1'`'"1.05*vmax"'`' $xax$species[$k]dd1/$unit1a/$unit1c$yax >> pgtmp0
-	echo $plcmdo$pld[1] $lstym[1] $xax$species[$k]dd2/$unit3a/$unit3c$yax >> pgtmp0
-	echo $plcmdo$pld[1] $lstym[1] $xax$species[$k]dd3/$unit5a/$unit5c$yax >> pgtmp0
-	echo $plcmdo$pld[1] $lstym[1] $xax$species[$k]dd4/$unit7a/$unit7c$yax >> pgtmp0
-	echo $plcmdo$pld[1] $lstym[1] $xax$species[$k]dd5/$unit9a/$unit9c$yax >> pgtmp0
+       echo $plcmd$pld[1] $lstym[1] $lim1'`'"1.05*vmax"'`' $xax$species[$k]dd1/$unit1a/$unit1c$yax >> pgtmp0
+       echo $plcmdo$pld[1] $lstym[1] $xax$species[$k]dd2/$unit3a/$unit3c$yax >> pgtmp0
+       echo $plcmdo$pld[1] $lstym[1] $xax$species[$k]dd3/$unit5a/$unit5c$yax >> pgtmp0
+       echo $plcmdo$pld[1] $lstym[1] $xax$species[$k]dd4/$unit7a/$unit7c$yax >> pgtmp0
+       echo $plcmdo$pld[1] $lstym[1] $xax$species[$k]dd5/$unit9a/$unit9c$yax >> pgtmp0
     endif
 
 #   add name of species
@@ -436,65 +436,65 @@ foreach k ($n_spec)
 #   heights/times to be overplotted
     foreach kk ($m_pl)
         if ($n_runs == 1 && $kk != 1) echo $plcmdo$pld[$kk] $lstym[$kk] $xax$species[$k]dd1/$unit1a/$unit1c$yax >> pgtmp0
-	if ($n_runs == 2 && $kk != 1) then
-	    echo $plcmdo$pld[$kk] $lstym[$kk] $xax$species[$k]dd1/$unit1a/$unit1c$yax >> pgtmp0
-	    echo $plcmdo$pld[$kk] $lstym[$kk] $xax$species[$k]dd2/$unit3a/$unit3c$yax >> pgtmp0
-	endif
-	if ($n_runs == 3 && $kk != 1) then
-	    echo $plcmdo$pld[$kk] $lstym[$kk] $xax$species[$k]dd1/$unit1a/$unit1c$yax >> pgtmp0
-	    echo $plcmdo$pld[$kk] $lstym[$kk] $xax$species[$k]dd2/$unit3a/$unit3c$yax >> pgtmp0
-	    echo $plcmdo$pld[$kk] $lstym[$kk] $xax$species[$k]dd3/$unit5a/$unit5c$yax >> pgtmp0
-	endif
-	if ($n_runs == 4 && $kk != 1) then
-	    echo $plcmdo$pld[$kk] $lstym[$kk] $xax$species[$k]dd1/$unit1a/$unit1c$yax >> pgtmp0
-	    echo $plcmdo$pld[$kk] $lstym[$kk] $xax$species[$k]dd2/$unit3a/$unit3c$yax >> pgtmp0
-	    echo $plcmdo$pld[$kk] $lstym[$kk] $xax$species[$k]dd3/$unit5a/$unit5c$yax >> pgtmp0	    
-	    echo $plcmdo$pld[$kk] $lstym[$kk] $xax$species[$k]dd4/$unit7a/$unit7c$yax >> pgtmp0
-	endif
-	if ($n_runs == 5 && $kk != 1) then
-	    echo $plcmdo$pld[$kk] $lstym[$kk] $xax$species[$k]dd1/$unit1a/$unit1c$yax >> pgtmp0
-	    echo $plcmdo$pld[$kk] $lstym[$kk] $xax$species[$k]dd2/$unit3a/$unit3c$yax >> pgtmp0
-	    echo $plcmdo$pld[$kk] $lstym[$kk] $xax$species[$k]dd3/$unit5a/$unit5c$yax >> pgtmp0	    
-	    echo $plcmdo$pld[$kk] $lstym[$kk] $xax$species[$k]dd4/$unit7a/$unit7c$yax >> pgtmp0
-	    echo $plcmdo$pld[$kk] $lstym[$kk] $xax$species[$k]dd5/$unit9a/$unit9c$yax >> pgtmp0
-	endif
-    end	
+       if ($n_runs == 2 && $kk != 1) then
+           echo $plcmdo$pld[$kk] $lstym[$kk] $xax$species[$k]dd1/$unit1a/$unit1c$yax >> pgtmp0
+           echo $plcmdo$pld[$kk] $lstym[$kk] $xax$species[$k]dd2/$unit3a/$unit3c$yax >> pgtmp0
+       endif
+       if ($n_runs == 3 && $kk != 1) then
+           echo $plcmdo$pld[$kk] $lstym[$kk] $xax$species[$k]dd1/$unit1a/$unit1c$yax >> pgtmp0
+           echo $plcmdo$pld[$kk] $lstym[$kk] $xax$species[$k]dd2/$unit3a/$unit3c$yax >> pgtmp0
+           echo $plcmdo$pld[$kk] $lstym[$kk] $xax$species[$k]dd3/$unit5a/$unit5c$yax >> pgtmp0
+       endif
+       if ($n_runs == 4 && $kk != 1) then
+           echo $plcmdo$pld[$kk] $lstym[$kk] $xax$species[$k]dd1/$unit1a/$unit1c$yax >> pgtmp0
+           echo $plcmdo$pld[$kk] $lstym[$kk] $xax$species[$k]dd2/$unit3a/$unit3c$yax >> pgtmp0
+           echo $plcmdo$pld[$kk] $lstym[$kk] $xax$species[$k]dd3/$unit5a/$unit5c$yax >> pgtmp0
+           echo $plcmdo$pld[$kk] $lstym[$kk] $xax$species[$k]dd4/$unit7a/$unit7c$yax >> pgtmp0
+       endif
+       if ($n_runs == 5 && $kk != 1) then
+           echo $plcmdo$pld[$kk] $lstym[$kk] $xax$species[$k]dd1/$unit1a/$unit1c$yax >> pgtmp0
+           echo $plcmdo$pld[$kk] $lstym[$kk] $xax$species[$k]dd2/$unit3a/$unit3c$yax >> pgtmp0
+           echo $plcmdo$pld[$kk] $lstym[$kk] $xax$species[$k]dd3/$unit5a/$unit5c$yax >> pgtmp0
+           echo $plcmdo$pld[$kk] $lstym[$kk] $xax$species[$k]dd4/$unit7a/$unit7c$yax >> pgtmp0
+           echo $plcmdo$pld[$kk] $lstym[$kk] $xax$species[$k]dd5/$unit9a/$unit9c$yax >> pgtmp0
+       endif
+    end
     if ($countVP == $pl_np) then
 #       next page
-	echo "CANCEL MODE METAFILE" >> pgtmp0
-	@ countPG+=1
-	echo "SET MODE METAFILE:"$pl_name.$countPG".plt" >> pgtmp0
+       echo "CANCEL MODE METAFILE" >> pgtmp0
+       @ countPG+=1
+       echo "SET MODE METAFILE:"$pl_name.$countPG".plt" >> pgtmp0
         set countVP = 1
         echo "SET WINDOW /clear" >> pgtmp0
 #       put basic info again on VP1
         echo "set viewport VP$countVP" >> pgtmp0
         echo "plot /i=0:100 /hlimits=0:100 /vlimits=0:100 /noaxis /nolabel 0" >> pgtmp0
         echo "label 10,110,  -1, 0, .25 @P1Meteorology" >> pgtmp0
-	echo "label 0, 90, -1, 0, .15 @P1$line1" >> pgtmp0
-	echo "plot /overlay /vs /nolabel /line=1 $lsty[1] {80,99,99}, {95,95,95}" >> pgtmp0
-	echo "label 0, 80, -1, 0, .15 @P1$line2" >> pgtmp0
-	if ($countl >= 2) echo "plot /overlay /vs /nolabel /line=2 $lsty[2] {80,99,99}, {85,85,85}" >> pgtmp0
-	echo "label 0, 70, -1, 0, .15 @P1$line3" >> pgtmp0
-	if ($countl >= 3) echo "plot /overlay /vs /nolabel /line=3 $lsty[3] {80,99,99}, {75,75,75}" >> pgtmp0
-	echo "label 0, 60, -1, 0, .15 @P1$line4" >> pgtmp0
-	if ($countl >= 4) echo "plot /overlay /vs /nolabel /line=4 $lsty[4] {80,99,99}, {65,65,65}" >> pgtmp0
-	echo "label 0, 50, -1, 0, .15 @P1$line5" >> pgtmp0
-	if ($countl >= 5) echo "plot /overlay /vs /nolabel /line=5 $lsty[5] {80,99,99}, {55,55,55}" >> pgtmp0
-	echo "label 0, 40, -1, 0, .15 @P1$line6" >> pgtmp0
-	if ($countl >= 6) echo "plot /overlay /vs /nolabel /line=6 $lsty[6] {80,99,99}, {45,45,45}" >> pgtmp0
-	echo "label 0, 30, -1, 0, .15 @P1$line7" >> pgtmp0
-	if ($countl >= 7) echo "plot /overlay /vs /nolabel /line=7 $lsty[7] {80,99,99}, {35,35,35}" >> pgtmp0
-	echo "label 0, 20, -1, 0, .15 @P1$line8" >> pgtmp0
-	if ($countl >= 8) echo "plot /overlay /vs /nolabel /line=8 $lsty[8] {80,99,99}, {25,25,25}" >> pgtmp0
-	echo "label 0, 10, -1, 0, .15 @P1$line9" >> pgtmp0
-	if ($countl >= 9) echo "plot /overlay /vs /nolabel /line=9 $lsty[9] {80,99,99}, {15,15,15}" >> pgtmp0
+       echo "label 0, 90, -1, 0, .15 @P1$line1" >> pgtmp0
+       echo "plot /overlay /vs /nolabel /line=1 $lsty[1] {80,99,99}, {95,95,95}" >> pgtmp0
+       echo "label 0, 80, -1, 0, .15 @P1$line2" >> pgtmp0
+       if ($countl >= 2) echo "plot /overlay /vs /nolabel /line=2 $lsty[2] {80,99,99}, {85,85,85}" >> pgtmp0
+       echo "label 0, 70, -1, 0, .15 @P1$line3" >> pgtmp0
+       if ($countl >= 3) echo "plot /overlay /vs /nolabel /line=3 $lsty[3] {80,99,99}, {75,75,75}" >> pgtmp0
+       echo "label 0, 60, -1, 0, .15 @P1$line4" >> pgtmp0
+       if ($countl >= 4) echo "plot /overlay /vs /nolabel /line=4 $lsty[4] {80,99,99}, {65,65,65}" >> pgtmp0
+       echo "label 0, 50, -1, 0, .15 @P1$line5" >> pgtmp0
+       if ($countl >= 5) echo "plot /overlay /vs /nolabel /line=5 $lsty[5] {80,99,99}, {55,55,55}" >> pgtmp0
+       echo "label 0, 40, -1, 0, .15 @P1$line6" >> pgtmp0
+       if ($countl >= 6) echo "plot /overlay /vs /nolabel /line=6 $lsty[6] {80,99,99}, {45,45,45}" >> pgtmp0
+       echo "label 0, 30, -1, 0, .15 @P1$line7" >> pgtmp0
+       if ($countl >= 7) echo "plot /overlay /vs /nolabel /line=7 $lsty[7] {80,99,99}, {35,35,35}" >> pgtmp0
+       echo "label 0, 20, -1, 0, .15 @P1$line8" >> pgtmp0
+       if ($countl >= 8) echo "plot /overlay /vs /nolabel /line=8 $lsty[8] {80,99,99}, {25,25,25}" >> pgtmp0
+       echo "label 0, 10, -1, 0, .15 @P1$line9" >> pgtmp0
+       if ($countl >= 9) echo "plot /overlay /vs /nolabel /line=9 $lsty[9] {80,99,99}, {15,15,15}" >> pgtmp0
     endif
 
 end
 
 echo "CANCEL MODE METAFILE" >> pgtmp0
 # if total number of plots is multiple of "plots per page" there is an empty output file: ignore it!
-if ($countVP == 1) @ countPG-=1 
+if ($countVP == 1) @ countPG-=1
 
 # finalize plot file
 # d1, d3, d5, .. have to be replaced with sed in final ferret file to give [d=1] etc
@@ -525,10 +525,10 @@ mv -f pgtmp15 $pl_name.jnl
 # plot
 
 # source /soft/ferret_paths_RH9
-# # ferret -batch $pl_name.ps -script $pl_name.jnl 
-ferret -script $pl_name.jnl 
+# # ferret -batch $pl_name.ps -script $pl_name.jnl
+ferret -script $pl_name.jnl
 
-# determine number of meta print files 
+# determine number of meta print files
 if ($countPG == 1) set metafiles="$pl_name.1.plt"
 if ($countPG == 2) set metafiles="$pl_name.1.plt $pl_name.2.plt"
 if ($countPG == 3) set metafiles="$pl_name.1.plt $pl_name.2.plt $pl_name.3.plt"
@@ -540,7 +540,7 @@ if ($countPG == 8) set metafiles="$pl_name.1.plt $pl_name.2.plt $pl_name.3.plt $
 if ($countPG == 9) set metafiles="$pl_name.1.plt $pl_name.2.plt $pl_name.3.plt $pl_name.4.plt $pl_name.5.plt $pl_name.6.plt $pl_name.7.plt $pl_name.8.plt $pl_name.9.plt"
 if ($countPG == 10) set metafiles="$pl_name.1.plt $pl_name.2.plt $pl_name.3.plt $pl_name.4.plt $pl_name.5.plt $pl_name.6.plt $pl_name.7.plt $pl_name.8.plt $pl_name.9.plt  $pl_name.10.plt"
 if ($countPG == 11) set metafiles="$pl_name.1.plt $pl_name.2.plt $pl_name.3.plt $pl_name.4.plt $pl_name.5.plt $pl_name.6.plt $pl_name.7.plt $pl_name.8.plt $pl_name.9.plt  $pl_name.10.plt $pl_name.11.plt"
-if ($countPG == 12) set metafiles="$pl_name.1.plt $pl_name.2.plt $pl_name.3.plt $pl_name.4.plt $pl_name.5.plt $pl_name.6.plt $pl_name.7.plt $pl_name.8.plt $pl_name.9.plt  $pl_name.10.plt $pl_name.11.plt $pl_name.12.plt" 
+if ($countPG == 12) set metafiles="$pl_name.1.plt $pl_name.2.plt $pl_name.3.plt $pl_name.4.plt $pl_name.5.plt $pl_name.6.plt $pl_name.7.plt $pl_name.8.plt $pl_name.9.plt  $pl_name.10.plt $pl_name.11.plt $pl_name.12.plt"
 if ($countPG == 13) set metafiles="$pl_name.1.plt $pl_name.2.plt $pl_name.3.plt $pl_name.4.plt $pl_name.5.plt $pl_name.6.plt $pl_name.7.plt $pl_name.8.plt $pl_name.9.plt  $pl_name.10.plt $pl_name.11.plt $pl_name.12.plt $pl_name.13.plt"
 
 
@@ -558,10 +558,3 @@ rm -rf pgtmp*
 rm -f $pl_name.pre.ps
 # meta print files
 rm -f *.plt
-
-
-
-
-
-
-
