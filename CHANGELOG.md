@@ -1,5 +1,5 @@
 Date: 05/03/2017
-Author: J. Bock
+Author: Josue Bock
 Purpose: Describe the main updates and bugfix done in Mistra, as compared to the first version distrbuted to Elise Droste in late December 2016 / early January 2017:
 
    - activity.f: check that xo4 = xo**4 > tiny(0.)
