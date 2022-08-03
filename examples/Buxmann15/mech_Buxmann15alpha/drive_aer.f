@@ -1,19 +1,20 @@
-!
+! ======================================================================= !
 ! Copyright 1996-2017 the Authors
 !
-! Licensed under the EUPL, Version 1.1 only (the "Licence");
+! This program is free software; you can redistribute it and/or modify
+! it under the terms of the GNU General Public License as published by
+! the Free Software Foundation; either version 2 of the License, or
+! (at your option) any later version.
 !
-! You may not use this work except in compliance with the Licence.
-! You may obtain a copy of the Licence at:
-!   https://joinup.ec.europa.eu/software/page/eupl
+! This program is distributed in the hope that it will be useful,
+! but WITHOUT ANY WARRANTY; without even the implied warranty of
+! MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+! GNU General Public License for more details.
 !
-! Unless required by applicable law or agreed to in writing,
-! software distributed under the Licence is distributed on an
-! "AS IS" basis, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND,
-! either express or implied.
-!
-! See the Licence for the specific language governing permissions
-! and limitations under the Licence.
+! You should have received a copy of the GNU General Public License along
+! with this program; if not, write to the Free Software Foundation, Inc.,
+! 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+! ======================================================================= !
 
       module kpp_KPP_ROOT_Parameters
       include 'KPP_ROOT_Parameters.h' ! KPP parameters
@@ -137,7 +138,7 @@ c liquid phase rates
       endif
 
 
-c concentrations are handed over HERE (and not in separate SRs) because the 
+c concentrations are handed over HERE (and not in separate SRs) because the
 c parameter (I_XXX) are different for each KPP block
 
 
@@ -163,12 +164,12 @@ c liquid phase
       sl1(:,:,k)=max(0.d0,sl1(:,:,k)) ! eliminate negative values
       sion1(:,:,k)=max(0.d0,sion1(:,:,k)) ! eliminate negative values
 
-      if (cvv1.gt.0) then 
+      if (cvv1.gt.0) then
          FIX(indf_H2Ol1)=55.55/cvv1
       else
          FIX(indf_H2Ol1)=0.
-      endif     
-      if (cvv2.gt.0) then 
+      endif
+      if (cvv2.gt.0) then
          FIX(indf_H2Ol2)=55.55/cvv2
       else
          FIX(indf_H2Ol2)=0.
@@ -213,4 +214,3 @@ c include sl1/sion1(k,,1/2)=C(ind_)
       include 'aer_km.dat'
 
       end subroutine KPP_ROOT_drive
-

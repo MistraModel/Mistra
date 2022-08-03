@@ -1,19 +1,20 @@
-!
+! ======================================================================= !
 ! Copyright 1996-2017 the Authors
 !
-! Licensed under the EUPL, Version 1.1 only (the "Licence");
+! This program is free software; you can redistribute it and/or modify
+! it under the terms of the GNU General Public License as published by
+! the Free Software Foundation; either version 2 of the License, or
+! (at your option) any later version.
 !
-! You may not use this work except in compliance with the Licence.
-! You may obtain a copy of the Licence at:
-!   https://joinup.ec.europa.eu/software/page/eupl
+! This program is distributed in the hope that it will be useful,
+! but WITHOUT ANY WARRANTY; without even the implied warranty of
+! MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+! GNU General Public License for more details.
 !
-! Unless required by applicable law or agreed to in writing,
-! software distributed under the Licence is distributed on an
-! "AS IS" basis, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND,
-! either express or implied.
-!
-! See the Licence for the specific language governing permissions
-! and limitations under the Licence.
+! You should have received a copy of the GNU General Public License along
+! with this program; if not, write to the Free Software Foundation, Inc.,
+! 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+! ======================================================================= !
 
       module kpp_KPP_ROOT_Parameters
       include 'KPP_ROOT_Parameters.h' ! KPP parameters
@@ -170,18 +171,17 @@ c maybe they are interesting as output ?? #
       sl1(4,1,k) = max(0.d0,C(ind_NH3l1))
       sl1(6,1,k) = max(0.d0,C(ind_SO4l1))
       sl1(3,2,k) = max(0.d0,C(ind_HNO3l2))
-      sl1(4,2,k) = max(0.d0,C(ind_NH3l2))   
+      sl1(4,2,k) = max(0.d0,C(ind_NH3l2))
       sl1(6,2,k) = max(0.d0,C(ind_SO4l2))
 
-!         sion1(3,1,k) =C(ind_OHml1) 
-!         sion1(13,1,k) =C(ind_NO3ml1) 
-!         sion1(14,1,k) =C(ind_CLml1) 
+!         sion1(3,1,k) =C(ind_OHml1)
+!         sion1(13,1,k) =C(ind_NO3ml1)
+!         sion1(14,1,k) =C(ind_CLml1)
 !         sion1(24,1,k) = C(ind_Brml1)
 
-!         sion1(3,2,k) =C(ind_OHml2) 
-!         sion1(13,2,k) =C(ind_NO3ml2) 
-!         sion1(14,2,k) =C(ind_CLml2) 
+!         sion1(3,2,k) =C(ind_OHml2)
+!         sion1(13,2,k) =C(ind_NO3ml2)
+!         sion1(14,2,k) =C(ind_CLml2)
 !         sion1(24,2,k) = C(ind_Brml2)
 
       end subroutine KPP_ROOT_drive
-
