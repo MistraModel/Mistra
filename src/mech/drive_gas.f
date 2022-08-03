@@ -171,18 +171,17 @@ c maybe they are interesting as output ?? #
       sl1(4,1,k) = max(0.d0,C(ind_NH3l1))
       sl1(6,1,k) = max(0.d0,C(ind_SO4l1))
       sl1(3,2,k) = max(0.d0,C(ind_HNO3l2))
-      sl1(4,2,k) = max(0.d0,C(ind_NH3l2))   
+      sl1(4,2,k) = max(0.d0,C(ind_NH3l2))
       sl1(6,2,k) = max(0.d0,C(ind_SO4l2))
 
-!         sion1(3,1,k) =C(ind_OHml1) 
-!         sion1(13,1,k) =C(ind_NO3ml1) 
-!         sion1(14,1,k) =C(ind_CLml1) 
+!         sion1(3,1,k) =C(ind_OHml1)
+!         sion1(13,1,k) =C(ind_NO3ml1)
+!         sion1(14,1,k) =C(ind_CLml1)
 !         sion1(24,1,k) = C(ind_Brml1)
 
-!         sion1(3,2,k) =C(ind_OHml2) 
-!         sion1(13,2,k) =C(ind_NO3ml2) 
-!         sion1(14,2,k) =C(ind_CLml2) 
+!         sion1(3,2,k) =C(ind_OHml2)
+!         sion1(13,2,k) =C(ind_NO3ml2)
+!         sion1(14,2,k) =C(ind_CLml2)
 !         sion1(24,2,k) = C(ind_Brml2)
 
       end subroutine KPP_ROOT_drive
-

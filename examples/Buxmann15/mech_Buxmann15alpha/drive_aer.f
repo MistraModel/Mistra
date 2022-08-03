@@ -138,7 +138,7 @@ c liquid phase rates
       endif
 
 
-c concentrations are handed over HERE (and not in separate SRs) because the 
+c concentrations are handed over HERE (and not in separate SRs) because the
 c parameter (I_XXX) are different for each KPP block
 
 
@@ -164,12 +164,12 @@ c liquid phase
       sl1(:,:,k)=max(0.d0,sl1(:,:,k)) ! eliminate negative values
       sion1(:,:,k)=max(0.d0,sion1(:,:,k)) ! eliminate negative values
 
-      if (cvv1.gt.0) then 
+      if (cvv1.gt.0) then
          FIX(indf_H2Ol1)=55.55/cvv1
       else
          FIX(indf_H2Ol1)=0.
-      endif     
-      if (cvv2.gt.0) then 
+      endif
+      if (cvv2.gt.0) then
          FIX(indf_H2Ol2)=55.55/cvv2
       else
          FIX(indf_H2Ol2)=0.
@@ -214,4 +214,3 @@ c include sl1/sion1(k,,1/2)=C(ind_)
       include 'aer_km.dat'
 
       end subroutine KPP_ROOT_drive
-
