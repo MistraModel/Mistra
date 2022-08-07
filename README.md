@@ -33,21 +33,30 @@ Additional work to make mistra code available, and significant technical changes
 have been made by:
   ** Josue Bock ** (josue.bock@univ-smb.fr)
 
+---
+
+__Mistra__ is 
+
+For the license see
+
+For Credits see
 
 
 HOW TO RUN MISTRA -- in a nutshell:
 -----------------------------------
 
-1) Install KPP from https://github.com/Mistra-UEA/KPP-Mistra. Please refer to the README file in this KPP depository for instructions
+1. Install __KPP-Mistra__. Please refer to the `README.md` file in the
+[KPP-Mistra repository](https://github.com/MistraModel/KPP-Mistra) for
+instructions.
 
-2) Install a Fortran compiler (preferably ifort, alternatively gfortran) and the netcdf libraries
+1. Install a Fortran compiler (preferably __ifort__, alternatively
+__gfortran__) and the __netcdf__ development libraries.
 
----
 
 3) Check that C shell (csh) is installed on your system, then generate the mechanism files: in ./src/mech, run make
 
 4) Check that netcdf libraries are installed on your system (locate netcdf.inc). If not, install the package libnetcdff-dev
-Edit the Makefile (in ./src directory), set the correct path to the netcdf libraries and include file. Depending on netcdf distribution, use "-lnetcdf" or "-lnetcdf -lnetcdff".
+Edit the Makefile (in ./src [or main?] directory), set the correct path to the netcdf libraries and include file. Depending on netcdf distribution, use "-lnetcdf" or "-lnetcdf -lnetcdff".
 
 5) Compile the code using "make".
 

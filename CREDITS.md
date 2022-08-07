@@ -1,4 +1,31 @@
+# Credits
+
 The code of MISTRA was developped from the early 1990's by several people. This file summarises all known people who contributed to the development of MISTRA and/or used the model in their work.
+
+## Main Authors
+
+Unless specifically specified in each file and/or routine, the principal Authors are:
+* Andreas Bott (a.bott@uni-bonn.de)
+* Roland von Glasow
+
+Additional work to make mistra code available, and significant technical changes in the code
+have been made by:
+* Josué Bock (josue.bock@meteo.fr)
+
+## Other Authors
+
+* Peter Bräuer
+* Susanne Pechtl
+* Matthias Piot
+* Rolf Sander
+* Linda Smoydzin
+* Roberto Sommariva
+* Jennie Thomas
+
+## Acknowledgements
+
+## Funding
+
 
 The main developers are:
 - Andreas Bott
