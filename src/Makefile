@@ -16,10 +16,10 @@
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 # ======================================================================= #
 
-# Intel Fotran Compiler (tested up to version 2021.3.0)
-FC=ifort
+# >> Intel Fortran Compiler (tested up to version 2021.3.0)
+#FC=ifort
 # -- Preferred flags for production run
-CFLAGS= -O2 -fpe0 -traceback
+#CFLAGS= -O2 -fpe0 -traceback
 # -- Alternative flags for production run
 #CFLAGS= -O2 -fpe0
 #CFLAGS= -O2 -fp-model source -traceback
@@ -39,16 +39,24 @@ CFLAGS= -O2 -fpe0 -traceback
 #CFLAGS= -O0 -r8 -fpe0 -traceback -warn all -check all
 #CFLAGS= -check all -traceback -warn all
 
-# GNU Fortran (tested up to version 7.5.0)
-#FC=gfortran
+# >> GNU Fortran (tested up to version 7.5.0)
+FC=gfortran
 # --  Preferred run flags
-#CFLAGS= -O3 -w -fbacktrace # -fautomatic -fno-align-commons
+CFLAGS= -O3 -w -fbacktrace # -fautomatic -fno-align-commons
 # --  Alternative run flags
 #CFLAGS= -O3 -fdefault-real-8 -fdefault-double-8 -fbacktrace
 # -- debug flags
 #CFLAGS= -O0 -g -fdefault-real-8 -fdefault-double-8 -fbacktrace -fcheck=bounds -ffpe-trap=invalid,zero,overflow -finit-real=snan -Wall -fcheck=all
 #CFLAGS= -g -fbacktrace -ffpe-trap=zero,underflow,overflow,invalid
 #CFLAGS= -fbacktrace -fdump-fortran-optimized -fdump-fortran-original -fdump-parse-tree -ffpe-trap= -ffpe-summary= -g -Wsurprising -Walign-commons -Wall
+
+
+# Set path to the netcdf-fortran library (netcdf.inc)
+# ---------------------------------------------------
+NETCDFLIB=/usr/include
+
+
+# ======================================================================= #
 
 
 # Makefile memo
@@ -147,7 +155,7 @@ outp.o: outp.f90 config.mod constants.mod file_unit.mod global_params.mod gas_co
 	$(FC) $(CFLAGS) -o $(@F) -c $<
 
 out_netCDF.o: out_netCDF.f cdf_var_gas.mod config.mod file_unit.mod global_params.mod gas_common.mod precision.mod Makefile
-	$(FC) $(CFLAGS) -o $(@F) -c $< -I/usr/include
+	$(FC) $(CFLAGS) -o $(@F) -c $< -I$(NETCDFLIB)
 
 jrate.o: jrate.f config.mod file_unit.mod global_params.mod Makefile
 	$(FC) $(CFLAGS) -o $(@F) -c $<

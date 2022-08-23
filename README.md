@@ -1,58 +1,39 @@
-            _     _             
-           (_)   | |            
-  _ __ ___  _ ___| |_ _ __ __ _ 
- | '_ ` _ \| / __| __| '__/ _` |
- | | | | | | \__ \ |_| | | (_| |
- |_| |_| |_|_|___/\__|_|  \__,_|
-                                
-                                
-
-!
-! Copyright 1996-2017 the Authors
-!
-! Licensed under the EUPL, Version 1.1 only (the "Licence");
-!
-! You may not use this work except in compliance with the Licence.
-! You may obtain a copy of the Licence at:
-!   https://joinup.ec.europa.eu/software/page/eupl
-!
-! Unless required by applicable law or agreed to in writing,
-! software distributed under the Licence is distributed on an
-! "AS IS" basis, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND,
-! either express or implied.
-!
-! See the Licence for the specific language governing permissions
-! and limitations under the Licence.
+            _     _  
+           (_)   | |  
+  _ __ ___  _ ___| |_ _ __ __ _  
+ | '_ ` _ \| / __| __| '__/ _` |  
+ | | | | | | \__ \ |_| | | (_| |  
+ |_| |_| |_|_|___/\__|_|  \__,_|  
 
 
-Unless specifically specified in each file and/or routine, the principal Authors are:
-  ** Andreas Bott ** (a.bott@uni-bonn.de)
-  ** Roland von Glasow **
+__Mistra__ is a one dimensional chemical model of the Marine Boundary layer.
 
-Additional work to make mistra code available, and significant technical changes in the code
-have been made by:
-  ** Josue Bock ** (josue.bock@univ-smb.fr)
+For the license, see the `LICENSE` file.
 
+For authorship, credits, acknowledgements, funding information, see the `CREDITS.md` file.
 
 
 HOW TO RUN MISTRA -- in a nutshell:
 -----------------------------------
 
-1) Install KPP from https://github.com/Mistra-UEA/KPP-Mistra. Please refer to the README file in this KPP depository for instructions
+To install Mistra the following packages are required:
 
-2) Install a Fortran compiler (preferably ifort, alternatively gfortran) and the netcdf libraries
+1. a Fortran compiler. The default is GNU `gfortran`. Use the command `gfortran --version` to check the compiler version. Alternatively the Intel `ifort` compiler can be used.
 
----
+2. the NetCDF Fortran development library. On Debian (and Debian derivatives) the package is called `libnetcdff-dev`. Depending on the distribution, it may have a different name. Use the command `locate netcdf.inc` to check that the library is installed.
 
-3) Check that C shell (csh) is installed on your system, then generate the mechanism files: in ./src/mech, run make
+3. the C shell
 
-4) Check that netcdf libraries are installed on your system (locate netcdf.inc). If not, install the package libnetcdff-dev
-Edit the Makefile (in ./src directory), set the correct path to the netcdf libraries and include file. Depending on netcdf distribution, use "-lnetcdf" or "-lnetcdf -lnetcdff".
+To set up and run the Mistra model, follow these steps:
 
-5) Compile the code using "make".
+1. Install __KPP-Mistra__. Please refer to the `README.md` file in the [KPP-Mistra repository](https://github.com/MistraModel/KPP-Mistra) for instructions.
 
-6) In the param/param_... file, set the appropriate path to Mistra input files. It is advised to use a directory that will not be duplicated for each version the user will run, but choose a generic directory instead.
-Set the appropriate path to parent output directory, to the executable, and set the namelist to be used.
-Run the param_... file to run the model.
+2. Start the C shell (__csh__), then generate the mechanism files: in `./src/mech/`, run `make`.
 
-For more detailed information see the manual in the ./doc directory
+3. Edit the `Makefile` (in `./src/` directory), set the correct path to the netcdf libraries and include file. Depending on netcdf distribution, use the flag `-lnetcdf` or -lnetcdff` or `-lnetcdf -lnetcdff`. Select the compiler if needed.
+
+4. Compile the code using `make`.
+
+5. In the `param/param_...` file, set the appropriate path to Mistra input files. It is advised to use a directory that will not be duplicated for each version the user will run, but choose a generic directory instead. Set the appropriate path to parent output directory, to the executable, and set the namelist to be used. Run the `param_...` file to run the model.
+
+For more information, see the manual (`manual_Mistra_v9.0.pdf`) in the `doc/` directory.

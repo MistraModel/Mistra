@@ -1,8 +1,28 @@
+# Credits
+
 The code of MISTRA was developped from the early 1990's by several people. This file summarises all known people who contributed to the development of MISTRA and/or used the model in their work.
 
-The main developers are:
-- Andreas Bott
-- Roland von Glasow
+## Main Authors
+
+Unless specifically specified in each file and/or routine, the principal Authors are:
+* Andreas Bott
+* Roland von Glasow
+
+Additional work to make mistra code available, and significant technical changes in the code
+have been made by:
+* Josué Bock
+
+## Other Authors
+
+* Peter Bräuer
+* Susanne Pechtl
+* Matthias Piot
+* Rolf Sander
+* Linda Smoydzin
+* Roberto Sommariva
+* Jennie Thomas
+
+## Acknowledgements
 
 Below are listed all co-authors of papers dealing with previous versions of MISTRA that were published until 2015.
 
@@ -76,3 +96,12 @@ Below are listed all co-authors of papers dealing with previous versions of MIST
 - Yalire, Mathieu
 - Zdunkowski, Wilford G.
 - Zetzsch, Cornelius
+
+## Funding
+
+- the Natural Environment Research Council
+- The Leverhulme Trust
+- the Deutsche Forschungsgemeinschaft
+- the Bundesministerium für Bildung und Forschung
+- the National Science Foundation
+- the European Research Council
