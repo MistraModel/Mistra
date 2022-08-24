@@ -1,0 +1,5 @@
+# Output files
+*
+
+# except .gitignore
+!.gitignore

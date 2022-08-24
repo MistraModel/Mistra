@@ -1,0 +1,6 @@
+# Param script files
+*
+
+# except .gitignore and the example script
+!.gitignore
+!param.example
