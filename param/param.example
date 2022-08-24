@@ -1,28 +1,49 @@
 #!/bin/bash
+# ======================================================================= #
+# Copyright 1996-2017 the Authors
+#
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License along
+# with this program; if not, write to the Free Software Foundation, Inc.,
+# 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+# ======================================================================= #
+
 # MISTRA v9.0_beta
 
-TITLE="First simul with param file"
+TITLE="Example Mistra simulation"
 
-#      MODEL BINARY USED
-MISTRAEXE=~/Mistra_2019/src/mistra
+# MISTRA DIRECTORY
+MISTRADIR= ~/Mistra
 
-#      NAMELIST USED
-NAMELIST=~/Mistra_2019/namelists/namelist.base1
+# MODEL BINARY USED
+MISTRAEXE=$MISTRADIR/src/mistra
 
-#      MECHANISM DIRECTORY
-MECHDIR=~/Mistra_2019/src/mech/
+# NAMELIST USED
+NAMELIST=$MISTRADIR/namelists/namelist.example
 
-#      INPUT DIRECTORY
-INPDIR=~/Mistra_2019/input/
+# MECHANISM DIRECTORY
+MECHDIR=$MISTRADIR/src/mech/
 
-#      PARENT OUTPUT DIR
-POUTDIR=~/Mistra_2019/out/
+# INPUT DIRECTORY
+INPDIR=$MISTRADIR/input/
 
+# PARENT OUTPUT DIR
+POUTDIR=$MISTRADIR/out/put
 
 
 #################################################################
-# Below are automated instructions to launch the run
+# Below are automated instructions to launch the run            #
 #################################################################
+
 
 # EXPID = second part of param_... name
 [[ $0 != *param_* ]] && echo -e "$0\nWarn : The installer should be sourced from a 'param_' file">&2 && exit 1
@@ -66,7 +87,7 @@ else
     echo "The executable does not exist, installation aborted" && exit 1
 fi
 
-# Move output files in OUTDIR
+# Move output files to OUTDIR
 mv fort.* *.out *.nc rst*.dat *.asc $OUTDIR
 
 echo " -- End of param script (end of the run) -- "
