@@ -17,12 +17,14 @@
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 # ======================================================================= #
 
-# MISTRA v9.0_beta
+# The param script ... 
+# ===============================================================
 
+# NAME OF MODEL RUN
 TITLE="Example Mistra simulation"
 
 # MISTRA DIRECTORY
-MISTRADIR= ~/Mistra
+MISTRADIR= ~/Mistra/
 
 # MODEL BINARY USED
 MISTRAEXE=$MISTRADIR/src/mistra
@@ -37,7 +39,7 @@ MECHDIR=$MISTRADIR/src/mech/
 INPDIR=$MISTRADIR/input/
 
 # PARENT OUTPUT DIR
-POUTDIR=$MISTRADIR/out/put
+POUTDIR=$MISTRADIR/output/
 
 
 #################################################################
