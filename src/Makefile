@@ -16,7 +16,9 @@
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 # ======================================================================= #
 
+# ---------------------------------------------------
 # >> Intel Fortran Compiler (tested up to version 2021.3.0)
+# ---------------------------------------------------
 #FC=ifort
 # -- Preferred flags for production run
 #CFLAGS= -O2 -fpe0 -traceback
@@ -39,7 +41,9 @@
 #CFLAGS= -O0 -r8 -fpe0 -traceback -warn all -check all
 #CFLAGS= -check all -traceback -warn all
 
+# ---------------------------------------------------
 # >> GNU Fortran (tested up to version 7.5.0)
+# ---------------------------------------------------
 FC=gfortran
 # --  Preferred run flags
 CFLAGS= -O3 -w -fbacktrace # -fautomatic -fno-align-commons
@@ -51,9 +55,19 @@ CFLAGS= -O3 -w -fbacktrace # -fautomatic -fno-align-commons
 #CFLAGS= -fbacktrace -fdump-fortran-optimized -fdump-fortran-original -fdump-parse-tree -ffpe-trap= -ffpe-summary= -g -Wsurprising -Walign-commons -Wall
 
 
-# Set path to the netcdf-fortran library (netcdf.inc)
 # ---------------------------------------------------
+# >> NetCDF Fortran
+# ---------------------------------------------------
+
+# Set path to the netcdf-fortran library (`netcdf.inc')
 NETCDFLIB=/usr/include
+
+# Depending on netcdf-fortran distribution, use one of the following
+# options for the NetCDF compilation flags:
+# `-lnetcdf'
+# `-lnetcdff'
+# `-lnetcdf -lnetcdff'
+NCFLAGS= -lnetcdf -lnetcdff
 
 
 # ======================================================================= #
@@ -82,7 +96,7 @@ mistra: precision.o constants.o global_params.o common_modules.o\
 	kpp.o utils.o \
 	config.o \
 	mod_out_netCDF.o out_netCDF.o
-	$(FC) $(CFLAGS) -o $@ $^ -lnetcdf -lnetcdff
+	$(FC) $(CFLAGS) -o $@ $^ $(NCFLAGS)
 
 # modules
 global_params.o global_params.mod: global_params.f90 tot_Parameters.h Makefile

@@ -17,7 +17,9 @@
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 # ======================================================================= #
 
-# The param script ... 
+# The param script is used to set the input/output directories, select
+# the model executable and the namelist file with the model configuration,
+# and start the model run.
 # ===============================================================
 
 # NAME OF MODEL RUN
@@ -26,10 +28,10 @@ TITLE="Example Mistra simulation"
 # MISTRA DIRECTORY
 MISTRADIR=$HOME/Mistra/
 
-# MODEL BINARY USED
+# MODEL EXECUTABLE
 MISTRAEXE=$MISTRADIR/src/mistra
 
-# NAMELIST USED
+# NAMELIST TO USE
 NAMELIST=$MISTRADIR/namelists/namelist.example
 
 # MECHANISM DIRECTORY
@@ -43,7 +45,7 @@ POUTDIR=$MISTRADIR/output/
 
 
 #################################################################
-# Below are automated instructions to launch the run            #
+# Below are automated instructions to start the run             #
 #################################################################
 
 

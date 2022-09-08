@@ -1,6 +1,3 @@
-#!/bin/csh
-# List dependencies
-
 # ======================================================================= #
 # Copyright 2015-2017 the Authors
 #
@@ -19,11 +16,14 @@
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 # ======================================================================= #
 
+# List dependencies
 DEPEN_ALL = head.bud tail.bud master.spc master_gas.eqn
 DEPEN_AER = aer_km.dat aer_mk.dat master_aqueous.eqn title.1 title.2 title.3 title.4
 
 # Script to use
 SC = ./make_kpp.sc
+
+# ---------------------------------------------------
 
 all: gas.f aer.f tot.f
 

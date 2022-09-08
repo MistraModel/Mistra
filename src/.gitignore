@@ -23,3 +23,7 @@ tot_Sparse.h
 bud_a.f
 bud_g.f
 bud_t.f
+
+# only the files in mech/
+!mech/aer_km.dat
+!mech/aer_mk.dat
