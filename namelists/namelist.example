@@ -1,0 +1,76 @@
+! ======================================================================= !
+! Copyright 1996-2017 the Authors
+!
+! This program is free software; you can redistribute it and/or modify
+! it under the terms of the GNU General Public License as published by
+! the Free Software Foundation; either version 2 of the License, or
+! (at your option) any later version.
+!
+! This program is distributed in the hope that it will be useful,
+! but WITHOUT ANY WARRANTY; without even the implied warranty of
+! MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+! GNU General Public License for more details.
+!
+! You should have received a copy of the GNU General Public License along
+! with this program; if not, write to the Free Software Foundation, Inc.,
+! 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+! ======================================================================= !
+
+! ===========================================
+! mistra_cfg: model configuration file
+!             (previously "src/istart" file)
+! ===========================================
+
+&mistra_cfg
+
+ ! Restart mode and runtime
+ rst = F          !<-- rst    : restart (TRUE) or new init (FALSE) of model run
+ lstmax = 24      !<-- lstmax : runtime [hours]
+
+ ! Output choice
+ netcdf = T       !<-- netCDF : netCDF output
+ binout = F       !<-- binout : binary output
+
+ ! Timing and geography
+ nday = 11        !<-- starting day
+ nmonth = 05      !<-- starting month
+ nyear = 2021     !<-- starting year
+ nhour = 0        !<-- starting hour (local time with `alon=0.', or UTC time with actual `alon' value)
+ alon = 0.        !<-- longitude [deg] (-180.; 180.)
+ alat = 0.        !<-- latitude [deg]
+
+ ! Surface settings
+ !isurf = 0        !<-- 0 is water or snow surface (default), 1 is bare soil
+ tw = 299.5       !<-- water temperature [K]
+ !ltwcst = T       !<-- constant `tw' (default=TRUE). If not constant, set `ntwopt' (see SR "surf0")
+ !ntwopt = 1       !<-- choice for time varying SST (see SR "surf0")
+ z0 = 0.001       !<-- roughness length [m] (default=0.01)
+
+ ! Meteorological settings
+ rp0 = 101325     !<-- sea level atmospheric pressure [Pa]
+ rhsurf = 0.8     !<-- relative humidity at the surface, forced at each time step (default=1)
+
+ ! Microphysics
+ mic = T          !<-- mic     : microphysics included (TRUE)
+ iaertyp = 3      !<-- iaertyp : aerosol type is 1=urban; 2=rural; 3=maritime
+
+ ! Chemistry
+ chem = T         !<-- chem  : chemistry included (TRUE)
+ halo = T         !<-- halo  : halogen chemistry included (TRUE)
+ iod = F          !<-- iod   : iodine chemistry included (TRUE) (automatically off, when `halo=F')
+ nkc_l = 4        !<-- nkc_l : number of output classes for liquid chem (set to <nkc if no cloud expected)
+ neula = 1        !<-- neula : eulerian (=0, includes advection of chem species) or lagrangian (=1, no advection)
+
+ ! Box model mode
+ box = F          !<-- box     : run model in box mode (TRUE)
+ bl_box = F       !<-- BL_box  : box only, average init cond over BL and/or mean of J-values over BL
+ nlevbox = 2      !<-- nlevbox : box only, level to be used for init cond of box if `BL_box=F'
+ z_box = 700.     !<-- z_box   : height of box [m]
+
+ ! Nucleation
+ nuc = F          !<-- nuc : nucleation included (TRUE)
+
+ ! Miscellaneous settings
+ scaleo3_m = 300. !<-- scaleo3_m : O3 [Dobson units] (only for scaling in photolysis calculations)
+
+ /

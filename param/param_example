@@ -1,28 +1,53 @@
 #!/bin/bash
-# MISTRA v9.0_beta
+# ======================================================================= #
+# Copyright 1996-2017 the Authors
+#
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License along
+# with this program; if not, write to the Free Software Foundation, Inc.,
+# 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+# ======================================================================= #
 
-TITLE="First simul with param file"
+# The param script is used to set the input/output directories, select
+# the model executable and the namelist file with the model configuration,
+# and start the model run.
+# ===============================================================
 
-#      MODEL BINARY USED
-MISTRAEXE=~/Mistra_2019/src/mistra
+# NAME OF MODEL RUN
+TITLE="Example Mistra simulation"
 
-#      NAMELIST USED
-NAMELIST=~/Mistra_2019/namelists/namelist.base1
+# MISTRA DIRECTORY
+MISTRADIR=$HOME/Mistra/
 
-#      MECHANISM DIRECTORY
-MECHDIR=~/Mistra_2019/src/mech/
+# MODEL EXECUTABLE
+MISTRAEXE=$MISTRADIR/src/mistra
 
-#      INPUT DIRECTORY
-INPDIR=~/Mistra_2019/input/
+# NAMELIST TO USE
+NAMELIST=$MISTRADIR/namelists/namelist.example
 
-#      PARENT OUTPUT DIR
-POUTDIR=~/Mistra_2019/out/
+# MECHANISM DIRECTORY
+MECHDIR=$MISTRADIR/src/mech/
 
+# INPUT DIRECTORY
+INPDIR=$MISTRADIR/input/
+
+# PARENT OUTPUT DIR
+POUTDIR=$MISTRADIR/output/
 
 
 #################################################################
-# Below are automated instructions to launch the run
+# Below are automated instructions to start the run             #
 #################################################################
+
 
 # EXPID = second part of param_... name
 [[ $0 != *param_* ]] && echo -e "$0\nWarn : The installer should be sourced from a 'param_' file">&2 && exit 1
@@ -66,7 +91,7 @@ else
     echo "The executable does not exist, installation aborted" && exit 1
 fi
 
-# Move output files in OUTDIR
-mv fort.* *.out *.nc rst*.dat *.asc $OUTDIR
+# Move output files to OUTDIR
+mv *.out *.nc rst*.dat $OUTDIR
 
 echo " -- End of param script (end of the run) -- "

@@ -1,0 +1,6 @@
+# Namelist configuration files
+*
+
+# except .gitignore and the example namelist
+!.gitignore
+!namelist.example

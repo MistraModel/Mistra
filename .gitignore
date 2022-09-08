@@ -4,47 +4,5 @@
 # Fortran module files
 *.mod
 
-# --------------------------------------- #
-# Mistra files
-
-# executable
+# Mistra executable
 mistra
-
-# output
-*.nc
-*.out
-rst*.dat
-fort.*
-
-# --------------------------------------- #
-# Chemical mechanism files created by KPP
-
-# gas
-gas.f
-gas.map
-gas_Global.h
-gas_Parameters.h
-gas_Sparse.h
-
-# aer
-aer.f
-aer.map
-aer_Global.h
-aer_Parameters.h
-aer_Sparse.h
-
-## next two files: ignore only those in src
-#src/aer_km.dat
-#src/aer_mk.dat
-
-# tot
-tot.f
-tot.map
-tot_Global.h
-tot_Parameters.h
-tot_Sparse.h
-
-# budget
-bud_a.f
-bud_g.f
-bud_t.f
