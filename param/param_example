@@ -90,6 +90,6 @@ else
 fi
 
 # Move output files to OUTDIR
-mv fort.* *.out *.nc rst*.dat *.asc $OUTDIR
+mv *.out *.nc rst*.dat $OUTDIR
 
 echo " -- End of param script (end of the run) -- "
