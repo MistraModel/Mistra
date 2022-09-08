@@ -24,7 +24,7 @@
 TITLE="Example Mistra simulation"
 
 # MISTRA DIRECTORY
-MISTRADIR= ~/Mistra/
+MISTRADIR=$HOME/Mistra/
 
 # MODEL BINARY USED
 MISTRAEXE=$MISTRADIR/src/mistra

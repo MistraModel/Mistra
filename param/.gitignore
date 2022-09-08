@@ -3,4 +3,4 @@
 
 # except .gitignore and the example script
 !.gitignore
-!param.example
+!param_example
