@@ -60,13 +60,14 @@ CFLAGS= -O3 -w -fbacktrace # -fautomatic -fno-align-commons
 # ---------------------------------------------------
 
 # Set path to the netcdf-fortran library (`netcdf.inc')
+
 NETCDFLIB=/usr/include
 
 # Depending on netcdf-fortran distribution, use one of the following
 # options for the NetCDF compilation flags:
-# `-lnetcdf'
-# `-lnetcdff'
-# `-lnetcdf -lnetcdff'
+
+#NCFLAGS= -lnetcdf
+#NCFLAGS= -lnetcdff
 NCFLAGS= -lnetcdf -lnetcdff
 
 
