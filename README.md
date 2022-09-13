@@ -24,6 +24,8 @@ The following packages are required:
 
 3. the *C* shell (or the *tcsh* shell).
 
+4. optional: Ferret (https://ferret.pmel.noaa.gov/Ferret/) to use the plotting scripts in the `scripts/` directory.
+
 
 How to run Mistra
 -----------------
@@ -34,7 +36,7 @@ How to run Mistra
 
 3. Generate the mechanism files: in `./src/mech/`, execute `make`.
 
-4. Edit `./src/Makefile` to set the path to the NetCDF library (`netcdf.inc`, see above) and the NetCDF compilation flags. Change the Fortran compiler if needed (the default is `gfortran`).
+4. Edit `./src/Makefile` to set the path to the NetCDF library (`netcdf.inc`, see above) and the NetCDF compilation flags (`-lnetcdf` or -lnetcdff` or `-lnetcdf -lnetcdff`). Change the Fortran compiler if needed (the default is `gfortran`).
 
 5. Compile the code: in `./src/`, execute `make`.
 
