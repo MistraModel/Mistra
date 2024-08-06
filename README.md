@@ -1,16 +1,14 @@
-            _     _             
-           (_)   | |            
-  _ __ ___  _ ___| |_ _ __ __ _ 
- | '_ ` _ \| / __| __| '__/ _` |
- | | | | | | \__ \ |_| | | (_| |
- |_| |_| |_|_|___/\__|_|  \__,_|
-                                  
+__Mistra__ is a one dimensional chemical model of the Marine Boundary layer.
 
-**Mistra** is a one dimensional chemical model of the Marine Boundary layer.
+The [MistraModel](https://github.com/MistraModel) version in this repository is similar -- with very small (mostly cosmetic) differences -- to the __Mistra-UEA__ version. It is released under an open source license (GPLv2, see the `LICENSE` file), as agreed by the majority of the contributors to Mistra project over the years.
 
-For the license, see the `LICENSE` file.
+For information about authorship, credits, acknowledgements, and funding, see the `CREDITS.md` file.
 
-For authorship, credits, acknowledgements, funding information, see the `CREDITS.md` file.
+> [!Warning]
+>
+> Note that the Mistra-UEA version of the model was published (Bock et al., Geosci. Model Dev., 2022) without the knowledge and/or approval of most of the Mistra contributors, and under a licence which was not agreed upon by them. For more information, see the open discussion and the editor comments during the peer-review of the paper on the GMD website: https://gmd.copernicus.org/articles/15/5807/2022/gmd-15-5807-2022-discussion.html
+>
+> Therefore, __the use of the Mistra-UEA version of the model in publications is *discouraged*__ until all the authorship and licensing issues are resolved. However, the code can be reused in other projects under the open source terms of the GPLv2 license.
 
 
 How to install Mistra
@@ -24,15 +22,15 @@ The following packages are required:
 
 3. the *C* shell (or the *tcsh* shell).
 
-4. optional: Ferret (https://ferret.pmel.noaa.gov/Ferret/) to use the plotting scripts in the `scripts/` directory.
+4. __optional__: the plotting software *Ferret* (https://ferret.pmel.noaa.gov/Ferret/) to use the scripts in the `scripts/` directory.
 
 
 How to run Mistra
 -----------------
 
-1. Install **KPP-Mistra**. Refer to the `README.md` file in the [KPP-Mistra repository](https://github.com/MistraModel/KPP-Mistra) for instructions.
+1. Install __KPP-Mistra__. Refer to the `README.md` file in the [KPP-Mistra repository](https://github.com/MistraModel/KPP-Mistra) for instructions.
 
-2. Start the **C** or the **tcsh** shell.
+2. Start the *C* shell (or the *tcsh* shell).
 
 3. Generate the mechanism files: in `./src/mech/`, execute `make`.
 
