@@ -1,3 +1,13 @@
+```
+            _     _
+           (_)   | |
+  _ __ ___  _ ___| |_ _ __ __ _
+ | '_ ` _ \| / __| __| '__/ _` |
+ | | | | | | \__ \ |_| | | (_| |
+ |_| |_| |_|_|___/\__|_|  \__,_|
+
+```
+
 __Mistra__ is a one dimensional chemical model of the Marine Boundary layer.
 
 The [MistraModel](https://github.com/MistraModel) version in this repository is similar -- with very small, mostly cosmetic, differences -- to the __Mistra-UEA__ version. It is released under an open source license (GPLv2, see the `LICENSE` file), as agreed by the majority of the Mistra contributors.
