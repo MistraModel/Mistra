@@ -1,6 +1,6 @@
 # Credits
 
-The Mistra model has been developed since the early 1990s. The history of its development, summarized in the __Preface__ of the manual (`doc/manual_Mistra_v9.0.pdf`), is long and complicated. Starting from the meteorological-microphysical model by Andreas Bott, Mistra was developed into a chemical model of the marine boundary layer by Roland von Glasow with the help of many coleagues, collaborators, and students over a period of 20 years. Initially a closed source model, it was extensively modified and upgraded by Josué Bock after Roland's passing in 2015, and subsequently released as open source (https://github.com/MistraModel/Mistra).
+The Mistra model has been developed since the early 1990s. The history of its development, summarized in the __Preface__ of the manual (`doc/manual_Mistra_v9.0.pdf`), is long and complicated. Starting from the meteorological-microphysical model by Andreas Bott, Mistra was developed into a chemical model of the marine boundary layer by Roland von Glasow with the help of many colleagues, collaborators, and students over a period of 20 years. Initially a closed source model, it was extensively modified and upgraded by Josué Bock after Roland's passing in 2015, and subsequently released as open source (https://github.com/MistraModel/Mistra).
 
 Several people have contributed to the development of Mistra over the years. This file lists all *known* contributors, and funding sources, of the Mistra project.
 

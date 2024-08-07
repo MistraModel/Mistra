@@ -1,14 +1,14 @@
 __Mistra__ is a one dimensional chemical model of the Marine Boundary layer.
 
-The [MistraModel](https://github.com/MistraModel) version in this repository is similar -- with very small (mostly cosmetic) differences -- to the __Mistra-UEA__ version. It is released under an open source license (GPLv2, see the `LICENSE` file), as agreed by the majority of the contributors to Mistra project over the years.
+The [MistraModel](https://github.com/MistraModel) version in this repository is similar -- with very small, mostly cosmetic, differences -- to the __Mistra-UEA__ version. It is released under an open source license (GPLv2, see the `LICENSE` file), as agreed by the majority of the Mistra contributors.
 
 For information about authorship, credits, acknowledgements, and funding, see the `CREDITS.md` file.
 
 > [!Warning]
 >
-> Note that the Mistra-UEA version of the model was published (Bock et al., Geosci. Model Dev., 2022) without the knowledge and/or approval of most of the Mistra contributors, and under a licence which was not agreed upon by them. For more information, see the open discussion and the editor comments during the peer-review of the paper on the GMD website: https://gmd.copernicus.org/articles/15/5807/2022/gmd-15-5807-2022-discussion.html
+> Note that the Mistra-UEA version of the model was published (Bock et al., Geosci. Model Dev., 2022) without the knowledge or approval of most of the Mistra contributors, and under a licence which was not agreed upon by them. For more information, see the open discussion and the editor comments during the peer-review of the paper on the GMD website: https://gmd.copernicus.org/articles/15/5807/2022/gmd-15-5807-2022-discussion.html
 >
-> Therefore, __the use of the Mistra-UEA version of the model in publications is *discouraged*__ until all the authorship and licensing issues are resolved. However, the code can be reused in other projects under the open source terms of the GPLv2 license.
+> Therefore, __the use of the Mistra model in publications is *discouraged*__ until all the authorship and licensing issues are resolved. However, the code is open source and can be reused in other projects under the terms of the GPLv2 license.
 
 
 How to install Mistra
