@@ -26,7 +26,7 @@ with E. Droste in late December 2016/early January 2017:
   - updated SR `cw_rc`: little inconsistency in `.gt.` and `.lt.` tests, plus mostly cosmetic work
   - updated SR `fast_k_mt_*`: print error message about the species list only once, at the beginning on one run
   - updated SR `equil_co_*`: commented rates for HCHO (unused)
-  - updated SR `kpp_driver`: commented initial check `sl1` & `sion1 >0`: at the moment, still in each mech
+  - updated SR `kpp_driver`: commented initial check `sl1` and `sion1` >0: at the moment, still in each mech
   - updated SR `ionbalance`: implicit none
   - updated SR `dry_cw_rc`: implicit none, cleaned
   - updated SR `gasdrydep`: potential division by zero when `f0=0` avoided
