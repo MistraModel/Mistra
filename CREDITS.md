@@ -1,18 +1,19 @@
 # Credits
 
-The code of MISTRA was developed from the early 1990's by several people. This file summarises all known people who contributed to the development of MISTRA and/or used the model in their work.
+The Mistra model has been developed since the early 1990s. The history of its development, summarized in the __Preface__ of the manual (`doc/manual_Mistra_v9.0.pdf`), is long and complicated. Starting from the meteorological-microphysical model by Andreas Bott, Mistra was developed into a chemical model of the marine boundary layer by Roland von Glasow with the help of many colleagues, collaborators, and students over a period of 20 years. Initially a closed source model, it was extensively modified and upgraded by Josué Bock after Roland's passing in 2015, and subsequently released as open source (https://github.com/MistraModel/Mistra).
+
+Several people have contributed to the development of Mistra over the years. This file lists all *known* contributors, and funding sources, of the Mistra project.
 
 ## Main Authors
 
-Unless specifically specified in each file and/or routine, the principal Authors are:
+Unless otherwise specified, the principal Authors are:
 - Andreas Bott
 - Roland von Glasow
 
-Additional work to make the Mistra code available, and significant technical changes in the code
-have been made by:
+Additional work to make the Mistra code open source, and significant technical changes to the code between 2015 and 2022, have been made by:
 - Josué Bock
 
-## Other Authors
+## Other Authors (alphabetical order)
 
 - Peter Bräuer
 - Astrid Kerkweg
@@ -27,18 +28,18 @@ have been made by:
 
 ## Funding
 
-- Natural Environment Research Council
+- UK Natural Environment Research Council (NERC)
 - The Leverhulme Trust
 - Deutsche Forschungsgemeinschaft
 - Bundesministerium für Bildung und Forschung
-- National Science Foundation
-- European Research Council
+- National Science Foundation (NSF)
+- European Research Council (ERC)
 
 ******************************************************************************
 
 ## Acknowledgements
 
-Below are listed all co-authors of papers dealing with previous versions of MISTRA that were published until 2015.
+All the authors and co-authors of publications that used the closed source versions of the MISTRA model (i.e. published up until 2015) are listed below, in alphabetical order:
 
 - Aiuppa, Alessandro
 - Allen, Andrew G.
